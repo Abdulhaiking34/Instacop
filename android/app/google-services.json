@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "443642695133",
+    "firebase_url": "https://instacopmesage.firebaseio.com",
+    "project_id": "instacopmesage",
+    "storage_bucket": "instacopmesage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443642695133:android:4b22e9f615394e9250ba34",
+        "android_client_info": {
+          "package_name": "com.namnguyen.instacop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443642695133-u826vp7nhavhp0b6gf7nluvq49f26v21.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy8lgCnzF5pRYOP6MWiPdgc0k6Fh9WSKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443642695133-u826vp7nhavhp0b6gf7nluvq49f26v21.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

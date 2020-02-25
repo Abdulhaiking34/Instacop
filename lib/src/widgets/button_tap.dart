@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ButtonTap extends StatelessWidget {
-  ButtonTap({this.text, this.isSelected, this.function});
+  ButtonTap({this.text, this.isSelected = false, this.function});
   final text;
   final isSelected;
   final function;
