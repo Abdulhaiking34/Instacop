@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/widgets/button_tap.dart';
 import 'package:instacop/src/widgets/icon_instacop.dart';
 
@@ -8,6 +9,7 @@ import '../../link.dart';
 class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ConstScreen.setScreen(context);
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -29,7 +31,11 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 80),
+              padding: EdgeInsets.fromLTRB(
+                  ConstScreen.setSize(20),
+                  ConstScreen.setSize(20),
+                  ConstScreen.setSize(20),
+                  ConstScreen.setSize(90)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -37,11 +43,11 @@ class WelcomeScreen extends StatelessWidget {
                   Expanded(
                     flex: 8,
                     child: IconInstacop(
-                      textSize: 60,
+                      textSize: FontSize.setTextSize(100),
                     ),
                   ),
                   SizedBox(
-                    height: 80,
+                    height: ConstScreen.setSize(100),
                   ),
                   new ButtonTap(
                     text: 'Sign Up / Sign In',
@@ -51,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(
-                    height: 20,
+                    height: ConstScreen.setSize(25),
                   ),
                   new ButtonTap(
                     text: "Start Browsing",

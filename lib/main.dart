@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instacop/routes.dart';
-
+import 'package:instacop/src/helpers/screen.dart';
 
 void main() => runApp(MyApp());
 

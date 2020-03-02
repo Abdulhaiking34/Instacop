@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
+import 'package:instacop/src/helpers/screen.dart';
 
 class CusRaisedButton extends StatefulWidget {
   CusRaisedButton({this.backgroundColor, @required this.title, this.onPress});
@@ -16,8 +17,8 @@ class _CusRaisedButtonState extends State<CusRaisedButton> {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      height: 50,
-      minWidth: double.infinity,
+      height: ConstScreen.setSize(80),
+      minWidth: ConstScreen.setSize(650),
       color: widget.backgroundColor,
       child: Text(
         widget.title,

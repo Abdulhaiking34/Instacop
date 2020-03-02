@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
+import 'package:instacop/src/helpers/screen.dart';
 
 class InputText extends StatefulWidget {
   InputText(
@@ -30,12 +32,12 @@ class _InputTextState extends State<InputText> {
 
   @override
   Widget build(BuildContext context) {
+    ConstScreen.setScreen(context);
     return TextField(
       decoration: InputDecoration(
         labelText: widget.title,
         focusColor: Colors.black,
-        labelStyle: TextStyle(
-            fontSize: 20, color: Colors.black, fontWeight: FontWeight.w600),
+        labelStyle: kValueTextStyle.copyWith(fontSize: FontSize.s30),
         errorText: widget.errorText,
         suffixIcon: widget.isPassword
             ? GestureDetector(

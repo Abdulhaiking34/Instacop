@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/screen.dart';
 
 class ButtonTap extends StatelessWidget {
   ButtonTap({this.text, this.isSelected = false, this.function});
@@ -10,7 +11,7 @@ class ButtonTap extends StatelessWidget {
     return FlatButton(
       onPressed: function,
       child: Container(
-        height: 50,
+        height: ConstScreen.setSize(85),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: isSelected ? Colors.white : null,
@@ -21,8 +22,8 @@ class ButtonTap extends StatelessWidget {
             text,
             style: TextStyle(
               color: isSelected ? Colors.black : Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+              fontSize: FontSize.setTextSize(35),
+              fontWeight: FontWeight.w800,
             ),
             textAlign: TextAlign.center,
           ),

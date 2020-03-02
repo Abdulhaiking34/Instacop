@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/widgets/icon_instacop.dart';
 
 class SplashView extends StatefulWidget {
@@ -25,6 +26,7 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
+    ConstScreen.setScreen(context);
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -35,7 +37,7 @@ class _SplashViewState extends State<SplashView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               new IconInstacop(
-                textSize: 54,
+                textSize: FontSize.setTextSize(80),
               ),
             ],
           ),
