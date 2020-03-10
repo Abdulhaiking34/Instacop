@@ -18,11 +18,11 @@ class IconInstacop extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         Text(
-          'cop',
+          'COP',
           style: TextStyle(
-            fontSize: textSize + 10,
+            fontSize: textSize,
             fontWeight: FontWeight.w900,
-            color: Colors.redAccent.shade400,
+            color: Colors.redAccent.shade700,
           ),
           textAlign: TextAlign.center,
         )

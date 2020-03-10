@@ -15,7 +15,7 @@ class ConstScreen {
   static double sizeSmall = 10.0;
   static double sizeMedium = 15.0;
   static double sizeLarge = 20.0;
-  static double sizeXL = 30.0;
+  static double sizeXL = 35.0;
   static double sizeXXL = 40.0;
   static double sizeXXXL = 50.0;
 
@@ -61,7 +61,7 @@ class ConstScreen {
     sizeSmall = ScreenUtil().setWidth(10.0);
     sizeMedium = ScreenUtil().setWidth(15.0);
     sizeLarge = ScreenUtil().setWidth(20.0);
-    sizeXL = ScreenUtil().setWidth(30.0);
+    sizeXL = ScreenUtil().setWidth(35.0);
     sizeXXL = ScreenUtil().setWidth(40.0);
     sizeXXXL = ScreenUtil().setWidth(50.0);
 

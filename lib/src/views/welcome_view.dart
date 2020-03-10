@@ -16,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(imageAddress + 'welcome_wall.jpg'),
+              image: AssetImage(KImageAddress + 'welcome_wall.jpg'),
               fit: BoxFit.cover,
             ),
           ),
@@ -43,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
                   Expanded(
                     flex: 8,
                     child: IconInstacop(
-                      textSize: FontSize.setTextSize(100),
+                      textSize: FontSize.setTextSize(80),
                     ),
                   ),
                   SizedBox(
@@ -62,7 +62,9 @@ class WelcomeScreen extends StatelessWidget {
                   new ButtonTap(
                     text: "Start Browsing",
                     isSelected: false,
-                    function: () {},
+                    function: () {
+                      Navigator.pushNamed(context, 'customer_home_screen');
+                    },
                   )
                 ],
               ),

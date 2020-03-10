@@ -1,1 +1,1 @@
-const imageAddress = 'lib/src/assets/images/';
+const KImageAddress = 'lib/src/assets/images/';
