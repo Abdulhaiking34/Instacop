@@ -3,7 +3,8 @@ import 'package:instacop/src/Views/welcome_view.dart';
 import 'package:instacop/src/views/homePage/customer/cartPage/cart_view.dart';
 import 'package:instacop/src/views/homePage/customer/customer_home_view.dart';
 import 'package:instacop/src/views/homePage/customer/homePage/cus_home_view.dart';
-import 'package:instacop/src/views/homePage/customer/homePage/detail_banner_view.dart';
+import 'package:instacop/src/views/homePage/customer/homePage/detail_product_view.dart';
+import 'package:instacop/src/views/homePage/customer/homePage/product_list_view.dart';
 import 'package:instacop/src/views/homePage/customer/profilePage/profile_view.dart';
 import 'package:instacop/src/views/homePage/customer/searchPage/search_view.dart';
 import 'package:instacop/src/views/homePage/customer/wishlistPage/wishlist_view.dart';
@@ -27,4 +28,5 @@ var routes = {
   'customer_cart_page': (context) => CartView(),
   'customer_profile_page': (context) => ProfileView(),
   'customer_detail_banner_screen': (context) => ProductListView(),
+  'customer_detail_product_screen': (context) => DetailProductView(),
 };

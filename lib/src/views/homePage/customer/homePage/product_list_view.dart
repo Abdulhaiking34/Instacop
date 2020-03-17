@@ -71,7 +71,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
                       crossAxisCount: 2,
                       crossAxisSpacing: ConstScreen.setSize(30),
                       mainAxisSpacing: ConstScreen.setSize(40),
-                      childAspectRatio: 69 / 120,
+                      childAspectRatio: 70 / 110,
                       children: <Widget>[
                         ProductCard(
                           productName: 'Hoodies COR',
@@ -79,7 +79,8 @@ class _DetailBannerScreenState extends State<ProductListView> {
                           price: 100000,
                           salePrice: 9999,
                           onTap: () {
-                            print('TAP');
+                            Navigator.pushNamed(
+                                context, 'customer_detail_product_screen');
                           },
                         ),
                         ProductCard(
