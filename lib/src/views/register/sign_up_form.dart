@@ -23,7 +23,7 @@ class _SignUpViewState extends State<SignUpView> {
           onValueChange: (value) {},
         ),
         SizedBox(
-          height: ConstScreen.setSize(18),
+          height: ConstScreen.setSizeHeight(18),
         ),
         Row(
           children: <Widget>[
@@ -36,7 +36,7 @@ class _SignUpViewState extends State<SignUpView> {
               ),
             ),
             SizedBox(
-              width: ConstScreen.setSize(20),
+              width: ConstScreen.setSizeHeight(20),
             ),
             Expanded(
               flex: 4,
@@ -46,9 +46,9 @@ class _SignUpViewState extends State<SignUpView> {
                     BoxDecoration(border: Border.all(color: Colors.black54)),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    top: ConstScreen.setSize(6),
-                    bottom: ConstScreen.setSize(6),
-                    left: ConstScreen.setSize(6),
+                    top: ConstScreen.setSizeHeight(6),
+                    bottom: ConstScreen.setSizeHeight(6),
+                    left: ConstScreen.setSizeHeight(6),
                   ),
                   child: Center(
                     child: DropdownButton(
@@ -73,7 +73,7 @@ class _SignUpViewState extends State<SignUpView> {
           ],
         ),
         SizedBox(
-          height: ConstScreen.setSize(18),
+          height: ConstScreen.setSizeHeight(18),
         ),
         //TODO: Email
         InputText(
@@ -81,7 +81,7 @@ class _SignUpViewState extends State<SignUpView> {
           onValueChange: (value) {},
         ),
         SizedBox(
-          height: ConstScreen.setSize(18),
+          height: ConstScreen.setSizeHeight(18),
         ),
         //TODO: Password
         InputText(
@@ -90,7 +90,7 @@ class _SignUpViewState extends State<SignUpView> {
           onValueChange: (value) {},
         ),
         SizedBox(
-          height: ConstScreen.setSize(18),
+          height: ConstScreen.setSizeHeight(18),
         ),
         //TODO: Confirm Password
         InputText(
@@ -99,7 +99,7 @@ class _SignUpViewState extends State<SignUpView> {
           onValueChange: (value) {},
         ),
         SizedBox(
-          height: ConstScreen.setSize(25),
+          height: ConstScreen.setSizeHeight(25),
         ),
         CusRaisedButton(
           backgroundColor: kColorBlack,

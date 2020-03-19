@@ -56,8 +56,8 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView> {
         ),
         // Logo
         Positioned(
-          top: ConstScreen.setSize(30),
-          left: ConstScreen.setSize(270),
+          top: ConstScreen.setSizeHeight(30),
+          left: ConstScreen.setSizeHeight(270),
           child: IconInstacop(
             textSize: FontSize.setTextSize(60),
           ),
@@ -115,8 +115,8 @@ class Banner extends StatelessWidget {
                   border: Border.all(color: kColorWhite, width: 2)),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: ConstScreen.setSize(5),
-                    horizontal: ConstScreen.setSize(60)),
+                    vertical: ConstScreen.setSizeHeight(5),
+                    horizontal: ConstScreen.setSizeHeight(60)),
                 child: Text('View',
                     style: TextStyle(
                         fontSize: FontSize.setTextSize(40),

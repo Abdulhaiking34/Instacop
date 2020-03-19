@@ -50,27 +50,27 @@ class _DetailBannerScreenState extends State<ProductListView> {
                 children: <Widget>[
                   // Wallpaper
                   Container(
-                    height: ConstScreen.setSize(450),
+                    height: ConstScreen.setSizeHeight(450),
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage(KImageAddress + 'banner_8.jpg'),
                             fit: BoxFit.fill)),
                   ),
                   SizedBox(
-                    height: ConstScreen.setSize(60),
+                    height: ConstScreen.setSizeHeight(60),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: ConstScreen.setSize(30),
-                      right: ConstScreen.setSize(30),
-                      bottom: ConstScreen.setSize(30),
+                      left: ConstScreen.setSizeHeight(30),
+                      right: ConstScreen.setSizeHeight(30),
+                      bottom: ConstScreen.setSizeHeight(30),
                     ),
                     child: GridView.count(
                       shrinkWrap: true,
                       physics: ScrollPhysics(),
                       crossAxisCount: 2,
-                      crossAxisSpacing: ConstScreen.setSize(30),
-                      mainAxisSpacing: ConstScreen.setSize(40),
+                      crossAxisSpacing: ConstScreen.setSizeHeight(30),
+                      mainAxisSpacing: ConstScreen.setSizeHeight(40),
                       childAspectRatio: 70 / 110,
                       children: <Widget>[
                         ProductCard(

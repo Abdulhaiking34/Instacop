@@ -42,8 +42,8 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                        vertical: ConstScreen.setSize(65),
-                        horizontal: ConstScreen.setSize(65)),
+                        vertical: ConstScreen.setSizeHeight(65),
+                        horizontal: ConstScreen.setSizeHeight(65)),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,

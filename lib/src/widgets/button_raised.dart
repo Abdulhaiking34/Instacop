@@ -24,8 +24,8 @@ class _CusRaisedButtonState extends State<CusRaisedButton> {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      height: ConstScreen.setSize(widget.height),
-      minWidth: ConstScreen.setSize(widget.width),
+      height: ConstScreen.setSizeHeight(widget.height),
+      minWidth: ConstScreen.setSizeHeight(widget.width),
       color: widget.backgroundColor,
       child: Text(
         widget.title,

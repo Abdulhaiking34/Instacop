@@ -32,10 +32,10 @@ class WelcomeScreen extends StatelessWidget {
             ),
             child: Padding(
               padding: EdgeInsets.fromLTRB(
-                  ConstScreen.setSize(20),
-                  ConstScreen.setSize(20),
-                  ConstScreen.setSize(20),
-                  ConstScreen.setSize(90)),
+                  ConstScreen.setSizeHeight(20),
+                  ConstScreen.setSizeHeight(20),
+                  ConstScreen.setSizeHeight(20),
+                  ConstScreen.setSizeHeight(90)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -47,7 +47,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: ConstScreen.setSize(100),
+                    height: ConstScreen.setSizeHeight(100),
                   ),
                   new ButtonTap(
                     text: 'Sign Up / Sign In',
@@ -57,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(
-                    height: ConstScreen.setSize(25),
+                    height: ConstScreen.setSizeHeight(25),
                   ),
                   new ButtonTap(
                     text: "Start Browsing",

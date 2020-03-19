@@ -42,7 +42,11 @@ class ConstScreen {
   static EdgeInsets spacingAllDefault = EdgeInsets.all(sizeDefault);
   static EdgeInsets spacingAllSmall = EdgeInsets.all(sizeSmall);
 
-  static double setSize(double size) {
+  static double setSizeHeight(double size) {
+    return ScreenUtil().setHeight(size);
+  }
+
+  static double setSizeWidth(double size) {
     return ScreenUtil().setWidth(size);
   }
 

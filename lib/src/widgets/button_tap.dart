@@ -11,7 +11,7 @@ class ButtonTap extends StatelessWidget {
     return FlatButton(
       onPressed: function,
       child: Container(
-        height: ConstScreen.setSize(85),
+        height: ConstScreen.setSizeHeight(85),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: isSelected ? Colors.white : null,

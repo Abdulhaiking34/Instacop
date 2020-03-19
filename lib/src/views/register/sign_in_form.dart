@@ -21,7 +21,7 @@ class _SignInViewState extends State<SignInView> {
           onValueChange: (value) {},
         ),
         SizedBox(
-          height: ConstScreen.setSize(18),
+          height: ConstScreen.setSizeHeight(18),
         ),
         //TODO: Password
         InputText(
@@ -31,7 +31,7 @@ class _SignInViewState extends State<SignInView> {
         ),
         //TODO: Button Sign In
         SizedBox(
-          height: ConstScreen.setSize(20),
+          height: ConstScreen.setSizeHeight(20),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,7 +39,7 @@ class _SignInViewState extends State<SignInView> {
             //TODO: Admin
             Expanded(
               child: MaterialButton(
-                height: ConstScreen.setSize(90),
+                height: ConstScreen.setSizeHeight(90),
                 color: isAdmin ? kColorBlack : kColorWhite,
                 child: Text(
                   'MANAGER',
@@ -55,7 +55,7 @@ class _SignInViewState extends State<SignInView> {
             //TODO: Customer
             Expanded(
               child: MaterialButton(
-                height: ConstScreen.setSize(90),
+                height: ConstScreen.setSizeHeight(90),
                 color: isAdmin ? kColorWhite : kColorBlack,
                 child: Text(
                   'CUSTOMER',
@@ -72,7 +72,7 @@ class _SignInViewState extends State<SignInView> {
         ),
 
         SizedBox(
-          height: ConstScreen.setSize(25),
+          height: ConstScreen.setSizeHeight(25),
         ),
         CusRaisedButton(
           backgroundColor: kColorBlack,

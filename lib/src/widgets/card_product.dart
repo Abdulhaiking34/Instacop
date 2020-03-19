@@ -42,7 +42,7 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: ConstScreen.setSize(5),
+            height: ConstScreen.setSizeHeight(5),
           ),
           // Product Title
           Text(
