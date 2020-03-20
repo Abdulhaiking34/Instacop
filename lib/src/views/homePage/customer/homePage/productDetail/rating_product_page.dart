@@ -13,3 +13,18 @@ class _RatingProductPageState extends State<RatingProductPage> {
     return Container();
   }
 }
+
+//RatingBar(
+//allowHalfRating: true,
+//initialRating: ratingValue,
+//itemCount: 5,
+//minRating: 0,
+//itemSize: ConstScreen.setSizeHeight(55),
+//itemBuilder: (context, _) => Icon(
+//Icons.star,
+//color: Colors.amberAccent,
+//),
+//onRatingUpdate: (rating) {
+//ratingValue = rating;
+//},
+//),

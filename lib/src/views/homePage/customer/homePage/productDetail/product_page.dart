@@ -13,8 +13,55 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  List sizeList = ['S', 'M', 'L', 'XL'];
+  List colorList = [];
+  String sizeValue;
   double ratingValue = 0.5;
   bool isLoveCheck = true;
+  bool isTest = false;
+  int isColorFocus = 1;
+  List<ColorInfo> listColorPicker = [];
+  List<Color> listColor = [
+    kColorWhite,
+    kColorBlack,
+    kColorRed,
+    kColorBlue,
+    kColorYellow,
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    int i = 1;
+    for (var value in listColor) {
+      listColorPicker.add(ColorInfo(id: i, color: value));
+      i++;
+    }
+  }
+
+  // Create Color Picker Bar
+  Widget renderColorBar() {
+    List<Widget> listWidget = [];
+    for (var value in listColorPicker) {
+      listWidget.add(Padding(
+        padding: EdgeInsets.only(left: ConstScreen.setSizeWidth(8)),
+        child: ColorPicker(
+          color: value.color,
+          isCheck: isColorFocus == value.id,
+          onTap: () {
+            setState(() {
+              isColorFocus = value.id;
+            });
+          },
+        ),
+      ));
+    }
+    return Row(
+      children: listWidget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -44,6 +91,7 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                 ],
               ),
+              // Close Button
               Positioned(
                 child: IconButton(
                   color: kColorBlack,
@@ -52,6 +100,23 @@ class _ProductPageState extends State<ProductPage> {
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.close),
+                ),
+              ),
+              // Wistlist IconButton
+              Positioned(
+                left: ConstScreen.setSizeWidth(660),
+                top: ConstScreen.setSizeHeight(5),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isLoveCheck = !isLoveCheck;
+                    });
+                  },
+                  icon: Icon(
+                    isLoveCheck ? Icons.favorite : Icons.favorite_border,
+                    color: isLoveCheck ? kColorRed : kColorBlack,
+                    size: ConstScreen.setSizeHeight(60),
+                  ),
                 ),
               )
             ],
@@ -62,18 +127,53 @@ class _ProductPageState extends State<ProductPage> {
             color: kColorWhite,
             width: ConstScreen.setSizeWidth(750),
             child: Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 0, left: 15, right: 15),
+              padding: EdgeInsets.only(top: 8, bottom: 0, left: 10, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   // Product name
-                  Text(
-                    'PacSun Rommelo Hooded Flannel Shirt',
-                    style: TextStyle(
-                      fontSize: FontSize.setTextSize(40),
-                      fontWeight: FontWeight.w800,
-                      color: kColorBlack,
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 8,
+                        child: Text(
+                          'PacSun Rommelo Hooded Flannel Shirt',
+                          style: TextStyle(
+                            fontSize: FontSize.setTextSize(40),
+                            fontWeight: FontWeight.w800,
+                            color: kColorBlack,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: kColorBlack)),
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.all(ConstScreen.setSizeWidth(7)),
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.yellowAccent,
+                                    size: ConstScreen.setSizeWidth(38),
+                                  ),
+                                  Text(
+                                    '4.5',
+                                    style: TextStyle(
+                                        fontSize: FontSize.setTextSize(32),
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(
                     height: 5,
@@ -104,20 +204,37 @@ class _ProductPageState extends State<ProductPage> {
                   SizedBox(
                     height: ConstScreen.setSizeHeight(5),
                   ),
-                  // Rating Bar
-                  RatingBar(
-                    allowHalfRating: true,
-                    initialRating: ratingValue,
-                    itemCount: 5,
-                    minRating: 0,
-                    itemSize: ConstScreen.setSizeHeight(55),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amberAccent,
-                    ),
-                    onRatingUpdate: (rating) {
-                      ratingValue = rating;
-                    },
+                  // Color and Size Picker
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 4,
+                        child: renderColorBar(),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButton(
+                          style: TextStyle(fontSize: FontSize.s30),
+                          value: sizeValue,
+                          hint: Text('Select size'),
+                          onChanged: (value) {
+                            setState(() {
+                              sizeValue = value;
+                            });
+                          },
+                          items: sizeList.map((value) {
+                            return DropdownMenuItem(
+                              child: Text(
+                                'Size ' + value,
+                                style: TextStyle(
+                                    color: kColorBlack, fontSize: FontSize.s30),
+                              ),
+                              value: value,
+                            );
+                          }).toList(),
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(
                     height: ConstScreen.setSizeHeight(20),
@@ -135,23 +252,6 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ),
                       // Button add product to Wishlist
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isLoveCheck = !isLoveCheck;
-                            });
-                          },
-                          icon: Icon(
-                            isLoveCheck
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: isLoveCheck ? kColorRed : kColorBlack,
-                            size: ConstScreen.setSizeHeight(60),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ],
@@ -159,6 +259,39 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ColorPicker extends StatelessWidget {
+  ColorPicker({this.isCheck = false, this.onTap, this.color});
+  final bool isCheck;
+  final Function onTap;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        onTap();
+      },
+      child: Container(
+        height: ConstScreen.setSizeHeight(55),
+        width: ConstScreen.setSizeWidth(55),
+        decoration: BoxDecoration(
+            border: (color == kColorWhite)
+                ? Border.all(color: kColorBlack, width: 1)
+                : Border.all(color: isCheck ? kColorBlack : color, width: 2),
+            borderRadius: BorderRadius.circular(180),
+            color: color),
+        child: Center(
+            child: isCheck
+                ? Icon(
+                    Icons.check,
+                    size: ConstScreen.setSizeWidth(35),
+                    color: (color == kColorBlack) ? kColorWhite : kColorBlack,
+                  )
+                : null),
       ),
     );
   }
