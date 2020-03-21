@@ -99,7 +99,8 @@ class _ProductPageState extends State<ProductPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: Icon(Icons.close),
+                  icon: Icon(Icons.arrow_back_ios,
+                      size: ConstScreen.setSizeWidth(40)),
                 ),
               ),
               // Wistlist IconButton
@@ -135,7 +136,7 @@ class _ProductPageState extends State<ProductPage> {
                   Row(
                     children: <Widget>[
                       Expanded(
-                        flex: 8,
+                        flex: 14,
                         child: Text(
                           'PacSun Rommelo Hooded Flannel Shirt',
                           style: TextStyle(
@@ -146,26 +147,25 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: Center(
                           child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: kColorBlack)),
                             child: Padding(
                               padding:
                                   EdgeInsets.all(ConstScreen.setSizeWidth(7)),
                               child: Column(
                                 children: <Widget>[
                                   Icon(
-                                    Icons.star,
-                                    color: Colors.yellowAccent,
-                                    size: ConstScreen.setSizeWidth(38),
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: ConstScreen.setSizeWidth(40),
                                   ),
                                   Text(
-                                    '4.5',
+                                    '1190',
                                     style: TextStyle(
-                                        fontSize: FontSize.setTextSize(32),
-                                        fontWeight: FontWeight.bold),
+                                        fontSize: FontSize.s30,
+                                        fontWeight: FontWeight.bold,
+                                        color: kColorBlack),
                                   ),
                                 ],
                               ),
