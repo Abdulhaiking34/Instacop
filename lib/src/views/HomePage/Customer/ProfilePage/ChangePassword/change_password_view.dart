@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 
 class ChangePasswordView extends StatefulWidget {
@@ -32,15 +33,16 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             SizedBox(
               height: ConstScreen.setSizeHeight(60),
             ),
+            //TODO: Current password
             InputText(
               title: 'Current password',
               isPassword: true,
-              errorText: 'invalid password',
               onValueChange: () {},
             ),
             SizedBox(
               height: ConstScreen.setSizeHeight(13),
             ),
+            //TODO: New password
             InputText(
               title: 'New password',
               isPassword: true,
@@ -49,11 +51,21 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             SizedBox(
               height: ConstScreen.setSizeHeight(13),
             ),
+            //TODO: Confirm new password
             InputText(
-              title: 'Comfirm new password',
+              title: 'Confirm new password',
               isPassword: true,
               onValueChange: () {},
             ),
+            SizedBox(
+              height: ConstScreen.setSizeHeight(20),
+            ),
+            //TODO: Change password Button
+            CusRaisedButton(
+              title: 'Save',
+              backgroundColor: kColorBlack,
+              onPress: () {},
+            )
           ],
         ),
       ),
