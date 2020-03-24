@@ -25,13 +25,14 @@ class RatingComment extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            // Username + RatingBar
+            //TODO: Username + RatingBar
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 AutoSizeText(
                   username,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: FontSize.s25, fontWeight: FontWeight.bold),
                   maxLines: 1,
                   minFontSize: 14,
                   overflow: TextOverflow.ellipsis,
@@ -60,7 +61,7 @@ class RatingComment extends StatelessWidget {
               child: AutoSizeText(
                 comment,
                 minFontSize: 14,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: FontSize.s23),
                 maxLines: 100,
                 overflow: TextOverflow.ellipsis,
               ),

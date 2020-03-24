@@ -154,7 +154,7 @@ class _RatingProductPageState extends State<RatingProductPage> {
                                             // Button Add
                                             Expanded(
                                               child: CusRaisedButton(
-                                                title: 'Add',
+                                                title: 'ADD',
                                                 onPress: () {
                                                   Navigator.pop(context);
                                                 },
@@ -168,7 +168,7 @@ class _RatingProductPageState extends State<RatingProductPage> {
                                             // Button Add
                                             Expanded(
                                               child: CusRaisedButton(
-                                                title: 'Cancel',
+                                                title: 'CANCEL',
                                                 onPress: () {
                                                   Navigator.pop(context);
                                                 },

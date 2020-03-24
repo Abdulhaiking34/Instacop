@@ -3,12 +3,13 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 
 class CusRaisedButton extends StatefulWidget {
-  CusRaisedButton(
-      {this.backgroundColor,
-      @required this.title,
-      this.onPress,
-      this.width = 650,
-      this.height = 80});
+  CusRaisedButton({
+    this.backgroundColor,
+    @required this.title,
+    this.onPress,
+    this.width = 650,
+    this.height = 80,
+  });
 
   final Color backgroundColor;
   final String title;
@@ -23,6 +24,7 @@ class CusRaisedButton extends StatefulWidget {
 class _CusRaisedButtonState extends State<CusRaisedButton> {
   @override
   Widget build(BuildContext context) {
+    ConstScreen.setScreen(context);
     return MaterialButton(
       height: ConstScreen.setSizeHeight(widget.height),
       minWidth: ConstScreen.setSizeHeight(widget.width),
@@ -30,7 +32,7 @@ class _CusRaisedButtonState extends State<CusRaisedButton> {
       child: Text(
         widget.title,
         style: TextStyle(
-            fontSize: FontSize.setTextSize(30),
+            fontSize: FontSize.s27,
             color: (widget.backgroundColor == kColorBlack)
                 ? kColorWhite
                 : kColorBlack),

@@ -59,6 +59,7 @@ class _InputTextState extends State<InputText> {
               color: (widget.errorText != '') ? kColorBlack : kColorRed),
         ),
       ),
+//      style: TextStyle(fontSize: FontSize.s30),
       obscureText: isShowPassword,
       onChanged: (value) {
         widget.onValueChange(value);
