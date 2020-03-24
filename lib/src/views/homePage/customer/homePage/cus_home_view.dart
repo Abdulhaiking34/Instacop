@@ -56,8 +56,8 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView> {
         ),
         // Logo
         Positioned(
-          top: ConstScreen.setSizeHeight(30),
-          left: ConstScreen.setSizeHeight(270),
+          top: 0,
+          left: ConstScreen.setSizeWidth(255),
           child: IconInstacop(
             textSize: FontSize.setTextSize(60),
           ),
