@@ -26,7 +26,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
           centerTitle: true,
           title: Text(
             'NEW PAGE',
-            style: kValueTextStyle.copyWith(fontSize: FontSize.s36),
+            style: kBoldTextStyle.copyWith(fontSize: FontSize.s36),
           ),
           actions: <Widget>[
             IconButton(

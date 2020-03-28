@@ -23,7 +23,9 @@ class _ProfileViewState extends State<ProfileView> {
             title: 'Detail',
             backgroundColor: kColorWhite,
             height: 100,
-            onPress: () {},
+            onPress: () {
+              Navigator.pushNamed(context, 'customer_detail_screen');
+            },
           ),
           //TODO: Change password
           CusRaisedButton(
@@ -36,17 +38,21 @@ class _ProfileViewState extends State<ProfileView> {
           ),
           //TODO: Order and bill
           CusRaisedButton(
-            title: 'Orders & Bill',
+            title: 'Orders History',
             backgroundColor: kColorWhite,
             height: 100,
-            onPress: () {},
+            onPress: () {
+              Navigator.pushNamed(context, 'customer_order_detail_screen');
+            },
           ),
           //TODO: Bank Account
           CusRaisedButton(
             title: 'Bank Account',
             backgroundColor: kColorWhite,
             height: 100,
-            onPress: () {},
+            onPress: () {
+              Navigator.pushNamed(context, 'custommer_bank_account_screen');
+            },
           ),
           // TODO: Sign Out
           CusRaisedButton(

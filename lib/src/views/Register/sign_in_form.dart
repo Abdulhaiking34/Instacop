@@ -14,6 +14,7 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         //TODO: Username
         InputText(
@@ -43,7 +44,9 @@ class _SignInViewState extends State<SignInView> {
                 color: isAdmin ? kColorBlack : kColorWhite,
                 child: Text(
                   'MANAGER',
-                  style: TextStyle(color: isAdmin ? kColorWhite : kColorBlack),
+                  style: TextStyle(
+                      color: isAdmin ? kColorWhite : kColorBlack,
+                      fontSize: FontSize.s30),
                 ),
                 onPressed: () {
                   setState(() {
@@ -59,7 +62,9 @@ class _SignInViewState extends State<SignInView> {
                 color: isAdmin ? kColorWhite : kColorBlack,
                 child: Text(
                   'CUSTOMER',
-                  style: TextStyle(color: isAdmin ? kColorBlack : kColorWhite),
+                  style: TextStyle(
+                      color: isAdmin ? kColorBlack : kColorWhite,
+                      fontSize: FontSize.s30),
                 ),
                 onPressed: () {
                   setState(() {

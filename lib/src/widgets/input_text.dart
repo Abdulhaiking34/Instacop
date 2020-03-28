@@ -8,13 +8,19 @@ class InputText extends StatefulWidget {
       {this.errorText,
       @required this.title,
       this.isPassword = false,
+      this.isNumber = false,
+      this.inputType = TextInputType.text,
       @required this.icon,
-      this.onValueChange});
+      this.onValueChange,
+      this.hintText = ''});
+  final bool isNumber;
+  final TextInputType inputType;
   final String errorText;
   final String title;
   final bool isPassword;
   final IconData icon;
   final Function onValueChange;
+  final String hintText;
   @override
   _InputTextState createState() => _InputTextState();
 }
@@ -35,9 +41,12 @@ class _InputTextState extends State<InputText> {
     ConstScreen.setScreen(context);
     return TextField(
       decoration: InputDecoration(
+        hintText: widget.hintText,
+        hintStyle: kBoldTextStyle.copyWith(
+            fontSize: FontSize.s28, fontWeight: FontWeight.w200),
         labelText: widget.title,
         focusColor: Colors.black,
-        labelStyle: kValueTextStyle.copyWith(fontSize: FontSize.s30),
+        labelStyle: kBoldTextStyle.copyWith(fontSize: FontSize.s30),
         errorText: widget.errorText,
         suffixIcon: widget.isPassword
             ? GestureDetector(
@@ -61,6 +70,7 @@ class _InputTextState extends State<InputText> {
       ),
       style: TextStyle(fontSize: FontSize.s28),
       obscureText: isShowPassword,
+      keyboardType: widget.inputType,
       onChanged: (value) {
         widget.onValueChange(value);
       },

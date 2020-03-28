@@ -31,6 +31,7 @@ class _RegisterViewState extends State<RegisterView> {
             ], begin: Alignment.topCenter),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
                 child: Container(
@@ -43,10 +44,10 @@ class _RegisterViewState extends State<RegisterView> {
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                         vertical: ConstScreen.setSizeHeight(65),
-                        horizontal: ConstScreen.setSizeHeight(65)),
+                        horizontal: ConstScreen.setSizeHeight(50)),
                     child: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
                             _isSignIn ? 'Sign In' : 'Register',

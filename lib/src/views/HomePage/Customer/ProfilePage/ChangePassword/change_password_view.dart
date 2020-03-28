@@ -16,9 +16,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     ConstScreen.setScreen(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           'Change My Password',
-          style: kValueTextStyle.copyWith(
+          style: kBoldTextStyle.copyWith(
             fontSize: FontSize.setTextSize(32),
           ),
         ),

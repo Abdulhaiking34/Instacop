@@ -33,8 +33,8 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
               iconTheme: IconThemeData.fallback(),
               title: Text(
                 tabsTitle[indexScreen],
-                style: kValueTextStyle.copyWith(
-                    fontSize: FontSize.setTextSize(32)),
+                style:
+                    kBoldTextStyle.copyWith(fontSize: FontSize.setTextSize(32)),
               ),
               centerTitle: true,
               actions: <Widget>[
