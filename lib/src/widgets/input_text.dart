@@ -47,7 +47,7 @@ class _InputTextState extends State<InputText> {
         labelText: widget.title,
         focusColor: Colors.black,
         labelStyle: kBoldTextStyle.copyWith(fontSize: FontSize.s30),
-        errorText: widget.errorText,
+        errorText: (widget.errorText == '') ? null : widget.errorText,
         suffixIcon: widget.isPassword
             ? GestureDetector(
                 child: Icon(isShowPassword

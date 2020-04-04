@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/widgets/card_product_order.dart';
+import 'package:instacop/src/widgets/widget_title.dart';
 
 class OrderInfoView extends StatefulWidget {
   @override
@@ -81,7 +83,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
             ),
             //TODO: List Product
             ProductOrderDetail(
-              name: 'Planel Bape x Supreme Planel Bape x Supreme ',
+              name: 'Planel Bape x Supreme Supreme Planel ',
               price: '500,000',
               quantity: 1,
               subTotal: '500,000',
@@ -92,114 +94,40 @@ class _OrderInfoViewState extends State<OrderInfoView> {
               quantity: 1,
               subTotal: '500,000',
             ),
-            ProductOrderDetail(
-              name: 'Planel Bape x Supreme',
-              price: '500,000',
-              quantity: 1,
-              subTotal: '500,000',
+
+            Container(
+              color: kColorLightGrey,
+              height: ConstScreen.setSizeHeight(70),
+              child: Padding(
+                padding: EdgeInsets.only(left: ConstScreen.setSizeWidth(30)),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: AutoSizeText(
+                    'Shipping Address',
+                    maxLines: 1,
+                    minFontSize: 10,
+                    style: kBoldTextStyle.copyWith(
+                        fontSize: FontSize.setTextSize(32), color: kColorBlue),
+                  ),
+                ),
+              ),
+            ),
+            //TODO: Shipping Address
+            Padding(
+              padding: EdgeInsets.only(
+                  top: ConstScreen.setSizeHeight(10),
+                  left: ConstScreen.setSizeHeight(27)),
+              child: AutoSizeText(
+                'Cai Dau, Chau Phu, An Giang',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                minFontSize: 10,
+                style: kBoldTextStyle.copyWith(
+                    fontSize: FontSize.s30, color: kColorBlack),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProductOrderDetail extends StatelessWidget {
-  ProductOrderDetail({
-    this.name = '',
-    this.price = '',
-    this.quantity = 0,
-    this.subTotal = '',
-  });
-
-  final String name;
-  final String price;
-  final int quantity;
-  final String subTotal;
-  @override
-  Widget build(BuildContext context) {
-    ConstScreen.setScreen(context);
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: kColorBlack.withOpacity(0.2),
-            width: ConstScreen.setSizeWidth(4),
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(
-            bottom: ConstScreen.setSizeHeight(15),
-            left: ConstScreen.setSizeHeight(27)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // TODO: Product name
-            TitleWidget(
-              title: 'Product Name: ',
-              content: name,
-              isSpaceBetween: false,
-            ),
-            //TODO: Price
-            TitleWidget(
-              title: 'Price: ',
-              content: '$price VND',
-              isSpaceBetween: false,
-            ),
-            //TODO: Quantity
-            TitleWidget(
-              title: 'Quantity: ',
-              content: quantity.toString(),
-              isSpaceBetween: false,
-            ),
-            //TODO: SubTotal
-            TitleWidget(
-              title: 'SubTotal: ',
-              content: '$subTotal VND',
-              isSpaceBetween: false,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class TitleWidget extends StatelessWidget {
-  TitleWidget({this.title = '', this.content = '', this.isSpaceBetween = true});
-
-  final String title;
-  final String content;
-  final bool isSpaceBetween;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: ConstScreen.setSizeHeight(10),
-          horizontal: ConstScreen.setSizeWidth(25)),
-      child: Row(
-        mainAxisAlignment: isSpaceBetween
-            ? MainAxisAlignment.spaceBetween
-            : MainAxisAlignment.start,
-        children: <Widget>[
-          AutoSizeText(
-            title,
-            maxLines: 1,
-            minFontSize: 10,
-            style: kBoldTextStyle.copyWith(
-                fontSize: FontSize.s30, color: kColorBlack.withOpacity(0.5)),
-          ),
-          AutoSizeText(
-            content,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            minFontSize: 10,
-            style: kBoldTextStyle.copyWith(
-                fontSize: FontSize.s30, color: kColorBlack),
-          ),
-        ],
       ),
     );
   }

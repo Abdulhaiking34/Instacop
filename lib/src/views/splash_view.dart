@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/widgets/icon_instacop.dart';
 
@@ -27,7 +26,6 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, height: 1334, width: 750);
     ConstScreen.setScreen(context);
     return MaterialApp(
       home: Scaffold(

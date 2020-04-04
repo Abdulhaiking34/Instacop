@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
-import 'package:instacop/src/views/register/sign_in_form.dart';
-import 'package:instacop/src/views/register/sign_up_form.dart';
+import 'package:instacop/src/views/Register/SignIn/sign_in_form.dart';
+import 'package:instacop/src/views/Register/SignUp/sign_up_form.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
-import 'package:instacop/src/widgets/icon_instacop.dart';
 
 class RegisterView extends StatefulWidget {
   @override

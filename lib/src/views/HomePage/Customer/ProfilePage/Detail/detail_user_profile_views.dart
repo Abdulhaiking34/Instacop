@@ -174,6 +174,7 @@ class _DetailProfileViewState extends State<DetailProfileView> {
                 height: ConstScreen.setSizeHeight(20),
               ),
               CusRaisedButton(
+                height: 90,
                 title: 'Save',
                 backgroundColor: kColorBlack,
                 onPress: () {},

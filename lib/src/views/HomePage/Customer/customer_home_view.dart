@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/views/homePage/customer/homePage/cus_home_view.dart';
 import 'package:instacop/src/views/homePage/customer/profilePage/profile_view.dart';
 import 'package:instacop/src/views/homePage/customer/searchPage/search_view.dart';
@@ -14,7 +15,6 @@ class CustomerHomeView extends StatefulWidget {
 }
 
 class _CustomerHomeViewState extends State<CustomerHomeView> {
-  int indexScreen = 0;
   final tabsScreen = [
     CustomerHomePageView(),
     SearchView(),
@@ -22,6 +22,22 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
     ProfileView(),
   ];
   final tabsTitle = [' ', 'Search', 'Wishlist', 'Profile'];
+  int indexScreen = 0;
+  bool _isLogging;
+
+  @override
+  initState() {
+    // TODO: implement initState
+    StorageUtil.getAccountType().then((bool value) {
+      if (value != null) {
+        _isLogging = value;
+      } else {
+        _isLogging = false;
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -57,9 +73,14 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
         selectedItemColor: kColorBlack,
         currentIndex: indexScreen,
         onTap: (index) {
-          setState(() {
-            indexScreen = index;
-          });
+          print('onTap ' + _isLogging.toString());
+          if (_isLogging == false && index > 1) {
+            Navigator.pushNamed(context, 'register_screen');
+          } else {
+            setState(() {
+              indexScreen = index;
+            });
+          }
         },
         items: [
           BottomNavigationBarItem(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/views/Register/SignIn/sign_in_controller.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 
@@ -10,25 +11,40 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
-  bool isAdmin = false;
+  bool _isAdmin = false;
+  SignInController signInController = new SignInController();
+  String _email = '';
+  String _password = '';
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         //TODO: Username
-        InputText(
-          title: 'Email',
-          onValueChange: (value) {},
+        StreamBuilder(
+          stream: signInController.emailStream,
+          builder: (context, snapshot) => InputText(
+            title: 'Email',
+            errorText: snapshot.hasError ? snapshot.error : '',
+            onValueChange: (value) {
+              _email = value;
+            },
+          ),
         ),
         SizedBox(
           height: ConstScreen.setSizeHeight(18),
         ),
         //TODO: Password
-        InputText(
-          title: 'Password',
-          isPassword: true,
-          onValueChange: (value) {},
+        StreamBuilder(
+          stream: signInController.passwordStream,
+          builder: (context, snapshot) => InputText(
+            title: 'Password',
+            isPassword: true,
+            errorText: snapshot.hasError ? snapshot.error : '',
+            onValueChange: (value) {
+              _password = value;
+            },
+          ),
         ),
         //TODO: Button Sign In
         SizedBox(
@@ -41,16 +57,16 @@ class _SignInViewState extends State<SignInView> {
             Expanded(
               child: MaterialButton(
                 height: ConstScreen.setSizeHeight(90),
-                color: isAdmin ? kColorBlack : kColorWhite,
+                color: _isAdmin ? kColorBlack : kColorWhite,
                 child: Text(
                   'MANAGER',
                   style: TextStyle(
-                      color: isAdmin ? kColorWhite : kColorBlack,
+                      color: _isAdmin ? kColorWhite : kColorBlack,
                       fontSize: FontSize.s30),
                 ),
                 onPressed: () {
                   setState(() {
-                    isAdmin = true;
+                    _isAdmin = true;
                   });
                 },
               ),
@@ -59,16 +75,16 @@ class _SignInViewState extends State<SignInView> {
             Expanded(
               child: MaterialButton(
                 height: ConstScreen.setSizeHeight(90),
-                color: isAdmin ? kColorWhite : kColorBlack,
+                color: _isAdmin ? kColorWhite : kColorBlack,
                 child: Text(
                   'CUSTOMER',
                   style: TextStyle(
-                      color: isAdmin ? kColorBlack : kColorWhite,
+                      color: _isAdmin ? kColorBlack : kColorWhite,
                       fontSize: FontSize.s30),
                 ),
                 onPressed: () {
                   setState(() {
-                    isAdmin = false;
+                    _isAdmin = false;
                   });
                 },
               ),
@@ -82,7 +98,15 @@ class _SignInViewState extends State<SignInView> {
         CusRaisedButton(
           backgroundColor: kColorBlack,
           title: 'SIGN IN',
-          onPress: () {},
+          onPress: () {
+            signInController.onSubmitSignIn(
+                email: _email, password: _password, isAdmin: _isAdmin);
+//            if (_isAdmin) {
+//              Navigator.pushNamed(context, 'admin_home_screen');
+//            } else {
+//              Navigator.pushNamed(context, 'customer_home_screen');
+//            }
+          },
         )
       ],
     );
