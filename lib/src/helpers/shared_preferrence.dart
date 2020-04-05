@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:instacop/src/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageUtil {
@@ -50,17 +53,32 @@ class StorageUtil {
   }
 
   //TODO: SET Account Type
-  static Future<void> setAccountType(bool value) async {
+  static Future<void> setAccountType(String value) async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
-    _preferences.setBool('isAdmin', value);
+    _preferences.setString('accountType', value);
   }
 
   //TODO: GET Account Type
-  static Future<bool> getAccountType() async {
+  static Future<String> getAccountType() async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
-    return _preferences.getBool('isAdmin');
+    return _preferences.getString('accountType');
   }
 
+  //TODO: Set User info
+  static Future<void> setUserInfo(User user) async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    return _preferences.setString('UserInfo', jsonEncode(user.toJson()));
+  }
+
+  //TODO: get User info
+  static Future<User> getUserInfo() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    User user =
+        new User.fromJson(jsonDecode(preferences.getString('UserInfo')));
+    return user;
+  }
+
+  //TODO: Clear Data
   static Future<void> clear() async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
     _preferences.clear();

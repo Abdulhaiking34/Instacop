@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/widgets/icon_instacop.dart';
 
 class SplashView extends StatefulWidget {
@@ -12,16 +13,36 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     delay().then((onValue) {
-      if (onValue) {
+      if (onValue == '') {
         Navigator.pushNamed(context, 'welcome_screen');
       }
     });
   }
 
-  Future<bool> delay() async {
+  Future<String> delay() async {
     await Future.delayed(Duration(seconds: 3));
-    return true;
+//    try {
+//      StorageUtil.getIsLogging().then((islogging) {
+//        if (islogging) {
+//          print(islogging);
+//        StorageUtil.getAccountType().then((accountType) {
+//          if (accountType == 'admin') {
+//            print('admin');
+////            Navigator.pushNamed(context, 'admin_home_screen');
+//          } else if (accountType == 'customer') {
+//            print('customer');
+////            Navigator.pushNamed(context, 'customer_home_screen');
+//          }
+//        });
+//      } else {
+//        print('geust');
+////        Navigator.pushNamed(context, 'welcome_screen');
+//        }
+//      });
+//    } catch (e) {}
+    return '';
   }
 
   @override

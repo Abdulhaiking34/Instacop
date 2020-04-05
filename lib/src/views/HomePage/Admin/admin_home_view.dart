@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/widgets/box_dashboard.dart';
 import 'package:instacop/src/widgets/card_dashboard.dart';
 
@@ -35,6 +36,7 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                 onTap: () {},
                 child: GestureDetector(
                   onTap: () {
+                    StorageUtil.clear();
                     Navigator.pushNamed(context, 'welcome_screen');
                   },
                   child: Text(

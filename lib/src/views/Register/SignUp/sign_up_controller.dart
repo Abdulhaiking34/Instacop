@@ -4,7 +4,9 @@ import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/helpers/validator.dart';
+import 'package:instacop/src/model/user.dart';
 
 class SignUpController {
   StreamController _isFullNameController = new StreamController();
@@ -79,11 +81,19 @@ class SignUpController {
           'phone': '',
           'address': '',
           'create_at': createAt,
-          'id_scripe': ''
+          'id_scripe': '',
+          'type': 'customer',
         });
+        User userInfo = new User(fullName, email, password, '', '', '', '',
+            createAt, '', 'customer');
+        StorageUtil.setUid(user.uid);
+        StorageUtil.setFullName(fullName);
+        await StorageUtil.setIsLogging(true);
+        StorageUtil.setUserInfo(userInfo);
+        StorageUtil.setAccountType('customer');
+        return true;
       } catch (e) {
         _isEmailController.sink.addError('The email address is already in use');
-        return;
       }
     }
   }

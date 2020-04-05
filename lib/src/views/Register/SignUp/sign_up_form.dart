@@ -184,13 +184,17 @@ class _SignUpViewState extends State<SignUpView> {
         CusRaisedButton(
           backgroundColor: kColorBlack,
           title: 'REGISTER',
-          onPress: () {
-            signUpController.onSubmitRegister(
+          onPress: () async {
+            bool result = await signUpController.onSubmitRegister(
                 fullName: _fullName,
                 email: _email,
                 password: _password,
                 confirmPwd: _confirmPwd);
-//            signUpController.dispose();
+
+            if (result) {
+              Navigator.pushNamed(context, 'customer_home_screen');
+              signUpController.dispose();
+            }
           },
         ),
       ],

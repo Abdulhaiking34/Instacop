@@ -28,7 +28,7 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
   @override
   initState() {
     // TODO: implement initState
-    StorageUtil.getAccountType().then((bool value) {
+    StorageUtil.getIsLogging().then((bool value) {
       if (value != null) {
         _isLogging = value;
       } else {

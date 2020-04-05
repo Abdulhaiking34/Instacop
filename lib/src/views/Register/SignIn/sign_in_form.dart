@@ -98,14 +98,14 @@ class _SignInViewState extends State<SignInView> {
         CusRaisedButton(
           backgroundColor: kColorBlack,
           title: 'SIGN IN',
-          onPress: () {
-            signInController.onSubmitSignIn(
+          onPress: () async {
+            var result = await signInController.onSubmitSignIn(
                 email: _email, password: _password, isAdmin: _isAdmin);
-//            if (_isAdmin) {
-//              Navigator.pushNamed(context, 'admin_home_screen');
-//            } else {
-//              Navigator.pushNamed(context, 'customer_home_screen');
-//            }
+            print('Screen' + result.toString());
+            if (result != '') {
+              Navigator.pushNamed(context, result);
+              SignInController().dispose();
+            }
           },
         )
       ],

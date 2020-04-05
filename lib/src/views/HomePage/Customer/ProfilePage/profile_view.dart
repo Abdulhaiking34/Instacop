@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 
 class ProfileView extends StatefulWidget {
@@ -60,6 +61,7 @@ class _ProfileViewState extends State<ProfileView> {
             backgroundColor: kColorBlack,
             height: 100,
             onPress: () {
+              StorageUtil.clear();
               Navigator.pushNamed(context, 'welcome_screen');
             },
           ),
