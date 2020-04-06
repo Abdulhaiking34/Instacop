@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
@@ -141,10 +142,13 @@ class _RatingProductPageState extends State<RatingProductPage> {
                                         flex: 10,
                                         child: TextField(
                                           decoration: InputDecoration(
-                                              border: OutlineInputBorder()),
+                                              border: OutlineInputBorder(),
+                                              labelStyle:
+                                                  kBoldTextStyle.copyWith(
+                                                      fontSize: FontSize.s30)),
                                           keyboardType: TextInputType.multiline,
                                           maxLines: null,
-                                          onChanged: (comment) {},
+                                          onChanged: (description) {},
                                         ),
                                       ),
                                       Expanded(

@@ -68,40 +68,96 @@ class _SearchViewState extends State<SearchView> {
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
+              //TODO: Clothing
               ExpansionTile(
-                title: Text('Clothing',
+                title: Text('CLOTHING',
                     style: TextStyle(
-                        fontSize: FontSize.setTextSize(34),
+                        fontSize: FontSize.setTextSize(32),
                         fontWeight: FontWeight.w400)),
                 children: <Widget>[
                   CategoryItem(
-                    title: 'Demin',
+                    title: 'Hoodies & Sweatshirts',
+                    onTap: () {},
                   ),
                   CategoryItem(
-                    title: 'Coats',
+                    title: 'Shirts',
+                    onTap: () {},
                   ),
                   CategoryItem(
                     title: 'Jacket',
-                  )
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Shorts',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Pants',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Jeans',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Joggers',
+                    onTap: () {},
+                  ),
                 ],
               ),
+              //TODO: Shoes
               ExpansionTile(
                 title: Text(
-                  'Sale',
+                  'SHOES',
                   style: TextStyle(
-                      fontSize: FontSize.setTextSize(34),
-                      color: kColorRed,
+                      fontSize: FontSize.setTextSize(32),
+                      color: kColorBlack,
                       fontWeight: FontWeight.w400),
                 ),
                 children: <Widget>[
                   CategoryItem(
-                    title: 'Demin',
+                    title: 'Athletic Shoes',
+                    onTap: () {},
                   ),
                   CategoryItem(
-                    title: 'Coats',
+                    title: 'Causual Shoes',
+                    onTap: () {},
                   ),
                   CategoryItem(
-                    title: 'Jacket',
+                    title: 'Sandals & Slides',
+                    onTap: () {},
+                  )
+                ],
+              ),
+              //TODO: Accessories
+              ExpansionTile(
+                title: Text(
+                  'ACCESSORIES',
+                  style: TextStyle(
+                      fontSize: FontSize.setTextSize(32),
+                      color: kColorBlack,
+                      fontWeight: FontWeight.w400),
+                ),
+                children: <Widget>[
+                  CategoryItem(
+                    title: 'Hats',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Backpacks',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Sunglasses',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Belts',
+                    onTap: () {},
+                  ),
+                  CategoryItem(
+                    title: 'Watches',
+                    onTap: () {},
                   )
                 ],
               ),

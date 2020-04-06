@@ -108,7 +108,9 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       color: kColorBlue,
                       icon: FontAwesomeIcons.productHunt,
                       value: '250',
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.pushNamed(context, 'admin_home_product');
+                      },
                     ),
                   ),
                   Expanded(
