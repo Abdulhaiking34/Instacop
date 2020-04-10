@@ -10,9 +10,10 @@ class InputText extends StatefulWidget {
       this.isPassword = false,
       this.isNumber = false,
       this.inputType = TextInputType.text,
-      @required this.icon,
+      @required this.icon = null,
       this.onValueChange,
-      this.hintText = ''});
+      this.hintText = '',
+      this.controller});
   final bool isNumber;
   final TextInputType inputType;
   final String errorText;
@@ -21,6 +22,7 @@ class InputText extends StatefulWidget {
   final IconData icon;
   final Function onValueChange;
   final String hintText;
+  final TextEditingController controller;
   @override
   _InputTextState createState() => _InputTextState();
 }
@@ -40,6 +42,7 @@ class _InputTextState extends State<InputText> {
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return TextField(
+      controller: widget.controller,
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: kBoldTextStyle.copyWith(
@@ -59,10 +62,7 @@ class _InputTextState extends State<InputText> {
                   });
                 },
               )
-            : Icon(
-                Icons.title,
-                color: Colors.white,
-              ),
+            : null,
         border: OutlineInputBorder(
           borderSide: BorderSide(
               color: (widget.errorText != '') ? kColorBlack : kColorRed),

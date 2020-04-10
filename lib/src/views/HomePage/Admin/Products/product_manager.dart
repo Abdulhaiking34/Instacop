@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
@@ -8,6 +10,7 @@ import 'package:instacop/src/model/categogy.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/model/clothingSize.dart';
+import 'package:instacop/src/views/HomePage/Admin/Products/product_manager_controller.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -18,18 +21,28 @@ class ProductManager extends StatefulWidget {
 }
 
 class _ProductManagerState extends State<ProductManager> {
-  List<Asset> images = List<Asset>();
-  String _error = 'No Error Dectected';
+  ProductManagerController _controller = new ProductManagerController();
   List<String> category = ['Clothings', 'Shoes', 'Accessories'];
   List<String> sizeType = ['None', 'Top', 'Bottom', 'Shoes'];
-  String mainCategory = 'Main Category';
-  String subCategory = 'Sub Category';
-  String sizeTypeValue = 'Choosing type';
   int indexSubCategory = 1;
   int indexSizeType = 0;
+  String mainCategory = 'Clothings';
+
+  final _nameController = new TextEditingController();
+  final _priceController = new TextEditingController();
+  final _salePriceController = new TextEditingController();
+  final _brandController = new TextEditingController();
+  final _madeInController = new TextEditingController();
+  final _quantityController = new TextEditingController();
+  final _descriptionController = new TextEditingController();
+  List<Asset> images = List<Asset>();
+  String subCategory = 'Choosing Category';
+  String sizeTypeValue = 'Choosing type';
+  List<String> sizeList = [];
+  List<String> colorList = [];
 
   //TODO: Image product holder
-  Widget buildGridView() {
+  Widget imageGridView() {
     return GridView.count(
       crossAxisCount: 3,
       shrinkWrap: true,
@@ -50,8 +63,6 @@ class _ProductManagerState extends State<ProductManager> {
   //TODO: load multi image
   Future<void> loadAssets() async {
     List<Asset> resultList = List<Asset>();
-    String error = 'No Error Dectected';
-
     try {
       resultList = await MultiImagePicker.pickImages(
         maxImages: 300,
@@ -59,21 +70,18 @@ class _ProductManagerState extends State<ProductManager> {
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
         materialOptions: MaterialOptions(
-          actionBarColor: "#abcdef",
-          actionBarTitle: "Example App",
+          actionBarColor: "#000000",
+          actionBarTitle: "Pick Product Image",
           allViewTitle: "All Photos",
           useDetailsView: false,
           selectCircleStrokeColor: "#000000",
         ),
       );
-    } on Exception catch (e) {
-      error = e.toString();
-    }
+    } on Exception catch (e) {}
     if (!mounted) return;
 
     setState(() {
       images = resultList;
-      _error = error;
     });
   }
 
@@ -140,30 +148,34 @@ class _ProductManagerState extends State<ProductManager> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-            vertical: ConstScreen.setSizeHeight(30),
+            vertical: ConstScreen.setSizeHeight(40),
             horizontal: ConstScreen.setSizeWidth(20)),
         child: ListView(
-          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
           children: <Widget>[
             //TODO: Product name
-            InputText(
-              title: 'Product Name',
-              inputType: TextInputType.text,
-              onValueChange: (value) {},
+            StreamBuilder(
+              stream: _controller.productNameStream,
+              builder: (context, snapshot) => InputText(
+                title: 'Product Name',
+                controller: _nameController,
+                errorText: snapshot.hasError ? snapshot.error : '',
+                inputType: TextInputType.text,
+              ),
             ),
             SizedBox(
               height: ConstScreen.sizeMedium,
             ),
             //TODO: Image product
             Text(
-              'Image Product:',
+              'Product Images:',
               style:
                   kBoldTextStyle.copyWith(fontSize: FontSize.setTextSize(34)),
             ),
             SizedBox(
               height: ConstScreen.sizeMedium,
             ),
-            buildGridView(),
+            imageGridView(),
             RaisedButton(
               child: Text(
                 "Pick images",
@@ -171,12 +183,16 @@ class _ProductManagerState extends State<ProductManager> {
               ),
               onPressed: loadAssets,
             ),
-            Center(
-                child: Text(
-              'Error: $_error',
-              style: kBoldTextStyle.copyWith(
-                  fontSize: FontSize.s28, color: kColorRed),
-            )),
+            //TODO: Image Error
+            StreamBuilder(
+              stream: _controller.productImageStream,
+              builder: (context, snapshot) => Center(
+                  child: Text(
+                snapshot.hasError ? 'Error: ' + snapshot.error : '',
+                style: kBoldTextStyle.copyWith(
+                    fontSize: FontSize.s28, color: kColorRed),
+              )),
+            ),
 
             //TODO: Category
             Row(
@@ -205,7 +221,7 @@ class _ProductManagerState extends State<ProductManager> {
                     onChanged: (value) {
                       setState(() {
                         mainCategory = value;
-                        subCategory = 'SubCategory Chossing';
+                        subCategory = 'Chossing Category';
                         switch (mainCategory) {
                           case 'Main Category':
                             indexSubCategory = 0;
@@ -248,8 +264,15 @@ class _ProductManagerState extends State<ProductManager> {
                 ),
               ],
             ),
-            SizedBox(
-              height: ConstScreen.setSizeHeight(20),
+            //TODO: Category Error
+            StreamBuilder(
+              stream: _controller.categoryStream,
+              builder: (context, snapshot) => Center(
+                  child: Text(
+                snapshot.hasError ? 'Error: ' + snapshot.error : '',
+                style: kBoldTextStyle.copyWith(
+                    fontSize: FontSize.s28, color: kColorRed),
+              )),
             ),
             //TODO: Size type
             Row(
@@ -308,7 +331,7 @@ class _ProductManagerState extends State<ProductManager> {
             SizedBox(
               height: ConstScreen.setSizeHeight(20),
             ),
-            //TODO Size & Color Group check
+//            TODO Size & Color Group check
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,15 +342,26 @@ class _ProductManagerState extends State<ProductManager> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        'Size Picker',
+                        'Multi Size Picker',
                         style: kBoldTextStyle.copyWith(fontSize: FontSize.s30),
                       ),
                       CheckboxGroup(
                           labelStyle:
                               kNormalTextStyle.copyWith(fontSize: FontSize.s28),
                           labels: getSizeType(indexSizeType),
-                          onSelected: (List<String> checked) =>
-                              print(checked.toString())),
+                          onSelected: (List<String> checked) {
+                            sizeList = checked;
+                          }),
+                      //TODO: Size Error
+                      StreamBuilder(
+                        stream: _controller.sizeListStream,
+                        builder: (context, snapshot) => Center(
+                            child: Text(
+                          snapshot.hasError ? 'Error: ' + snapshot.error : '',
+                          style: kBoldTextStyle.copyWith(
+                              fontSize: FontSize.s25, color: kColorRed),
+                        )),
+                      ),
                     ],
                   ),
                 ),
@@ -337,15 +371,26 @@ class _ProductManagerState extends State<ProductManager> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        'Color Picker',
+                        'Multi Color Picker',
                         style: kBoldTextStyle.copyWith(fontSize: FontSize.s30),
                       ),
                       CheckboxGroup(
                           labelStyle:
                               kNormalTextStyle.copyWith(fontSize: FontSize.s28),
                           labels: ClothingPickingList.ColorList,
-                          onSelected: (List<String> checked) =>
-                              print(checked.toString())),
+                          onSelected: (List<String> checked) {
+                            colorList = checked;
+                          }),
+                      //TODO: Color Error
+                      StreamBuilder(
+                        stream: _controller.colorListStream,
+                        builder: (context, snapshot) => Center(
+                            child: Text(
+                          snapshot.hasError ? 'Error: ' + snapshot.error : '',
+                          style: kBoldTextStyle.copyWith(
+                              fontSize: FontSize.s25, color: kColorRed),
+                        )),
+                      ),
                     ],
                   ),
                 ),
@@ -354,43 +399,97 @@ class _ProductManagerState extends State<ProductManager> {
             SizedBox(
               height: ConstScreen.sizeMedium,
             ),
+            //TODO: Price and Sale Price
+            Row(
+              children: <Widget>[
+                //TODO: Price
+                Expanded(
+                  flex: 1,
+                  child: StreamBuilder(
+                    stream: _controller.priceStream,
+                    builder: (context, snapshot) => InputText(
+                      title: 'Price',
+                      controller: _priceController,
+                      errorText: snapshot.hasError ? snapshot.error : '',
+                      inputType: TextInputType.number,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: ConstScreen.setSizeWidth(20),
+                ),
+                //TODO: Sale Price
+                Expanded(
+                  flex: 1,
+                  child: StreamBuilder(
+                    stream: _controller.salePriceStream,
+                    builder: (context, snapshot) => InputText(
+                      title: 'Sale Price',
+                      controller: _salePriceController,
+                      errorText: snapshot.hasError ? snapshot.error : '',
+                      inputType: TextInputType.number,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: ConstScreen.sizeMedium,
+            ),
             // TODO: Brand
-            InputText(
-              title: 'Brand',
-              inputType: TextInputType.text,
-              onValueChange: (value) {},
+            StreamBuilder(
+              stream: _controller.brandStream,
+              builder: (context, snapshot) => InputText(
+                title: 'Brand',
+                controller: _brandController,
+                errorText: snapshot.hasError ? snapshot.error : '',
+                inputType: TextInputType.text,
+              ),
             ),
             SizedBox(
               height: ConstScreen.sizeMedium,
             ),
             //TODO: Made In
-            InputText(
-              title: 'Made In',
-              inputType: TextInputType.text,
-              onValueChange: (value) {},
+            StreamBuilder(
+              stream: _controller.madeInStream,
+              builder: (context, snapshot) => InputText(
+                title: 'Made In',
+                controller: _madeInController,
+                errorText: snapshot.hasError ? snapshot.error : '',
+                inputType: TextInputType.text,
+              ),
             ),
             SizedBox(
               height: ConstScreen.sizeMedium,
             ),
-            //TODO: Made In
-            InputText(
-              title: 'Quantity',
-              inputType: TextInputType.number,
-              onValueChange: (value) {},
+            //TODO: Quantity
+            StreamBuilder(
+              stream: _controller.quantityStream,
+              builder: (context, snapshot) => InputText(
+                title: 'Quantity',
+                controller: _quantityController,
+                errorText: snapshot.hasError ? snapshot.error : '',
+                inputType: TextInputType.number,
+              ),
             ),
             SizedBox(
               height: ConstScreen.sizeMedium,
             ),
             //TODO: Description
-            TextField(
-              decoration: InputDecoration(
+            StreamBuilder(
+              stream: _controller.descriptionStream,
+              builder: (context, snapshot) => TextField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Description',
                   focusColor: Colors.black,
-                  labelStyle: kBoldTextStyle.copyWith(fontSize: FontSize.s30)),
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              onChanged: (comment) {},
+                  labelStyle: kBoldTextStyle.copyWith(fontSize: FontSize.s30),
+                  errorText: snapshot.hasError ? snapshot.error : null,
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+              ),
             ),
           ],
         ),
@@ -405,7 +504,30 @@ class _ProductManagerState extends State<ProductManager> {
           child: CusRaisedButton(
             title: 'Add Product',
             backgroundColor: kColorBlack,
-            onPress: () {},
+            onPress: () async {
+              bool result = await _controller.onAddProduct(
+                  productName: _nameController.text,
+                  imageList: images,
+                  category: subCategory,
+                  sizeList: sizeList,
+                  colorList: colorList,
+                  price: _priceController.text,
+                  salePrice: _salePriceController.text,
+                  brand: _brandController.text,
+                  madeIn: _madeInController.text,
+                  quantity: _quantityController.text,
+                  description: _descriptionController.text,
+                  sizeType: sizeTypeValue);
+              if (result) {
+                SnackBar snackBar = SnackBar(
+                  content: Text('Product was added.'),
+                );
+              } else {
+                SnackBar snackBar = SnackBar(
+                  content: Text('Error.'),
+                );
+              }
+            },
           ),
         ),
       ),

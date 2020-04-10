@@ -5,9 +5,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 
 class ProductPage extends StatefulWidget {
+  ProductPage({this.product});
+  final Product product;
   @override
   _ProductPageState createState() => _ProductPageState();
 }
@@ -34,10 +37,11 @@ class _ProductPageState extends State<ProductPage> {
     // TODO: implement initState
     super.initState();
     int i = 1;
-    for (var value in listColor) {
-      listColorPicker.add(ColorInfo(id: i, color: value));
+    for (var value in widget.product.colorList) {
+      listColorPicker.add(ColorInfo(id: i, color: Color(value)));
       i++;
     }
+    sizeList = widget.product.sizeList;
   }
 
   // Create Color Picker Bar
@@ -69,29 +73,22 @@ class _ProductPageState extends State<ProductPage> {
       height: double.infinity,
       child: Column(
         children: <Widget>[
-          // TOP
+          //TODO: TOP
           Stack(
             children: <Widget>[
               CarouselSlider(
                 height: ConstScreen.setSizeHeight(800),
                 scrollDirection: Axis.horizontal,
                 viewportFraction: 1.0,
-                items: <Widget>[
-                  Container(
+                items: widget.product.imageList.map((image) {
+                  return Container(
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(KImageAddress + 'banner_2.jpg'),
-                            fit: BoxFit.fill)),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(KImageAddress + 'banner_2.jpg'),
-                            fit: BoxFit.fill)),
-                  ),
-                ],
+                            image: NetworkImage(image), fit: BoxFit.fill)),
+                  );
+                }).toList(),
               ),
-              // Close Button
+              //TODO: Close Button
               Positioned(
                 child: IconButton(
                   color: kColorBlack,
@@ -103,7 +100,7 @@ class _ProductPageState extends State<ProductPage> {
                       size: ConstScreen.setSizeWidth(40)),
                 ),
               ),
-              // Wistlist IconButton
+              //TODO: Wistlist IconButton
               Positioned(
                 left: ConstScreen.setSizeWidth(660),
                 top: ConstScreen.setSizeHeight(5),
@@ -132,13 +129,13 @@ class _ProductPageState extends State<ProductPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Product name
+                  //TODO: Product name
                   Row(
                     children: <Widget>[
                       Expanded(
                         flex: 14,
                         child: Text(
-                          'PacSun Rommelo Hooded Flannel Shirt',
+                          widget.product.productName,
                           style: TextStyle(
                             fontSize: FontSize.setTextSize(40),
                             fontWeight: FontWeight.w800,
@@ -178,23 +175,27 @@ class _ProductPageState extends State<ProductPage> {
                   SizedBox(
                     height: 5,
                   ),
-                  // Price
+                  //TODO: Price
                   Row(
                     children: <Widget>[
-                      // Price
+                      //TODO: Price
                       Text(
-                        '29.90 USD',
+                        widget.product.price + ' USD',
                         style: TextStyle(
                             fontSize: FontSize.setTextSize(34),
                             color: kColorBlack,
-                            decoration: TextDecoration.lineThrough),
+                            decoration: (widget.product.salePrice != '0')
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none),
                       ),
                       SizedBox(
                         width: ConstScreen.setSizeHeight(20),
                       ),
-                      // Sale Price
+                      //TODO: Sale Price
                       Text(
-                        '29.90 USD',
+                        (widget.product.salePrice != '0')
+                            ? widget.product.salePrice + ' USD'
+                            : '',
                         style: TextStyle(
                             fontSize: FontSize.setTextSize(34),
                             color: kColorRed),
@@ -204,7 +205,7 @@ class _ProductPageState extends State<ProductPage> {
                   SizedBox(
                     height: ConstScreen.setSizeHeight(5),
                   ),
-                  // Color and Size Picker
+                  //TODO: Color and Size Picker
                   Row(
                     children: <Widget>[
                       Expanded(

@@ -3,13 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/model/product.dart';
 
 class DetailOfProductPage extends StatefulWidget {
+  DetailOfProductPage({this.product});
+  final Product product;
   @override
   _DetailOfProductPageState createState() => _DetailOfProductPageState();
 }
 
 class _DetailOfProductPageState extends State<DetailOfProductPage> {
+  String description = '';
+  String brand = '';
+  String madeIn = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    description = widget.product.description;
+    brand = widget.product.brand;
+    madeIn = widget.product.madeIn;
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -50,7 +65,7 @@ class _DetailOfProductPageState extends State<DetailOfProductPage> {
                     children: <Widget>[
                       // Description
                       AutoSizeText(
-                        'PacSun Exclusive! Add more stripes to your rotation courtesy of GUESS. The Hillshurt Logo Stripe T-Shirt has horizontal stripes all over and an embroidered GUESS logo at the center of the chest. PacSun Exclusive! Add more stripes to your rotation courtesy of GUESS. The Hillshurt Logo Stripe T-Shirt has horizontal stripes all over and an embroidered GUESS logo at the center of the chest.',
+                        description,
                         style: TextStyle(fontSize: 18),
                         minFontSize: 14,
                         maxLines: 15,
@@ -61,7 +76,7 @@ class _DetailOfProductPageState extends State<DetailOfProductPage> {
                         height: ConstScreen.setSizeHeight(10),
                       ),
                       AutoSizeText(
-                        'Brand: Supreme.\nMade in: Japan.',
+                        'Brand: $brand.\nMade in: $madeIn.',
                         style: TextStyle(fontSize: 18),
                         minFontSize: 14,
                         maxLines: 2,

@@ -1,14 +1,16 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/rating_comment_card.dart';
 
 class RatingProductPage extends StatefulWidget {
+  RatingProductPage({this.product});
+  final Product product;
   @override
   _RatingProductPageState createState() => _RatingProductPageState();
 }
@@ -48,7 +50,7 @@ class _RatingProductPageState extends State<RatingProductPage> {
                         // Rating Bar
                         RatingBar(
                           allowHalfRating: true,
-                          initialRating: 5,
+                          initialRating: widget.product.rating,
                           itemCount: 5,
                           minRating: 0,
                           itemSize: ConstScreen.setSizeHeight(55),

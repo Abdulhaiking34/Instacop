@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,8 +16,29 @@ class AdminHomeView extends StatefulWidget {
 }
 
 class _AdminHomeViewState extends State<AdminHomeView> {
+  String _userCount = '0';
+  String _productCount = '0';
+  String orderCount = '0';
+  loadNumberDashboard() {
+    //TODO: User
+    Firestore.instance.collection('Users').getDocuments().then((onValue) {
+      setState(() {
+        _userCount = onValue.documents.length.toString();
+      });
+    });
+    //TODO:Order
+    //TODO: Product
+    Firestore.instance.collection('Products').getDocuments().then((onValue) {
+      setState(() {
+        _productCount = onValue.documents.length.toString();
+      });
+    });
+    //TODO:Sold
+  }
+
   @override
   Widget build(BuildContext context) {
+    loadNumberDashboard();
     ConstScreen.setScreen(context);
     return Scaffold(
       appBar: AppBar(
@@ -78,7 +100,7 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       title: 'Users',
                       color: kColorBlue,
                       icon: FontAwesomeIcons.users,
-                      value: '50',
+                      value: _userCount,
                       onPress: () {},
                     ),
                   ),
@@ -107,7 +129,7 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       title: 'Product',
                       color: kColorBlue,
                       icon: FontAwesomeIcons.productHunt,
-                      value: '250',
+                      value: _productCount,
                       onPress: () {
                         Navigator.pushNamed(context, 'admin_home_product');
                       },

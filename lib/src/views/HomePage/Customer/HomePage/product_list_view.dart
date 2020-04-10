@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/widgets/card_product.dart';
+
+import 'ProductDetail/main_detail_product_view.dart';
 
 class ProductListView extends StatefulWidget {
 //  ProductListView({this.title});
@@ -56,48 +58,61 @@ class _DetailBannerScreenState extends State<ProductListView> {
                     right: ConstScreen.setSizeHeight(30),
                     bottom: ConstScreen.setSizeHeight(30),
                   ),
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    physics: ScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: ConstScreen.setSizeHeight(30),
-                    mainAxisSpacing: ConstScreen.setSizeHeight(40),
-                    childAspectRatio: 70 / 110,
-                    children: <Widget>[
-                      ProductCard(
-                        productName:
-                            'Hoodies COR Hoodies COR Hoodies CORHoodies COR',
-                        image: 'hoodie_1.jpg',
-                        price: 10000000,
-                        salePrice: 9999999,
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, 'customer_detail_product_screen');
-                        },
-                      ),
-                      ProductCard(
-                        productName: 'Hoodies COR',
-                        image: 'hoodie_1.jpg',
-                        price: 100000,
-                        salePrice: 0,
-                        onTap: () {},
-                      ),
-                      ProductCard(
-                        productName: 'Hoodies COR',
-                        image: 'hoodie_1.jpg',
-                        price: 100000,
-                        salePrice: 9999,
-                        onTap: () {},
-                      ),
-                      ProductCard(
-                        productName: 'Hoodies COR',
-                        image: 'hoodie_1.jpg',
-                        price: 100000,
-                        salePrice: 9999,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream:
+                          Firestore.instance.collection('Products').snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text('Loading...');
+                        } else {
+                          return GridView.count(
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: ConstScreen.setSizeHeight(30),
+                            mainAxisSpacing: ConstScreen.setSizeHeight(40),
+                            childAspectRatio: 6.8 / 10,
+                            children: snapshot.data.documents
+                                .map((DocumentSnapshot document) {
+                              return ProductCard(
+                                productName: document['name'],
+                                image: document['image'][0],
+                                price: int.parse(document['price']),
+                                salePrice: (document['sale_price'] != '0')
+                                    ? int.parse(document['sale_price'])
+                                    : 0,
+                                onTap: () {
+                                  Product product = new Product(
+                                    id: document['id'],
+                                    productName: document['name'],
+                                    imageList: document['image'],
+                                    category: document['category'],
+                                    sizeList: document['size'],
+                                    colorList: document['color'],
+                                    price: document['price'],
+                                    salePrice: document['sale_price'],
+                                    brand: document['brand'],
+                                    madeIn: document['made_in'],
+                                    quantity: document['quantity'],
+                                    description: document['description'],
+                                    rating: document['rating'],
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          MainDetailProductView(
+                                        product: product,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          );
+                        }
+                      }),
                 )
               ],
             ),
