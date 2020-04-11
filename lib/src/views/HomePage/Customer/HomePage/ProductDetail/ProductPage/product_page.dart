@@ -1,12 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:instacop/link.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/model/product.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/ProductPage/product_controller.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/image_product_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class ProductPage extends StatefulWidget {
   ProductPage({this.product});
@@ -16,11 +21,11 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  ProgressDialog pr;
   List sizeList = ['S', 'M', 'L', 'XL'];
   List colorList = [];
-  String sizeValue;
   double ratingValue = 0.5;
-  bool isLoveCheck = true;
+  bool isLoveCheck = false;
   bool isTest = false;
   int isColorFocus = 1;
   List<ColorInfo> listColorPicker = [];
@@ -31,6 +36,10 @@ class _ProductPageState extends State<ProductPage> {
     kColorBlue,
     kColorYellow,
   ];
+  ProductController _controller = new ProductController();
+  //TODO: value
+  int colorValue;
+  String sizeValue;
 
   @override
   void initState() {
@@ -42,9 +51,11 @@ class _ProductPageState extends State<ProductPage> {
       i++;
     }
     sizeList = widget.product.sizeList;
+    colorValue = listColorPicker.elementAt(0).color.value;
+    print(widget.product.category);
   }
 
-  // Create Color Picker Bar
+  //TODO: Create Color Picker Bar
   Widget renderColorBar() {
     List<Widget> listWidget = [];
     for (var value in listColorPicker) {
@@ -57,6 +68,8 @@ class _ProductPageState extends State<ProductPage> {
             setState(() {
               isColorFocus = value.id;
             });
+            //TODO: color value pick
+            colorValue = value.color.value;
           },
         ),
       ));
@@ -81,10 +94,26 @@ class _ProductPageState extends State<ProductPage> {
                 scrollDirection: Axis.horizontal,
                 viewportFraction: 1.0,
                 items: widget.product.imageList.map((image) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(image), fit: BoxFit.fill)),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ImageProductView(
+                                    image: image,
+                                  )));
+                    },
+                    child: CachedNetworkImage(
+                      width: double.infinity,
+                      imageUrl: image,
+                      fit: BoxFit.fitHeight,
+                      placeholder: (context, url) => Container(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                   );
                 }).toList(),
               ),
@@ -107,8 +136,41 @@ class _ProductPageState extends State<ProductPage> {
                 child: IconButton(
                   onPressed: () {
                     setState(() {
-                      isLoveCheck = !isLoveCheck;
+                      isLoveCheck = true;
                     });
+//                    if (!isLoveCheck) {
+//                      _controller
+//                          .addProductToWishlist(product: widget.product)
+//                          .then((value) {
+//                        if (value) {
+//                          setState(() {
+//                            isLoveCheck = true;
+//                          });
+//                          Scaffold.of(context).showSnackBar(SnackBar(
+//                            backgroundColor: kColorWhite,
+//                            content: Row(
+//                              children: <Widget>[
+//                                Icon(
+//                                  Icons.check,
+//                                  color: kColorGreen,
+//                                  size: ConstScreen.setSizeWidth(50),
+//                                ),
+//                                SizedBox(
+//                                  width: ConstScreen.setSizeWidth(20),
+//                                ),
+//                                Expanded(
+//                                  child: Text(
+//                                    'Product has been add to Wishlist.',
+//                                    style: kBoldTextStyle.copyWith(
+//                                        fontSize: FontSize.s28),
+//                                  ),
+//                                )
+//                              ],
+//                            ),
+//                          ));
+//                        }
+//                      });
+//                    }
                   },
                   icon: Icon(
                     isLoveCheck ? Icons.favorite : Icons.favorite_border,
@@ -214,45 +276,121 @@ class _ProductPageState extends State<ProductPage> {
                       ),
                       Expanded(
                         flex: 2,
-                        child: DropdownButton(
-                          style: TextStyle(fontSize: FontSize.s30),
-                          value: sizeValue,
-                          hint: Text('Select size'),
-                          onChanged: (value) {
-                            setState(() {
-                              sizeValue = value;
-                            });
-                          },
-                          items: sizeList.map((value) {
-                            return DropdownMenuItem(
-                              child: Text(
-                                'Size ' + value,
-                                style: TextStyle(
-                                    color: kColorBlack, fontSize: FontSize.s30),
-                              ),
-                              value: value,
-                            );
-                          }).toList(),
-                        ),
+                        child: StreamBuilder(
+                            stream: _controller.sizeStream,
+                            builder: (context, snapshot) {
+                              return DropdownButton(
+                                isExpanded: true,
+                                style: TextStyle(fontSize: FontSize.s30),
+                                value: sizeValue,
+                                hint: (snapshot.hasError)
+                                    ? Text(
+                                        snapshot.error,
+                                        style: kBoldTextStyle.copyWith(
+                                            color: kColorRed),
+                                      )
+                                    : Text('Select size'),
+                                onChanged: (value) {
+                                  setState(() {
+                                    sizeValue = value;
+                                  });
+                                },
+                                items: sizeList.map((value) {
+                                  return DropdownMenuItem(
+                                    child: Text(
+                                      'Size ' + value,
+                                      style: TextStyle(
+                                          color: kColorBlack,
+                                          fontSize: FontSize.s30),
+                                    ),
+                                    value: value,
+                                  );
+                                }).toList(),
+                              );
+                            }),
                       )
                     ],
                   ),
                   SizedBox(
                     height: ConstScreen.setSizeHeight(20),
                   ),
-                  //Button Add and WistList
+                  //Button Add
                   Row(
                     children: <Widget>[
-                      // Button add product to Cart
+                      //TODO: Button add product to Cart
                       Expanded(
                         flex: 5,
                         child: CusRaisedButton(
                           title: 'ADD',
                           backgroundColor: kColorBlack,
-                          onPress: () {},
+                          onPress: () async {
+                            //TODO: Process Dialog
+                            bool isShow = true;
+                            String messing = 'Please wait...';
+                            pr = new ProgressDialog(context,
+                                type: ProgressDialogType.Normal,
+                                showLogs: true);
+                            pr.show();
+                            pr.update(message: messing);
+                            //TODO: Add product
+                            await _controller
+                                .addProductToCart(
+                                    color: colorValue,
+                                    size: sizeValue,
+                                    product: widget.product)
+                                .then((isComplete) {
+                              pr.hide();
+                              if (isComplete) {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: kColorWhite,
+                                  content: Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.check,
+                                        color: kColorGreen,
+                                        size: ConstScreen.setSizeWidth(50),
+                                      ),
+                                      SizedBox(
+                                        width: ConstScreen.setSizeWidth(20),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          'Product has been add to Your Cart.',
+                                          style: kBoldTextStyle.copyWith(
+                                              fontSize: FontSize.s28),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ));
+                              } else {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: kColorWhite,
+                                  content: Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.error,
+                                        color: kColorRed,
+                                        size: ConstScreen.setSizeWidth(50),
+                                      ),
+                                      SizedBox(
+                                        width: ConstScreen.setSizeWidth(20),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          'Added error.',
+                                          style: kBoldTextStyle.copyWith(
+                                              fontSize: FontSize.s28),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ));
+                              }
+                            });
+                          },
                         ),
                       ),
-                      // Button add product to Wishlist
                     ],
                   ),
                 ],

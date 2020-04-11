@@ -4,7 +4,7 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/detail_product_page.dart';
-import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/product_page.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/ProductPage/product_page.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/rating_product_page.dart';
 
 class MainDetailProductView extends StatefulWidget {
@@ -34,6 +34,7 @@ class _MainDetailProductViewState extends State<MainDetailProductView> {
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
+
     return Scaffold(
       body: SafeArea(child: getPage(indexPage)),
       bottomNavigationBar: SizedBox(

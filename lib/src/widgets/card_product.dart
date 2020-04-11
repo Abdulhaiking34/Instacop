@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -46,10 +47,15 @@ class ProductCard extends StatelessWidget {
               children: <Widget>[
                 // TODO: Product Image
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(image), fit: BoxFit.fill)),
+                  child: CachedNetworkImage(
+                    imageUrl: image,
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) => Container(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
                 SizedBox(

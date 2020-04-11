@@ -87,7 +87,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
                                     id: document['id'],
                                     productName: document['name'],
                                     imageList: document['image'],
-                                    category: document['category'],
+                                    category: document['categogy'],
                                     sizeList: document['size'],
                                     colorList: document['color'],
                                     price: document['price'],

@@ -169,10 +169,9 @@ class ProductManagerController {
     for (var value in asset) {
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
       StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-      int width = 500;
-      int height = ((width * value.originalHeight) / width).round();
-      ByteData byteData =
-          await value.requestThumbnail(width, height, quality: 80);
+//      int width = 500;
+//      int height = ((width * value.originalHeight) / width).round();
+      ByteData byteData = await value.requestOriginal(quality: 70);
       var imageData = byteData.buffer.asUint8List();
       uploadTask = ref.putData(imageData);
       String imageUrl;
