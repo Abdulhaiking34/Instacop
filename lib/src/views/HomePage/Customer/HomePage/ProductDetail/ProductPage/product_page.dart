@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
@@ -14,13 +12,14 @@ import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 class ProductPage extends StatefulWidget {
-  ProductPage({this.product});
+  ProductPage({this.product, Key key}) : super(key: key);
   final Product product;
   @override
   _ProductPageState createState() => _ProductPageState();
 }
 
-class _ProductPageState extends State<ProductPage> {
+class _ProductPageState extends State<ProductPage>
+    with AutomaticKeepAliveClientMixin {
   ProgressDialog pr;
   List sizeList = ['S', 'M', 'L', 'XL'];
   List colorList = [];
@@ -133,51 +132,54 @@ class _ProductPageState extends State<ProductPage> {
               Positioned(
                 left: ConstScreen.setSizeWidth(660),
                 top: ConstScreen.setSizeHeight(5),
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isLoveCheck = true;
-                    });
-//                    if (!isLoveCheck) {
-//                      _controller
-//                          .addProductToWishlist(product: widget.product)
-//                          .then((value) {
-//                        if (value) {
-//                          setState(() {
-//                            isLoveCheck = true;
-//                          });
-//                          Scaffold.of(context).showSnackBar(SnackBar(
-//                            backgroundColor: kColorWhite,
-//                            content: Row(
-//                              children: <Widget>[
-//                                Icon(
-//                                  Icons.check,
-//                                  color: kColorGreen,
-//                                  size: ConstScreen.setSizeWidth(50),
-//                                ),
-//                                SizedBox(
-//                                  width: ConstScreen.setSizeWidth(20),
-//                                ),
-//                                Expanded(
-//                                  child: Text(
-//                                    'Product has been add to Wishlist.',
-//                                    style: kBoldTextStyle.copyWith(
-//                                        fontSize: FontSize.s28),
-//                                  ),
-//                                )
-//                              ],
-//                            ),
-//                          ));
-//                        }
-//                      });
-//                    }
-                  },
-                  icon: Icon(
-                    isLoveCheck ? Icons.favorite : Icons.favorite_border,
-                    color: isLoveCheck ? kColorRed : kColorBlack,
-                    size: ConstScreen.setSizeHeight(60),
-                  ),
-                ),
+                child: StreamBuilder(
+                    stream: _controller.loveWishlistStream,
+                    builder: (context, snapshot) {
+                      return IconButton(
+                        onPressed: () {
+                          if (!isLoveCheck) {
+                            _controller
+                                .addProductToWishlist(product: widget.product)
+                                .then((value) {
+                              if (value) {
+                                setState(() {
+                                  isLoveCheck = true;
+                                });
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: kColorWhite,
+                                  content: Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.check,
+                                        color: kColorGreen,
+                                        size: ConstScreen.setSizeWidth(50),
+                                      ),
+                                      SizedBox(
+                                        width: ConstScreen.setSizeWidth(20),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          'Product has been add to Wishlist.',
+                                          style: kBoldTextStyle.copyWith(
+                                              fontSize: FontSize.s28),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ));
+                              }
+                            });
+                          }
+                        },
+                        icon: Icon(
+                          snapshot.hasData
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: snapshot.hasData ? kColorRed : kColorBlack,
+                          size: ConstScreen.setSizeHeight(60),
+                        ),
+                      );
+                    }),
               )
             ],
           ),
@@ -401,6 +403,10 @@ class _ProductPageState extends State<ProductPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class ColorPicker extends StatelessWidget {

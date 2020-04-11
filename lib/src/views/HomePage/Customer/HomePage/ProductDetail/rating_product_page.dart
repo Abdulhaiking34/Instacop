@@ -9,13 +9,14 @@ import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/rating_comment_card.dart';
 
 class RatingProductPage extends StatefulWidget {
-  RatingProductPage({this.product});
+  RatingProductPage({this.product, Key key}) : super(key: key);
   final Product product;
   @override
   _RatingProductPageState createState() => _RatingProductPageState();
 }
 
-class _RatingProductPageState extends State<RatingProductPage> {
+class _RatingProductPageState extends State<RatingProductPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -232,4 +233,8 @@ class _RatingProductPageState extends State<RatingProductPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

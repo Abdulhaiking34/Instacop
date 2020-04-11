@@ -10,6 +10,7 @@ class ProductController {
 
   Stream get sizeStream => _sizeStreamController.stream;
   Stream get loveWishlistStream => _loveWishlistStreamController.stream;
+
   //TODO: add product to cart
   addProductToCart({
     @required int color,
@@ -76,8 +77,8 @@ class ProductController {
     }).catchError((onError) {
       return false;
     });
-    return true;
     _loveWishlistStreamController.add(true);
+    return true;
   }
 
   void dispose() {

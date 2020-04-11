@@ -6,13 +6,14 @@ import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/model/product.dart';
 
 class DetailOfProductPage extends StatefulWidget {
-  DetailOfProductPage({this.product});
+  DetailOfProductPage({this.product, Key key}) : super(key: key);
   final Product product;
   @override
   _DetailOfProductPageState createState() => _DetailOfProductPageState();
 }
 
-class _DetailOfProductPageState extends State<DetailOfProductPage> {
+class _DetailOfProductPageState extends State<DetailOfProductPage>
+    with AutomaticKeepAliveClientMixin {
   String description = '';
   String brand = '';
   String madeIn = '';
@@ -90,4 +91,8 @@ class _DetailOfProductPageState extends State<DetailOfProductPage> {
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
