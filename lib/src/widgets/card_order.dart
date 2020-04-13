@@ -7,6 +7,7 @@ import 'package:instacop/src/helpers/screen.dart';
 class OrderCard extends StatelessWidget {
   OrderCard(
       {this.id = 0,
+      this.customerName = '',
       this.date = '',
       this.status = '',
       this.total = '',
@@ -14,6 +15,7 @@ class OrderCard extends StatelessWidget {
       this.onCancel,
       this.isEnableCancel = true});
   final int id;
+  final String customerName;
   final String date;
   final String status;
   final String total;
@@ -23,8 +25,7 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: ConstScreen.setSizeHeight(15)),
+    return Card(
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: kColorLightGrey),
@@ -71,6 +72,28 @@ class OrderCard extends StatelessWidget {
                     ),
                     TextSpan(
                       text: date,
+                      style: kNormalTextStyle.copyWith(
+                        fontSize: FontSize.s30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: ConstScreen.setSizeHeight(10),
+              ),
+              //TODO:Customer's Name
+              AutoSizeText.rich(
+                TextSpan(
+                  style: kBoldTextStyle.copyWith(
+                    fontSize: FontSize.s30,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Customer: ',
+                    ),
+                    TextSpan(
+                      text: customerName,
                       style: kNormalTextStyle.copyWith(
                         fontSize: FontSize.s30,
                       ),

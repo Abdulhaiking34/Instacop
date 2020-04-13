@@ -7,6 +7,7 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
 import 'package:instacop/src/widgets/box_dashboard.dart';
 import 'package:instacop/src/widgets/card_dashboard.dart';
 
@@ -59,7 +60,8 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                 child: GestureDetector(
                   onTap: () {
                     StorageUtil.clear();
-                    Navigator.pushNamed(context, 'welcome_screen');
+                    Navigator.pushNamedAndRemoveUntil(context, 'welcome_screen',
+                        (Route<dynamic> route) => false);
                   },
                   child: Text(
                     'Sign out',
@@ -110,7 +112,14 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       color: kColorBlue,
                       icon: FontAwesomeIcons.shoppingCart,
                       value: '19',
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderAndBillView(
+                                      title: 'Order List',
+                                    )));
+                      },
                     ),
                   ),
                 ],
@@ -141,7 +150,14 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       color: kColorBlue,
                       icon: Icons.done_outline,
                       value: '250',
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderAndBillView(
+                                      title: 'Sold Order List',
+                                    )));
+                      },
                     ),
                   ),
                 ],

@@ -23,7 +23,7 @@ class ProductController {
       _sizeStreamController.addError('Picking your clothing size.');
       countError++;
     }
-
+    print(countError);
     //TODO: Add Product to Your Cart
     if (countError == 0) {
       String userUid = await StorageUtil.getUid();
@@ -31,8 +31,8 @@ class ProductController {
       await Firestore.instance
           .collection('Carts')
           .document(userUid)
-          .collection(product.id)
-          .document()
+          .collection(userUid)
+          .document(product.id)
           .setData({
         'id': product.id,
         'name': product.productName,
@@ -51,6 +51,7 @@ class ProductController {
       });
       return true;
     }
+    return null;
   }
 
   //TODO Add product to Wish list
@@ -59,8 +60,8 @@ class ProductController {
     await Firestore.instance
         .collection('Wishlists')
         .document(userUid)
-        .collection(product.id)
-        .document()
+        .collection(userUid)
+        .document(product.id)
         .setData({
       'id': product.id,
       'name': product.productName,

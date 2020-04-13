@@ -12,14 +12,19 @@ class Product {
   String quantity;
   String description;
   double rating;
-
+  String image;
+  String size;
+  int color;
   Product(
       {this.id,
       this.productName,
       this.imageList,
+      this.image,
       this.category,
       this.sizeList,
+      this.size,
       this.colorList,
+      this.color,
       this.price,
       this.salePrice,
       this.brand,

@@ -24,7 +24,8 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
   final tabsTitle = [' ', 'Search', 'Wishlist', 'Profile'];
   int indexScreen = 0;
   bool _isLogging;
-
+  final pageController = PageController();
+  final PageStorageBucket bucket = PageStorageBucket();
   @override
   initState() {
     // TODO: implement initState
@@ -65,7 +66,23 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
               ],
             )
           : null,
-      body: SafeArea(child: tabsScreen[indexScreen]),
+      body: SafeArea(
+          child: PageStorage(
+        bucket: bucket,
+        child: PageView(
+          controller: pageController,
+          onPageChanged: (index) {
+            if (!_isLogging && index > 1) {
+              pageController.jumpToPage(--index);
+            } else {
+              setState(() {
+                indexScreen = index;
+              });
+            }
+          },
+          children: tabsScreen,
+        ),
+      )),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey.shade500,
         selectedFontSize: 1,
@@ -78,6 +95,7 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
             Navigator.pushNamed(context, 'register_screen');
           } else {
             setState(() {
+              pageController.jumpToPage(index);
               indexScreen = index;
             });
           }

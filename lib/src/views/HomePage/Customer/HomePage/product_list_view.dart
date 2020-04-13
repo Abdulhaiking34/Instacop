@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/widgets/card_product.dart';
 
@@ -27,7 +28,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
           backgroundColor: kColorWhite,
           centerTitle: true,
           title: Text(
-            'NEW PAGE',
+            'NEW IN',
             style: kBoldTextStyle.copyWith(fontSize: FontSize.s36),
           ),
           actions: <Widget>[
@@ -36,7 +37,13 @@ class _DetailBannerScreenState extends State<ProductListView> {
                 FontAwesomeIcons.shoppingBag,
               ),
               onPressed: () {
-                Navigator.pushNamed(context, 'customer_cart_page');
+                StorageUtil.getIsLogging().then((bool value) {
+                  if (value != null) {
+                    Navigator.pushNamed(context, 'customer_cart_page');
+                  } else {
+                    Navigator.pushNamed(context, 'register_screen');
+                  }
+                });
               },
             ),
           ]),
@@ -72,7 +79,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
                             crossAxisCount: 2,
                             crossAxisSpacing: ConstScreen.setSizeHeight(30),
                             mainAxisSpacing: ConstScreen.setSizeHeight(40),
-                            childAspectRatio: 6.8 / 10,
+                            childAspectRatio: 66 / 110,
                             children: snapshot.data.documents
                                 .map((DocumentSnapshot document) {
                               return ProductCard(

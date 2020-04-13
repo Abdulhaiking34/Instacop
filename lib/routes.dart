@@ -1,7 +1,7 @@
 import 'package:instacop/src/Views/splash_view.dart';
 import 'package:instacop/src/Views/welcome_view.dart';
 import 'package:instacop/src/views/HomePage/Admin/Orders/order_manager.dart';
-import 'package:instacop/src/views/HomePage/Admin/Products/product_manager.dart';
+import 'package:instacop/src/views/HomePage/Admin/Products/product_adding_view.dart';
 import 'package:instacop/src/views/HomePage/Admin/admin_home_view.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/BankAccount/bank_account_view.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/ChangePassword/change_password_view.dart';
@@ -18,6 +18,8 @@ import 'package:instacop/src/views/homePage/customer/searchPage/search_view.dart
 import 'package:instacop/src/views/homePage/customer/wishlistPage/wishlist_view.dart';
 import 'package:instacop/src/views/register/register_view.dart';
 
+import 'src/views/HomePage/Admin/Products/product_manager_view.dart';
+
 const initialRoute = "splash_screen";
 
 var routes = {
@@ -29,6 +31,7 @@ var routes = {
   //ADMIN HOME VIEW
   'admin_home_screen': (context) => AdminHomeView(),
   'admin_home_product': (context) => ProductManager(),
+  'admin_home_product_adding': (context) => ProductAddingView(),
   'admin_home_order': (context) => OrderManager(),
 
   //CUSTOMER HOME VIEW

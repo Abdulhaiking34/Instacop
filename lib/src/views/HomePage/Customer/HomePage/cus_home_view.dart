@@ -11,7 +11,8 @@ class CustomerHomePageView extends StatefulWidget {
   _CustomerHomePageViewState createState() => _CustomerHomePageViewState();
 }
 
-class _CustomerHomePageViewState extends State<CustomerHomePageView> {
+class _CustomerHomePageViewState extends State<CustomerHomePageView>
+    with AutomaticKeepAliveClientMixin {
   int _current = 0;
   @override
   Widget build(BuildContext context) {
@@ -64,6 +65,10 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView> {
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class Banner extends StatelessWidget {

@@ -10,7 +10,8 @@ class SearchView extends StatefulWidget {
   _SearchViewState createState() => _SearchViewState();
 }
 
-class _SearchViewState extends State<SearchView> {
+class _SearchViewState extends State<SearchView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -167,4 +168,8 @@ class _SearchViewState extends State<SearchView> {
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

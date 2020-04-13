@@ -18,33 +18,19 @@ class _MainDetailProductViewState extends State<MainDetailProductView> {
   Product product;
   List<Widget> pages = [];
   final PageStorageBucket bucket = PageStorageBucket();
+  final pageController = PageController();
+  int indexPage = 0;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     product = widget.product;
-    List<Widget> pages = [
-      ProductPage(
-        product: product,
-        key: PageStorageKey('Page0'),
-      ),
-      DetailOfProductPage(
-        product: product,
-        key: PageStorageKey('Page1'),
-      ),
-      RatingProductPage(
-        product: widget.product,
-        key: PageStorageKey('Page2'),
-      )
-    ];
   }
 
   void onTap(int index) {
     pageController.jumpToPage(index);
   }
 
-  final pageController = PageController();
-  int indexPage = 1;
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);

@@ -15,12 +15,13 @@ import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class ProductManager extends StatefulWidget {
+class ProductAddingView extends StatefulWidget {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
-  _ProductManagerState createState() => _ProductManagerState();
+  _ProductAddingViewState createState() => _ProductAddingViewState();
 }
 
-class _ProductManagerState extends State<ProductManager> {
+class _ProductAddingViewState extends State<ProductAddingView> {
   ProductManagerController _controller = new ProductManagerController();
   List<String> category = ['Clothings', 'Shoes', 'Accessories'];
   List<String> sizeType = ['None', 'Top', 'Bottom', 'Shoes'];
@@ -40,6 +41,22 @@ class _ProductManagerState extends State<ProductManager> {
   String sizeTypeValue = 'Choosing type';
   List<String> sizeList = [];
   List<String> colorList = [];
+
+  //TODO: renew value
+  void renewValue() {
+    _nameController.clear();
+    _priceController.clear();
+    _salePriceController.clear();
+    _brandController.clear();
+    _madeInController.clear();
+    _quantityController.clear();
+    _descriptionController.clear();
+    images.clear();
+    sizeList.clear();
+    colorList.clear();
+    String subCategory = 'Choosing Category';
+    String sizeTypeValue = 'Choosing type';
+  }
 
   //TODO: Image product holder
   Widget imageGridView() {
@@ -135,10 +152,11 @@ class _ProductManagerState extends State<ProductManager> {
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return Scaffold(
+      key: widget._scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Product Manager',
+          'Adding Product',
           style: kBoldTextStyle.copyWith(
             fontSize: FontSize.setTextSize(32),
           ),
@@ -519,13 +537,55 @@ class _ProductManagerState extends State<ProductManager> {
                   description: _descriptionController.text,
                   sizeType: sizeTypeValue);
               if (result) {
-                SnackBar snackBar = SnackBar(
-                  content: Text('Product was added.'),
-                );
+                widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+                  backgroundColor: kColorWhite,
+                  content: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.check,
+                        color: kColorGreen,
+                        size: ConstScreen.setSizeWidth(50),
+                      ),
+                      SizedBox(
+                        width: ConstScreen.setSizeWidth(20),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Product has been adding.',
+                          style:
+                              kBoldTextStyle.copyWith(fontSize: FontSize.s28),
+                        ),
+                      )
+                    ],
+                  ),
+                ));
+                //TODO: renew Value
+                setState(() {
+                  renewValue();
+                });
               } else {
-                SnackBar snackBar = SnackBar(
-                  content: Text('Error.'),
-                );
+                widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+                  backgroundColor: kColorWhite,
+                  content: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.error,
+                        color: kColorRed,
+                        size: ConstScreen.setSizeWidth(50),
+                      ),
+                      SizedBox(
+                        width: ConstScreen.setSizeWidth(20),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Added error.',
+                          style:
+                              kBoldTextStyle.copyWith(fontSize: FontSize.s28),
+                        ),
+                      )
+                    ],
+                  ),
+                ));
               }
             },
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 
 class ProfileView extends StatefulWidget {
@@ -10,7 +11,8 @@ class ProfileView extends StatefulWidget {
   _ProfileViewState createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _ProfileViewState extends State<ProfileView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -43,7 +45,12 @@ class _ProfileViewState extends State<ProfileView> {
             backgroundColor: kColorWhite,
             height: 100,
             onPress: () {
-              Navigator.pushNamed(context, 'customer_order_detail_screen');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OrderAndBillView(
+                            title: 'Order History',
+                          )));
             },
           ),
           //TODO: Bank Account
@@ -62,11 +69,16 @@ class _ProfileViewState extends State<ProfileView> {
             height: 100,
             onPress: () {
               StorageUtil.clear();
-              Navigator.pushNamed(context, 'welcome_screen');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, 'welcome_screen', (Route<dynamic> route) => false);
             },
           ),
         ],
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

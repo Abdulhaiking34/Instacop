@@ -32,91 +32,93 @@ class ProductCard extends StatelessWidget {
     String priceText = controller.text;
     controller.updateText(salePrice.toString());
     String salePriceText = controller.text;
-    return GestureDetector(
-      onTap: () {
-        onTap();
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: kColorLightGrey),
-        ),
-        child: Stack(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                // TODO: Product Image
-                Expanded(
-                  child: CachedNetworkImage(
-                    imageUrl: image,
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) => Container(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-                SizedBox(
-                  height: ConstScreen.setSizeHeight(5),
-                ),
-                //TODO: Product Name
-                AutoSizeText(
-                  productName,
-                  maxLines: 1,
-                  style: TextStyle(
-                      fontSize: FontSize.s24,
-                      color: kColorBlack,
-                      fontWeight: FontWeight.w400),
-                  minFontSize: 15,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-                //TODO: Product Price
-                AutoSizeText(
-                  priceText + ' VND',
-                  maxLines: 1,
-                  style: TextStyle(
-                      fontSize: FontSize.s24,
-                      color: kColorBlack,
-                      decoration: (salePrice != 0)
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none),
-                  minFontSize: 5,
-                  textAlign: TextAlign.center,
-                ),
-                //TODO: Sale Price
-                (salePrice != 0)
-                    ? AutoSizeText(
-                        salePriceText + ' VND',
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: FontSize.s24,
-                          color: kColorRed,
+    return Card(
+      child: GestureDetector(
+        onTap: () {
+          onTap();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: kColorLightGrey),
+          ),
+          child: Stack(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  // TODO: Product Image
+                  Expanded(
+                    child: CachedNetworkImage(
+                      imageUrl: image,
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) => Container(
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
-                        minFontSize: 5,
-                        textAlign: TextAlign.center,
-                      )
-                    : Text(' '),
-              ],
-            ),
-            isIconClose
-                ? Positioned(
-                    left: ConstScreen.setSizeWidth(250),
-                    top: ConstScreen.setSizeWidth(-20),
-                    child: IconButton(
-                      onPressed: () {
-                        onClosePress();
-                      },
-                      icon: Icon(
-                        Icons.close,
-                        size: ConstScreen.setSizeWidth(30),
                       ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
-                  )
-                : Container(),
-          ],
+                  ),
+                  SizedBox(
+                    height: ConstScreen.setSizeHeight(5),
+                  ),
+                  //TODO: Product Name
+                  AutoSizeText(
+                    productName,
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontSize: FontSize.s24,
+                        color: kColorBlack,
+                        fontWeight: FontWeight.w400),
+                    minFontSize: 15,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                  //TODO: Product Price
+                  AutoSizeText(
+                    priceText + ' VND',
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontSize: FontSize.s24,
+                        color: kColorBlack,
+                        decoration: (salePrice != 0)
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none),
+                    minFontSize: 5,
+                    textAlign: TextAlign.center,
+                  ),
+                  //TODO: Sale Price
+                  (salePrice != 0)
+                      ? AutoSizeText(
+                          salePriceText + ' VND',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: FontSize.s24,
+                            color: kColorRed,
+                          ),
+                          minFontSize: 5,
+                          textAlign: TextAlign.center,
+                        )
+                      : Text(' '),
+                ],
+              ),
+              isIconClose
+                  ? Positioned(
+                      left: ConstScreen.setSizeWidth(250),
+                      top: ConstScreen.setSizeWidth(-20),
+                      child: IconButton(
+                        onPressed: () {
+                          onClosePress();
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          size: ConstScreen.setSizeWidth(30),
+                        ),
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );

@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/ProductPage/product_controller.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/image_product_view.dart';
@@ -21,20 +23,14 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage>
     with AutomaticKeepAliveClientMixin {
   ProgressDialog pr;
-  List sizeList = ['S', 'M', 'L', 'XL'];
-  List colorList = [];
-  double ratingValue = 0.5;
-  bool isLoveCheck = false;
-  bool isTest = false;
-  int isColorFocus = 1;
-  List<ColorInfo> listColorPicker = [];
-  List<Color> listColor = [
-    kColorWhite,
-    kColorBlack,
-    kColorRed,
-    kColorBlue,
-    kColorYellow,
-  ];
+  bool _isLogging = false;
+  List _sizeList = ['S', 'M', 'L', 'XL'];
+  List _colorList = [];
+  bool _isLoveCheck = false;
+  bool _isTest = false;
+  bool _isAddBtnPress = true;
+  int _isColorFocus = 1;
+  List<ColorInfo> _listColorPicker = [];
   ProductController _controller = new ProductController();
   //TODO: value
   int colorValue;
@@ -44,28 +40,53 @@ class _ProductPageState extends State<ProductPage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    getIsCheckWishlist();
     int i = 1;
     for (var value in widget.product.colorList) {
-      listColorPicker.add(ColorInfo(id: i, color: Color(value)));
+      _listColorPicker.add(ColorInfo(id: i, color: Color(value)));
       i++;
     }
-    sizeList = widget.product.sizeList;
-    colorValue = listColorPicker.elementAt(0).color.value;
-    print(widget.product.category);
+    _sizeList = widget.product.sizeList;
+    colorValue = _listColorPicker.elementAt(0).color.value;
+    print(widget.product.productName);
+    StorageUtil.getIsLogging().then((bool value) {
+      if (value != null) {
+        _isLogging = value;
+      } else {
+        _isLogging = false;
+      }
+    });
+  }
+
+  //TODO: Check isCheckWishList
+  getIsCheckWishlist() async {
+    String userUid = await StorageUtil.getUid();
+    final snapShot = await Firestore.instance
+        .collection('Wishlists')
+        .document(userUid)
+        .collection(userUid)
+        .document(widget.product.id)
+        .get();
+    bool isExists = snapShot.exists;
+    if (isExists) {
+      setState(() {
+        _isLoveCheck = true;
+      });
+    }
   }
 
   //TODO: Create Color Picker Bar
   Widget renderColorBar() {
     List<Widget> listWidget = [];
-    for (var value in listColorPicker) {
+    for (var value in _listColorPicker) {
       listWidget.add(Padding(
         padding: EdgeInsets.only(left: ConstScreen.setSizeWidth(8)),
         child: ColorPicker(
           color: value.color,
-          isCheck: isColorFocus == value.id,
+          isCheck: _isColorFocus == value.id,
           onTap: () {
             setState(() {
-              isColorFocus = value.id;
+              _isColorFocus = value.id;
             });
             //TODO: color value pick
             colorValue = value.color.value;
@@ -132,54 +153,54 @@ class _ProductPageState extends State<ProductPage>
               Positioned(
                 left: ConstScreen.setSizeWidth(660),
                 top: ConstScreen.setSizeHeight(5),
-                child: StreamBuilder(
-                    stream: _controller.loveWishlistStream,
-                    builder: (context, snapshot) {
-                      return IconButton(
-                        onPressed: () {
-                          if (!isLoveCheck) {
-                            _controller
-                                .addProductToWishlist(product: widget.product)
-                                .then((value) {
-                              if (value) {
-                                setState(() {
-                                  isLoveCheck = true;
-                                });
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  backgroundColor: kColorWhite,
-                                  content: Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.check,
-                                        color: kColorGreen,
-                                        size: ConstScreen.setSizeWidth(50),
-                                      ),
-                                      SizedBox(
-                                        width: ConstScreen.setSizeWidth(20),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          'Product has been add to Wishlist.',
-                                          style: kBoldTextStyle.copyWith(
-                                              fontSize: FontSize.s28),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ));
-                              }
+                child: IconButton(
+                  onPressed: () {
+                    //TODO: Check logging
+                    if (_isLogging) {
+                      if (!_isLoveCheck) {
+                        //TODO: Adding product to Wishlist
+                        _controller
+                            .addProductToWishlist(product: widget.product)
+                            .then((value) {
+                          if (value) {
+                            setState(() {
+                              _isLoveCheck = true;
                             });
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              backgroundColor: kColorWhite,
+                              content: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.check,
+                                    color: kColorGreen,
+                                    size: ConstScreen.setSizeWidth(50),
+                                  ),
+                                  SizedBox(
+                                    width: ConstScreen.setSizeWidth(20),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Product has been add to Wishlist.',
+                                      style: kBoldTextStyle.copyWith(
+                                          fontSize: FontSize.s28),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ));
                           }
-                        },
-                        icon: Icon(
-                          snapshot.hasData
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          color: snapshot.hasData ? kColorRed : kColorBlack,
-                          size: ConstScreen.setSizeHeight(60),
-                        ),
-                      );
-                    }),
+                        });
+                      }
+                    } else {
+                      Navigator.pushNamed(context, 'register_screen');
+                    }
+                  },
+                  icon: Icon(
+                    _isLoveCheck ? Icons.favorite : Icons.favorite_border,
+                    color: _isLoveCheck ? kColorRed : kColorBlack,
+                    size: ConstScreen.setSizeHeight(60),
+                  ),
+                ),
               )
             ],
           ),
@@ -297,7 +318,7 @@ class _ProductPageState extends State<ProductPage>
                                     sizeValue = value;
                                   });
                                 },
-                                items: sizeList.map((value) {
+                                items: _sizeList.map((value) {
                                   return DropdownMenuItem(
                                     child: Text(
                                       'Size ' + value,
@@ -325,71 +346,76 @@ class _ProductPageState extends State<ProductPage>
                         child: CusRaisedButton(
                           title: 'ADD',
                           backgroundColor: kColorBlack,
+                          isDisablePress: _isAddBtnPress,
                           onPress: () async {
-                            //TODO: Process Dialog
-                            bool isShow = true;
-                            String messing = 'Please wait...';
-                            pr = new ProgressDialog(context,
-                                type: ProgressDialogType.Normal,
-                                showLogs: true);
-                            pr.show();
-                            pr.update(message: messing);
-                            //TODO: Add product
-                            await _controller
-                                .addProductToCart(
-                                    color: colorValue,
-                                    size: sizeValue,
-                                    product: widget.product)
-                                .then((isComplete) {
-                              pr.hide();
-                              if (isComplete) {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  backgroundColor: kColorWhite,
-                                  content: Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.check,
-                                        color: kColorGreen,
-                                        size: ConstScreen.setSizeWidth(50),
+                            //TODO: check logging
+                            if (_isLogging) {
+                              setState(() {
+                                _isAddBtnPress = false;
+                              });
+                              //TODO: Add product
+                              await _controller
+                                  .addProductToCart(
+                                      color: colorValue,
+                                      size: sizeValue,
+                                      product: widget.product)
+                                  .then((isComplete) {
+                                if (isComplete != null) {
+                                  if (isComplete) {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      backgroundColor: kColorWhite,
+                                      content: Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.check,
+                                            color: kColorGreen,
+                                            size: ConstScreen.setSizeWidth(50),
+                                          ),
+                                          SizedBox(
+                                            width: ConstScreen.setSizeWidth(20),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              'Product has been add to Your Cart.',
+                                              style: kBoldTextStyle.copyWith(
+                                                  fontSize: FontSize.s28),
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: ConstScreen.setSizeWidth(20),
+                                    ));
+                                  } else {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      backgroundColor: kColorWhite,
+                                      content: Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.error,
+                                            color: kColorRed,
+                                            size: ConstScreen.setSizeWidth(50),
+                                          ),
+                                          SizedBox(
+                                            width: ConstScreen.setSizeWidth(20),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              'Added error.',
+                                              style: kBoldTextStyle.copyWith(
+                                                  fontSize: FontSize.s28),
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      Expanded(
-                                        child: Text(
-                                          'Product has been add to Your Cart.',
-                                          style: kBoldTextStyle.copyWith(
-                                              fontSize: FontSize.s28),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ));
-                              } else {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  backgroundColor: kColorWhite,
-                                  content: Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.error,
-                                        color: kColorRed,
-                                        size: ConstScreen.setSizeWidth(50),
-                                      ),
-                                      SizedBox(
-                                        width: ConstScreen.setSizeWidth(20),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          'Added error.',
-                                          style: kBoldTextStyle.copyWith(
-                                              fontSize: FontSize.s28),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ));
-                              }
-                            });
+                                    ));
+                                  }
+                                }
+                                setState(() {
+                                  _isAddBtnPress = true;
+                                });
+                              });
+                            } else {
+                              Navigator.pushNamed(context, 'register_screen');
+                            }
                           },
                         ),
                       ),
