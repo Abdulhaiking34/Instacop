@@ -55,6 +55,10 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                     content: 'Nguyen Thieu Phuong Nam',
                   ),
                   TitleWidget(
+                    title: 'Receiver',
+                    content: 'Truc Dao',
+                  ),
+                  TitleWidget(
                     title: 'Status',
                     content: 'Processing',
                   ),
@@ -88,15 +92,13 @@ class _OrderInfoViewState extends State<OrderInfoView> {
             //TODO: List Product
             ProductOrderDetail(
               name: 'Planel Bape x Supreme Supreme Planel ',
-              price: '500,000',
+              price: '500000',
               quantity: 2,
-              subTotal: '1,000,000',
             ),
             ProductOrderDetail(
               name: 'Planel Bape x Supreme',
-              price: '500,000',
+              price: '500000',
               quantity: 1,
-              subTotal: '500,000',
             ),
             //TODO: Phone number
             Container(

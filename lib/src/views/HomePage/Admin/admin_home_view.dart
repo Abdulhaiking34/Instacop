@@ -103,7 +103,9 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       color: kColorBlue,
                       icon: FontAwesomeIcons.users,
                       value: _userCount,
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.pushNamed(context, 'admin_user_manager');
+                      },
                     ),
                   ),
                   Expanded(

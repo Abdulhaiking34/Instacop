@@ -10,6 +10,7 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/model/product.dart';
+import 'package:instacop/src/views/HomePage/Customer/CartPage/checkout_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_cart_product.dart';
 
@@ -25,12 +26,19 @@ class _CartViewState extends State<CartView> {
   List<CartProductCard> uiProductList = [];
   int totalPrice = 0;
   String totalPriceText = '';
+  String uidUser = '';
   //TODO: Delete product
-  void onClose(String productID) {
+  void onDelete(String productID) {
     // TODO: find Product widget
     var find = uiProductList.firstWhere((it) => it.id == productID,
         orElse: () => null);
     if (find != null) {
+      Firestore.instance
+          .collection('Carts')
+          .document(uidUser)
+          .collection(uidUser)
+          .document(productID)
+          .delete();
       setState(() {
         uiProductList.removeAt(uiProductList.indexOf(find));
       });
@@ -77,6 +85,7 @@ class _CartViewState extends State<CartView> {
     super.initState();
     StorageUtil.getUid().then((uid) {
       _streamController.add(uid);
+      uidUser = uid;
       //TODO: count item
       Firestore.instance
           .collection('Carts')
@@ -116,10 +125,13 @@ class _CartViewState extends State<CartView> {
             quantity: product.quantity,
             onQtyChange: (qty) {
               print(qty);
+              setState(() {
+                product.quantity = qty;
+              });
               onChangeQty(qty, product.id);
             },
             onClose: () {
-              onClose(product.id);
+              onDelete(product.id);
             },
           );
         }).toList();
@@ -136,175 +148,116 @@ class _CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
-
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData.fallback(),
-          backgroundColor: kColorWhite,
-          // TODO: Quantity Items
-          title: Text(
-            uiProductList.length.toString() + ' items',
-            style: TextStyle(
-                color: kColorBlack,
-                fontSize: FontSize.setTextSize(32),
-                fontWeight: FontWeight.w500),
-          ),
-          centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData.fallback(),
+        backgroundColor: kColorWhite,
+        // TODO: Quantity Items
+        title: Text(
+          uiProductList.length.toString() + ' items',
+          style: TextStyle(
+              color: kColorBlack,
+              fontSize: FontSize.setTextSize(32),
+              fontWeight: FontWeight.w500),
         ),
-        body: StreamBuilder(
-          stream: _streamController.stream,
-          builder: (context, snapshotMain) {
-            if (snapshotMain.hasData) {
-              //TODO: Load list cart product
-              return StreamBuilder(
-                stream: _productController.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                        itemCount: uiProductList.length,
-                        itemBuilder: (_, index) => uiProductList[index]);
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: kColorBlack.withOpacity(0.5), width: 1),
-            ),
+        centerTitle: true,
+      ),
+      body: StreamBuilder(
+        stream: _streamController.stream,
+        builder: (context, snapshotMain) {
+          if (snapshotMain.hasData) {
+            //TODO: Load list cart product
+            return StreamBuilder(
+              stream: _productController.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: uiProductList.length,
+                      itemBuilder: (_, index) => uiProductList[index]);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: kColorBlack.withOpacity(0.5), width: 1),
           ),
-          height: ConstScreen.setSizeHeight(200),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: ConstScreen.setSizeHeight(15),
-                horizontal: ConstScreen.setSizeWidth(20)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                // TODO: Total price
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: ConstScreen.setSizeHeight(5),
-                        horizontal: ConstScreen.setSizeWidth(20)),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: AutoSizeText(
-                            'Total',
-                            style: TextStyle(
-                                fontSize: FontSize.s36,
-                                fontWeight: FontWeight.bold),
-                            minFontSize: 15,
-                          ),
+        ),
+        height: ConstScreen.setSizeHeight(200),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // TODO: Total price
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: ConstScreen.setSizeHeight(5),
+                    horizontal: ConstScreen.setSizeWidth(20)),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: ConstScreen.setSizeHeight(15),
+                      horizontal: ConstScreen.setSizeWidth(20)),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: AutoSizeText(
+                          'Total',
+                          style: TextStyle(
+                              fontSize: FontSize.s36,
+                              fontWeight: FontWeight.bold),
+                          minFontSize: 15,
                         ),
-                        // TODO: Total Price Value
-                        Expanded(
-                          flex: 5,
-                          child: AutoSizeText(
-                            totalPriceText + ' VND',
-                            style: TextStyle(
-                                fontSize: FontSize.setTextSize(45),
-                                fontWeight: FontWeight.bold),
-                            minFontSize: 15,
-                            maxLines: 1,
-                            textAlign: TextAlign.end,
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                      // TODO: Total Price Value
+                      Expanded(
+                        flex: 5,
+                        child: AutoSizeText(
+                          totalPriceText + ' VND',
+                          style: TextStyle(
+                              fontSize: FontSize.setTextSize(45),
+                              fontWeight: FontWeight.bold),
+                          minFontSize: 15,
+                          maxLines: 1,
+                          textAlign: TextAlign.end,
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                //TODO: Purchase button
-                Expanded(
-                  flex: 1,
-                  child: CusRaisedButton(
-                    title: 'PROCESS ORDER',
-                    backgroundColor: kColorBlack,
-                    onPress: () {
-                      print(productInfotList.length);
-                    },
-                  ),
-                )
-              ],
+              ),
             ),
-          ),
+            //TODO: Purchase button
+            Expanded(
+              flex: 1,
+              child: CusRaisedButton(
+                title: 'PLACE THIS ORDER',
+                backgroundColor: kColorBlack,
+                height: ConstScreen.setSizeHeight(150),
+                onPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProcessingOrderView(
+                        productList: productInfotList,
+                        total: totalPrice,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 }
-
-//StreamBuilder<QuerySnapshot>(
-//stream: Firestore.instance
-//    .collection('Carts')
-//.document(snapshotMain.data)
-//.collection(snapshotMain.data)
-//.snapshots(),
-//builder: (BuildContext context,
-//    AsyncSnapshot<QuerySnapshot> snapshot) {
-//if (snapshot.hasData) {
-//final snapProduct = snapshot.data.documents;
-////                      for (var value in snapProduct) {
-////                        Product product = new Product(
-////                          id: value.data['id'],
-////                          productName: value.data['name'],
-////                          image: value.data['image'],
-////                          category: value.data['categogy'],
-////                          size: value.data['size'],
-////                          color: value.data['color'],
-////                          price: value.data['price'],
-////                          salePrice: value.data['sale_price'],
-////                          brand: value.data['brand'],
-////                          madeIn: value.data['made_in'],
-////                          quantity: value.data['quantity'],
-////                        );
-////                        final uiProductCard = CartProductCard(
-////                          productName: value.data['name'],
-////                          productPrice: int.parse(value.data['price']),
-////                          productColor: Color(value.data['color']),
-////                          productSize: value.data['size'],
-////                          productImage: value.data['image'],
-////                          brand: value.data['brand'],
-////                          madeIn: value.data['made_in'],
-////                          quantity: value.data['quantity'],
-////                          onQtyChange: (qty) {},
-////                          onClose: () {},
-////                        );
-////                        producInfotList.add(product);
-////                        uiProductList.add(uiProductCard);
-////                      }
-//
-//return ListView(
-//scrollDirection: Axis.vertical,
-////TODO: List product
-//children: uiProductList
-////                        snapshot.data.documents
-////                            .map((DocumentSnapshot document) {
-////                          return CartProductCard(
-////                            productName: document['name'],
-////                            productPrice: int.parse(document['price']),
-////                            productColor: Color(document['color']),
-////                            productSize: document['size'],
-////                            productImage: document['image'],
-////                            brand: document['brand'],
-////                            madeIn: document['made_in'],
-////                            quantity: document['quantity'],
-////                            onQtyChange: (qty) {},
-////                            onClose: () {},
-////                          );
-////                        }).toList(),
-//);
-//} else {
-//return Center(child: CircularProgressIndicator());
-//}
-//});

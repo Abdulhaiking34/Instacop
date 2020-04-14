@@ -13,7 +13,8 @@ class InputText extends StatefulWidget {
       @required this.icon = null,
       this.onValueChange,
       this.hintText = '',
-      this.controller});
+      this.controller,
+      this.onTap});
   final bool isNumber;
   final TextInputType inputType;
   final String errorText;
@@ -23,6 +24,7 @@ class InputText extends StatefulWidget {
   final Function onValueChange;
   final String hintText;
   final TextEditingController controller;
+  final Function onTap;
   @override
   _InputTextState createState() => _InputTextState();
 }
@@ -73,6 +75,9 @@ class _InputTextState extends State<InputText> {
       keyboardType: widget.inputType,
       onChanged: (value) {
         widget.onValueChange(value);
+      },
+      onTap: () {
+        widget.onTap();
       },
     );
   }
