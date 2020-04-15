@@ -21,8 +21,8 @@ class ItemOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int subTotal = int.parse(quantity) * int.parse(price);
-    String subPriceMoneyType = MoneyFormat.intToMoneyType(subTotal);
-    String priceMoneyType = MoneyFormat.intToMoneyType(int.parse(price));
+    String subPriceMoneyType = Util.intToMoneyType(subTotal);
+    String priceMoneyType = Util.intToMoneyType(int.parse(price));
     return Container(
       decoration: BoxDecoration(
         border: Border(

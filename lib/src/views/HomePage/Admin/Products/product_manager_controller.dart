@@ -144,7 +144,7 @@ class ProductManagerController {
         'quantity': quantity,
         'description': description,
         'rating': 0.0,
-        'create_at': DateTime.now().toUtc()
+        'create_at': DateTime.now().toString()
       }).catchError((onError) {
         print(onError.toString());
       });

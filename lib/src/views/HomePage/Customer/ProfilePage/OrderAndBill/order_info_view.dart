@@ -1,13 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/model/orderInfo.dart';
 import 'package:instacop/src/widgets/card_product_order.dart';
 import 'package:instacop/src/widgets/widget_title.dart';
 
 class OrderInfoView extends StatefulWidget {
+  OrderInfoView({this.id, this.orderInfo});
+  final OrderInfo orderInfo;
+  final String id;
   @override
   _OrderInfoViewState createState() => _OrderInfoViewState();
 }
@@ -44,27 +50,27 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                   //TODO: Order ID
                   TitleWidget(
                     title: 'Oder Id',
-                    content: '1',
+                    content: widget.id,
                   ),
                   TitleWidget(
                     title: 'Date',
-                    content: '12/2/2018',
+                    content: widget.orderInfo.createAt,
                   ),
                   TitleWidget(
                     title: 'Customer',
-                    content: 'Nguyen Thieu Phuong Nam',
+                    content: widget.orderInfo.customerName,
                   ),
                   TitleWidget(
                     title: 'Receiver',
-                    content: 'Truc Dao',
+                    content: widget.orderInfo.receiverName,
                   ),
                   TitleWidget(
                     title: 'Status',
-                    content: 'Processing',
+                    content: widget.orderInfo.status,
                   ),
                   TitleWidget(
                     title: 'Total',
-                    content: '1,500,000 VND',
+                    content: '${widget.orderInfo.total} VND',
                   ),
                 ],
               ),
@@ -90,16 +96,33 @@ class _OrderInfoViewState extends State<OrderInfoView> {
               height: ConstScreen.setSizeHeight(15),
             ),
             //TODO: List Product
-            ProductOrderDetail(
-              name: 'Planel Bape x Supreme Supreme Planel ',
-              price: '500000',
-              quantity: 2,
+            StreamBuilder<QuerySnapshot>(
+              stream: Firestore.instance
+                  .collection('Orders')
+                  .document(widget.orderInfo.subId)
+                  .collection(widget.orderInfo.id)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: snapshot.data.documents
+                        .map((DocumentSnapshot document) {
+                      return ProductOrderDetail(
+                        name: document['name'],
+                        price: document['price'],
+                        quantity: document['quantity'],
+                        color: Color(document['color']),
+                        size: document['size'],
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return Container();
+                }
+              },
             ),
-            ProductOrderDetail(
-              name: 'Planel Bape x Supreme',
-              price: '500000',
-              quantity: 1,
-            ),
+
             //TODO: Phone number
             Container(
               color: kColorLightGrey,
@@ -123,7 +146,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                   top: ConstScreen.setSizeHeight(10),
                   left: ConstScreen.setSizeHeight(27)),
               child: AutoSizeText(
-                '0971882230',
+                widget.orderInfo.phone,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 minFontSize: 10,
@@ -155,7 +178,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                   top: ConstScreen.setSizeHeight(10),
                   left: ConstScreen.setSizeHeight(27)),
               child: AutoSizeText(
-                'Cai Dau, Chau Phu, An Giang',
+                widget.orderInfo.address,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 minFontSize: 10,

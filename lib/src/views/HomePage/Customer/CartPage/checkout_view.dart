@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -296,7 +297,7 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                             return ProductOrderDetail(
                               name: product.productName,
                               price: product.price,
-                              quantity: int.parse(product.quantity),
+                              quantity: product.quantity,
                               color: Color(product.color),
                               size: product.size,
                             );
@@ -324,8 +325,7 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                             Expanded(
                               flex: 4,
                               child: AutoSizeText(
-                                MoneyFormat.intToMoneyType(widget.total) +
-                                    ' VND',
+                                Util.intToMoneyType(widget.total) + ' VND',
                                 textAlign: TextAlign.end,
                                 maxLines: 2,
                                 minFontSize: 15,
@@ -355,7 +355,9 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
             bool isDone = await _checkoutController.onPayment(
                 name: _receiverName,
                 phoneNumber: _phoneNumber,
-                address: _address);
+                address: _address,
+                productList: widget.productList,
+                total: widget.total.toString());
             print(isDone);
 //              if (isDone) {
 //                showModalBottomSheet(

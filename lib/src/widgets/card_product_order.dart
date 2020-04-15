@@ -10,20 +10,20 @@ class ProductOrderDetail extends StatelessWidget {
   ProductOrderDetail(
       {this.name = '',
       this.price = '',
-      this.quantity = 0,
+      this.quantity = '',
       this.size = '',
       this.color = kColorWhite});
 
   final String name;
   final String price;
-  final int quantity;
+  final String quantity;
   final String size;
   final Color color;
   @override
   Widget build(BuildContext context) {
-    int subTotal = quantity * int.parse(price);
-    String subPriceMoneyType = MoneyFormat.intToMoneyType(subTotal);
-    String priceMoneyType = MoneyFormat.intToMoneyType(int.parse(price));
+    int subTotal = int.parse(quantity) * int.parse(price);
+    String subPriceMoneyType = Util.intToMoneyType(subTotal);
+    String priceMoneyType = Util.intToMoneyType(int.parse(price));
 
     ConstScreen.setScreen(context);
     return Container(
@@ -100,7 +100,7 @@ class ProductOrderDetail extends StatelessWidget {
             //TODO: Quantity
             TitleWidget(
               title: 'Quantity: ',
-              content: quantity.toString(),
+              content: quantity,
               isSpaceBetween: false,
             ),
             //TODO: SubTotal

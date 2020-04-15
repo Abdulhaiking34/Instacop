@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/widgets/widget_title.dart';
 import 'package:intl/intl.dart';
 
@@ -37,16 +38,14 @@ class _UserManagerViewState extends State<UserManagerView> {
               return ListView(
                 children:
                     snapshot.data.documents.map((DocumentSnapshot document) {
-                  DateTime createAt = new DateFormat("yyyy-MM-dd hh:mm:ss")
-                      .parse(document['create_at']);
-                  var formatter = new DateFormat('dd-MM-yyyy');
                   index++;
                   return UserInfoCard(
                       id: index.toString(),
                       username: document['username'],
                       fullname: document['fullname'],
                       phone: document['phone'],
-                      createAt: formatter.format(createAt));
+                      createAt:
+                          Util.convertDateToString(document['create_at']));
                 }).toList(),
               );
             } else {

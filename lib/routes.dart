@@ -1,6 +1,5 @@
 import 'package:instacop/src/Views/splash_view.dart';
 import 'package:instacop/src/Views/welcome_view.dart';
-import 'package:instacop/src/views/HomePage/Admin/Orders/order_manager.dart';
 import 'package:instacop/src/views/HomePage/Admin/Products/product_adding_view.dart';
 import 'package:instacop/src/views/HomePage/Admin/Users/admin_user_manager.dart';
 import 'package:instacop/src/views/HomePage/Admin/admin_home_view.dart';
@@ -33,7 +32,6 @@ var routes = {
   'admin_home_screen': (context) => AdminHomeView(),
   'admin_home_product': (context) => ProductManager(),
   'admin_home_product_adding': (context) => ProductAddingView(),
-  'admin_home_order': (context) => OrderManager(),
   'admin_user_manager': (context) => UserManagerView(),
 
   //CUSTOMER HOME VIEW

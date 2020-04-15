@@ -10,11 +10,13 @@ import 'package:instacop/src/model/user.dart';
 
 class SignUpController {
   StreamController _isFullNameController = new StreamController();
+  StreamController _isPhoneController = new StreamController();
   StreamController _isEmailController = new StreamController();
   StreamController _isPasswordController = new StreamController();
   StreamController _isConfirmPwdController = new StreamController();
 
   Stream get fullNameStream => _isFullNameController.stream;
+  Stream get phoneStream => _isPhoneController.stream;
   Stream get emailStream => _isEmailController.stream;
   Stream get passwordStream => _isPasswordController.stream;
   Stream get confirmPwdSteam => _isConfirmPwdController.stream;
@@ -23,18 +25,25 @@ class SignUpController {
 
   onSubmitRegister({
     @required String fullName,
+    @required String phone,
     @required String email,
     @required String password,
     @required String confirmPwd,
   }) async {
     int countError = 0;
-    _isFullNameController.sink.add('Ok');
-    _isEmailController.sink.add('Ok');
-    _isPasswordController.sink.add('Ok');
-    _isConfirmPwdController.sink.add('Ok');
+    _isFullNameController.sink.add('');
+    _isPhoneController.sink.add('');
+    _isEmailController.sink.add('');
+    _isPasswordController.sink.add('');
+    _isConfirmPwdController.sink.add('');
 
     if (fullName == '' || fullName == null) {
       _isFullNameController.sink.addError('Invalid full name.');
+      countError++;
+    }
+
+    if (phone == '' || phone == null || !validators.isPhoneNumber(phone)) {
+      _isPhoneController.sink.addError('Invalid phone.');
       countError++;
     }
 
@@ -78,7 +87,7 @@ class SignUpController {
           'fullname': fullName,
           'gender': '',
           'birthday': '',
-          'phone': '',
+          'phone': phone,
           'address': '',
           'create_at': createAt,
           'id_scripe': '',
@@ -103,5 +112,6 @@ class SignUpController {
     _isEmailController.close();
     _isConfirmPwdController.close();
     _isPasswordController.close();
+    _isPhoneController.close();
   }
 }

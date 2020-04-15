@@ -45,7 +45,7 @@ class ProductController {
         'brand': product.brand,
         'made_in': product.madeIn,
         'quantity': '1',
-        'create_at': DateTime.now().toUtc()
+        'create_at': DateTime.now().toString()
       }).catchError((onError) {
         return false;
       });
@@ -74,7 +74,7 @@ class ProductController {
       'brand': product.brand,
       'made_in': product.madeIn,
       'quantity': product.quantity,
-      'create_at': DateTime.now().toUtc()
+      'create_at': DateTime.now().toString()
     }).catchError((onError) {
       return false;
     });

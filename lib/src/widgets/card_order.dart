@@ -6,7 +6,7 @@ import 'package:instacop/src/helpers/screen.dart';
 
 class OrderCard extends StatelessWidget {
   OrderCard(
-      {this.id = 0,
+      {this.id = '',
       this.customerName = '',
       this.date = '',
       this.status = '',
@@ -14,7 +14,7 @@ class OrderCard extends StatelessWidget {
       this.onViewDetail,
       this.onCancel,
       this.isEnableCancel = true});
-  final int id;
+  final String id;
   final String customerName;
   final String date;
   final String status;
@@ -49,7 +49,7 @@ class OrderCard extends StatelessWidget {
                       text: 'Order Id: ',
                     ),
                     TextSpan(
-                      text: id.toString(),
+                      text: id,
                       style: kNormalTextStyle.copyWith(
                         fontSize: FontSize.s30,
                       ),

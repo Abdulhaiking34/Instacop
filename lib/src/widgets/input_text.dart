@@ -4,17 +4,17 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 
 class InputText extends StatefulWidget {
-  InputText(
-      {this.errorText,
-      @required this.title,
-      this.isPassword = false,
-      this.isNumber = false,
-      this.inputType = TextInputType.text,
-      @required this.icon = null,
-      this.onValueChange,
-      this.hintText = '',
-      this.controller,
-      this.onTap});
+  InputText({
+    this.errorText,
+    @required this.title,
+    this.isPassword = false,
+    this.isNumber = false,
+    this.inputType = TextInputType.text,
+    @required this.icon = null,
+    this.onValueChange,
+    this.hintText = '',
+    this.controller,
+  });
   final bool isNumber;
   final TextInputType inputType;
   final String errorText;
@@ -24,7 +24,6 @@ class InputText extends StatefulWidget {
   final Function onValueChange;
   final String hintText;
   final TextEditingController controller;
-  final Function onTap;
   @override
   _InputTextState createState() => _InputTextState();
 }
@@ -75,9 +74,6 @@ class _InputTextState extends State<InputText> {
       keyboardType: widget.inputType,
       onChanged: (value) {
         widget.onValueChange(value);
-      },
-      onTap: () {
-        widget.onTap();
       },
     );
   }

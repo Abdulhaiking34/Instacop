@@ -7,7 +7,8 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
-import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
+import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/views/HomePage/Admin/OrderAndSold/sold_and_order_view.dart';
 import 'package:instacop/src/widgets/box_dashboard.dart';
 import 'package:instacop/src/widgets/card_dashboard.dart';
 
@@ -19,7 +20,9 @@ class AdminHomeView extends StatefulWidget {
 class _AdminHomeViewState extends State<AdminHomeView> {
   String _userCount = '0';
   String _productCount = '0';
-  String orderCount = '0';
+  String _orderCount = '0';
+  String _soldCount = '0';
+  String total = '0';
   loadNumberDashboard() {
     //TODO: User
     Firestore.instance.collection('Users').getDocuments().then((onValue) {
@@ -28,6 +31,15 @@ class _AdminHomeViewState extends State<AdminHomeView> {
       });
     });
     //TODO:Order
+    Firestore.instance
+        .collection('Orders')
+        .where('status', isEqualTo: 'Pending')
+        .getDocuments()
+        .then((onValue) {
+      setState(() {
+        _orderCount = onValue.documents.length.toString();
+      });
+    });
     //TODO: Product
     Firestore.instance.collection('Products').getDocuments().then((onValue) {
       setState(() {
@@ -35,6 +47,30 @@ class _AdminHomeViewState extends State<AdminHomeView> {
       });
     });
     //TODO:Sold
+    Firestore.instance
+        .collection('Orders')
+        .where('status', isLessThan: 'Pending')
+        .getDocuments()
+        .then((onValue) {
+      setState(() {
+        _soldCount = onValue.documents.length.toString();
+      });
+    });
+    //TODO: Revenue
+    Firestore.instance
+        .collection('Orders')
+        .where('status', isEqualTo: 'Completed')
+        .getDocuments()
+        .then((document) {
+      int revenue = 0;
+      for (var order in document.documents) {
+        int value = int.parse(order.data['total']);
+        revenue += value;
+      }
+      setState(() {
+        total = Util.intToMoneyType(revenue);
+      });
+    });
   }
 
   @override
@@ -85,7 +121,7 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                 title: 'Revenue',
                 color: Colors.orange.shade500,
                 icon: FontAwesomeIcons.dollarSign,
-                value: '260,000,000 VND',
+                value: '$total VND',
                 onPress: () {},
               ),
             ),
@@ -113,12 +149,12 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       title: 'Orders',
                       color: kColorBlue,
                       icon: FontAwesomeIcons.shoppingCart,
-                      value: '19',
+                      value: _orderCount,
                       onPress: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => OrderAndBillView(
+                                builder: (context) => SoldAndOrderView(
                                       title: 'Order List',
                                     )));
                       },
@@ -151,12 +187,12 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                       title: 'Sold',
                       color: kColorBlue,
                       icon: Icons.done_outline,
-                      value: '250',
+                      value: _soldCount,
                       onPress: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => OrderAndBillView(
+                                builder: (context) => SoldAndOrderView(
                                       title: 'Sold Order List',
                                     )));
                       },
@@ -168,31 +204,10 @@ class _AdminHomeViewState extends State<AdminHomeView> {
             SizedBox(
               height: ConstScreen.setSizeHeight(20),
             ),
-            //TODO: Brand and Categories
+            //TODO: Edit Page
             Expanded(
               flex: 2,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: DashboardBox(
-                      title: 'Brands',
-                      color: kColorBlue,
-                      icon: FontAwesomeIcons.boxes,
-                      value: '50',
-                      onPress: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: DashboardBox(
-                      title: 'Categories',
-                      color: kColorBlue,
-                      icon: Icons.category,
-                      value: '50',
-                      onPress: () {},
-                    ),
-                  ),
-                ],
-              ),
+              child: Container(),
             ),
             SizedBox(
               height: ConstScreen.setSizeHeight(50),

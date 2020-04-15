@@ -13,12 +13,13 @@ class SignUpView extends StatefulWidget {
 class _SignUpViewState extends State<SignUpView> {
   List<String> gender = ['Male', 'Female'];
   String genderData = 'Choose Gender';
-  DateTime _birthDay;
-  bool _isBirthdayConfirm = false;
+
+  bool _isRegisterLoading = true;
   SignUpController signUpController = new SignUpController();
 
   String _fullName = '';
   String _email = '';
+  String _phone = '';
   String _password = '';
   String _confirmPwd = '';
   @override
@@ -40,6 +41,22 @@ class _SignUpViewState extends State<SignUpView> {
         SizedBox(
           height: ConstScreen.setSizeHeight(18),
         ),
+        //TODO: phone number
+        StreamBuilder(
+          stream: signUpController.phoneStream,
+          builder: (context, snapshot) => InputText(
+            title: 'Phone number',
+            inputType: TextInputType.number,
+            errorText: snapshot.hasError ? snapshot.error : '',
+            onValueChange: (value) {
+              _phone = value;
+            },
+          ),
+        ),
+        SizedBox(
+          height: ConstScreen.setSizeHeight(18),
+        ),
+        //TODO: email
         StreamBuilder(
           stream: signUpController.emailStream,
           builder: (context, snapshot) => InputText(
@@ -50,6 +67,7 @@ class _SignUpViewState extends State<SignUpView> {
             },
           ),
         ),
+
         SizedBox(
           height: ConstScreen.setSizeHeight(18),
         ),
@@ -85,16 +103,22 @@ class _SignUpViewState extends State<SignUpView> {
         ),
         CusRaisedButton(
           backgroundColor: kColorBlack,
+          isDisablePress: _isRegisterLoading,
           title: 'REGISTER',
           onPress: () async {
             bool result = await signUpController.onSubmitRegister(
                 fullName: _fullName,
+                phone: _phone,
                 email: _email,
                 password: _password,
                 confirmPwd: _confirmPwd);
 
             if (result) {
+              setState(() {
+                _isRegisterLoading = false;
+              });
               Navigator.pushNamed(context, 'customer_home_screen');
+
               signUpController.dispose();
             }
           },
