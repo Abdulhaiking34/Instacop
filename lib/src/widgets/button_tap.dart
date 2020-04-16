@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 
 class ButtonTap extends StatelessWidget {
@@ -14,14 +15,14 @@ class ButtonTap extends StatelessWidget {
         height: ConstScreen.setSizeHeight(85),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: isSelected ? Colors.white : null,
-          border: isSelected ? null : Border.all(color: Colors.white),
+          color: isSelected ? kColorWhite : null,
+          border: isSelected ? null : Border.all(color: kColorWhite),
         ),
         child: Center(
           child: Text(
             text,
             style: TextStyle(
-              color: isSelected ? Colors.black : Colors.white,
+              color: isSelected ? Colors.black : kColorWhite,
               fontSize: FontSize.setTextSize(35),
               fontWeight: FontWeight.w800,
             ),

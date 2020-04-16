@@ -5,7 +5,7 @@ import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/detail_product_page.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/ProductPage/product_page.dart';
-import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/rating_product_page.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/RatingPage/rating_product_page.dart';
 
 class MainDetailProductView extends StatefulWidget {
   MainDetailProductView({this.product});
