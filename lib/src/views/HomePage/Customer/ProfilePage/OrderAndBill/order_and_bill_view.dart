@@ -32,6 +32,7 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
   }
 
   void dispose() {
+    super.dispose();
     _controller.close();
   }
 

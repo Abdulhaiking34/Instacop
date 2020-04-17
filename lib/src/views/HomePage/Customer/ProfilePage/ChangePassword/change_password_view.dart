@@ -2,19 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/views/HomePage/Customer/ProfilePage/ChangePassword/change_password_controller.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 
 class ChangePasswordView extends StatefulWidget {
+  final _globalKey = new GlobalKey<ScaffoldState>();
   @override
   _ChangePasswordViewState createState() => _ChangePasswordViewState();
 }
 
 class _ChangePasswordViewState extends State<ChangePasswordView> {
+  ChangePwdController _controller = new ChangePwdController();
+  String currentPwd;
+  String newPwd;
+  String confirmPwd;
+  bool isBtnLoading = true;
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return Scaffold(
+      key: widget._globalKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -35,38 +43,126 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               height: ConstScreen.setSizeHeight(60),
             ),
             //TODO: Current password
-            InputText(
-              title: 'Current password',
-              isPassword: true,
-              onValueChange: () {},
-            ),
+            StreamBuilder(
+                stream: _controller.currentPwdStream,
+                builder: (context, snapshot) {
+                  return InputText(
+                    title: 'Current password',
+                    errorText: snapshot.hasError ? snapshot.error : '',
+                    isPassword: true,
+                    onValueChange: (value) {
+                      currentPwd = value;
+                    },
+                  );
+                }),
             SizedBox(
               height: ConstScreen.setSizeHeight(13),
             ),
             //TODO: New password
-            InputText(
-              title: 'New password',
-              isPassword: true,
-              onValueChange: () {},
-            ),
+            StreamBuilder(
+                stream: _controller.newPwdStream,
+                builder: (context, snapshot) {
+                  return InputText(
+                    title: 'New password',
+                    errorText: snapshot.hasError ? snapshot.error : '',
+                    isPassword: true,
+                    onValueChange: (value) {
+                      newPwd = value;
+                    },
+                  );
+                }),
             SizedBox(
               height: ConstScreen.setSizeHeight(13),
             ),
             //TODO: Confirm new password
-            InputText(
-              title: 'Confirm new password',
-              isPassword: true,
-              onValueChange: () {},
-            ),
+            StreamBuilder(
+                stream: _controller.confirmPwdStream,
+                builder: (context, snapshot) {
+                  return InputText(
+                    title: 'Confirm new password',
+                    errorText: snapshot.hasError ? snapshot.error : '',
+                    isPassword: true,
+                    onValueChange: (value) {
+                      confirmPwd = value;
+                    },
+                  );
+                }),
             SizedBox(
               height: ConstScreen.setSizeHeight(20),
             ),
             //TODO: Change password Button
-            CusRaisedButton(
-              title: 'Save',
-              backgroundColor: kColorBlack,
-              onPress: () {},
-            )
+            StreamBuilder(
+                stream: _controller.btnLoadingStream,
+                builder: (context, snapshot) {
+                  return CusRaisedButton(
+                    title: 'Save',
+                    backgroundColor: kColorBlack,
+                    isDisablePress: snapshot.hasData ? snapshot.data : true,
+                    onPress: () async {
+                      setState(() {
+                        isBtnLoading = false;
+                      });
+                      bool result = await _controller.onChangePwd(
+                          currentPwd: currentPwd,
+                          newPwd: newPwd,
+                          confirmPwd: confirmPwd);
+                      print(result);
+                      if (result) {
+                        setState(() {
+                          isBtnLoading = true;
+                        });
+                        widget._globalKey.currentState.showSnackBar(SnackBar(
+                          backgroundColor: kColorWhite,
+                          content: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.check,
+                                color: kColorGreen,
+                                size: ConstScreen.setSizeWidth(50),
+                              ),
+                              SizedBox(
+                                width: ConstScreen.setSizeWidth(20),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Your password has been changed.',
+                                  style: kBoldTextStyle.copyWith(
+                                      fontSize: FontSize.s28),
+                                ),
+                              )
+                            ],
+                          ),
+                        ));
+                      } else {
+                        setState(() {
+                          isBtnLoading = true;
+                        });
+                        widget._globalKey.currentState.showSnackBar(SnackBar(
+                          backgroundColor: kColorWhite,
+                          content: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.error,
+                                color: kColorRed,
+                                size: ConstScreen.setSizeWidth(50),
+                              ),
+                              SizedBox(
+                                width: ConstScreen.setSizeWidth(20),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Changed error.',
+                                  style: kBoldTextStyle.copyWith(
+                                      fontSize: FontSize.s28),
+                                ),
+                              )
+                            ],
+                          ),
+                        ));
+                      }
+                    },
+                  );
+                })
           ],
         ),
       ),

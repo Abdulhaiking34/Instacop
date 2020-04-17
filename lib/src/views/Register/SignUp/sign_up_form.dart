@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/views/Register/SignUp/sign_up_controller.dart';
@@ -101,28 +102,50 @@ class _SignUpViewState extends State<SignUpView> {
         SizedBox(
           height: ConstScreen.setSizeHeight(25),
         ),
-        CusRaisedButton(
-          backgroundColor: kColorBlack,
-          isDisablePress: _isRegisterLoading,
-          title: 'REGISTER',
-          onPress: () async {
-            bool result = await signUpController.onSubmitRegister(
-                fullName: _fullName,
-                phone: _phone,
-                email: _email,
-                password: _password,
-                confirmPwd: _confirmPwd);
+        StreamBuilder(
+            stream: signUpController.btnLoadingStream,
+            builder: (context, snapshot) {
+              return CusRaisedButton(
+                backgroundColor: kColorBlack,
+                isDisablePress: snapshot.hasData ? snapshot.data : true,
+                title: 'REGISTER',
+                onPress: () async {
+                  bool result = await signUpController.onSubmitRegister(
+                      fullName: _fullName,
+                      phone: _phone,
+                      email: _email,
+                      password: _password,
+                      confirmPwd: _confirmPwd);
 
-            if (result) {
-              setState(() {
-                _isRegisterLoading = false;
-              });
-              Navigator.pushNamed(context, 'customer_home_screen');
-
-              signUpController.dispose();
-            }
-          },
-        ),
+                  if (result) {
+                    Navigator.pushNamed(context, 'customer_home_screen');
+                  } else {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      backgroundColor: kColorWhite,
+                      content: Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.error,
+                            color: kColorRed,
+                            size: ConstScreen.setSizeWidth(50),
+                          ),
+                          SizedBox(
+                            width: ConstScreen.setSizeWidth(20),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Sign Up failed.',
+                              style: kBoldTextStyle.copyWith(
+                                  fontSize: FontSize.s28),
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
+                  }
+                },
+              );
+            }),
       ],
     );
   }

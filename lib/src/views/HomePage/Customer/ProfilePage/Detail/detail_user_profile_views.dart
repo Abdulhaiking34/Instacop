@@ -44,26 +44,18 @@ class _DetailProfileViewState extends State<DetailProfileView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               //TODO: First & Last Name
-              Row(
-                children: <Widget>[
-                  //TODO: First Name
-                  Expanded(
-                    child: InputText(
-                      title: 'First Name*',
-                      onValueChange: (value) {},
-                    ),
-                  ),
-                  SizedBox(
-                    width: ConstScreen.setSizeWidth(15),
-                  ),
-                  //TODO: Last Name
-                  Expanded(
-                    child: InputText(
-                      title: 'Last Name*',
-                      onValueChange: (value) {},
-                    ),
-                  ),
-                ],
+              InputText(
+                title: 'Full Name',
+                onValueChange: (value) {},
+              ),
+
+              SizedBox(
+                height: ConstScreen.setSizeHeight(20),
+              ),
+              //TODO: Address
+              InputText(
+                title: 'Address',
+                onValueChange: (value) {},
               ),
 
               SizedBox(

@@ -4,15 +4,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/helpers/validator.dart';
 import 'package:instacop/src/model/user.dart';
 
 class SignInController {
   StreamController _isEmail = new StreamController();
   StreamController _isPassword = new StreamController();
+  StreamController _isBtnLoading = new StreamController();
 
   Stream get emailStream => _isEmail.stream;
   Stream get passwordStream => _isPassword.stream;
+  Stream get btnLoadingStream => _isBtnLoading.stream;
+
   Validators validators = new Validators();
 
   Future<String> onSubmitSignIn({
@@ -38,6 +42,7 @@ class SignInController {
     //TODO: Sign in function
     if (countError == 0) {
       try {
+        _isBtnLoading.sink.add(false);
         FirebaseAuth auth = FirebaseAuth.instance;
         FirebaseUser firebaseUser = (await auth.signInWithEmailAndPassword(
                 email: email, password: password))
@@ -72,6 +77,7 @@ class SignInController {
               StorageUtil.setIsLogging(true);
               StorageUtil.setUserInfo(user);
               StorageUtil.setAccountType('admin');
+              StorageUtil.setPassword(password);
             }
           } else {
             //TODO: Customer Sign In
@@ -83,10 +89,12 @@ class SignInController {
               StorageUtil.setIsLogging(true);
               StorageUtil.setUserInfo(user);
               StorageUtil.setAccountType('customer');
+              StorageUtil.setPassword(Util.encodePassword(password));
             }
           }
         });
       } catch (e) {}
+      _isBtnLoading.sink.add(true);
       return result;
     }
   }
@@ -94,5 +102,6 @@ class SignInController {
   void dispose() {
     _isEmail.close();
     _isPassword.close();
+    _isBtnLoading.close();
   }
 }

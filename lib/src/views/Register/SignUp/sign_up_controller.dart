@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/helpers/validator.dart';
 import 'package:instacop/src/model/user.dart';
 
@@ -14,12 +13,14 @@ class SignUpController {
   StreamController _isEmailController = new StreamController();
   StreamController _isPasswordController = new StreamController();
   StreamController _isConfirmPwdController = new StreamController();
+  StreamController _isBtnLoadingController = new StreamController();
 
   Stream get fullNameStream => _isFullNameController.stream;
   Stream get phoneStream => _isPhoneController.stream;
   Stream get emailStream => _isEmailController.stream;
   Stream get passwordStream => _isPasswordController.stream;
   Stream get confirmPwdSteam => _isConfirmPwdController.stream;
+  Stream get btnLoadingStream => _isBtnLoadingController.stream;
 
   Validators validators = new Validators();
 
@@ -70,6 +71,7 @@ class SignUpController {
     //TODO: Accept Sign Up
     if (countError == 0) {
       try {
+        _isBtnLoadingController.sink.add(false);
         //TODO: Create account
         FirebaseAuth firebaseAuth = FirebaseAuth.instance;
         FirebaseUser user = (await firebaseAuth.createUserWithEmailAndPassword(
@@ -79,8 +81,7 @@ class SignUpController {
         //TODO: Add data to database
         String createAt = user.metadata.creationTime.toString();
         //TODO: encode password
-        var bytes = utf8.encode("foobar");
-        String pwdSha512 = sha512.convert(bytes).toString();
+        String pwdSha512 = Util.encodePassword(password);
         Firestore.instance.collection('Users').document(user.uid).setData({
           'username': email,
           'password': pwdSha512,
@@ -100,6 +101,8 @@ class SignUpController {
         await StorageUtil.setIsLogging(true);
         StorageUtil.setUserInfo(userInfo);
         StorageUtil.setAccountType('customer');
+        StorageUtil.setPassword(pwdSha512);
+        _isBtnLoadingController.sink.add(true);
         return true;
       } catch (e) {
         _isEmailController.sink.addError('The email address is already in use');
@@ -113,5 +116,6 @@ class SignUpController {
     _isConfirmPwdController.close();
     _isPasswordController.close();
     _isPhoneController.close();
+    _isBtnLoadingController.close();
   }
 }

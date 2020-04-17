@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/views/Register/SignIn/sign_in_controller.dart';
@@ -95,19 +96,48 @@ class _SignInViewState extends State<SignInView> {
         SizedBox(
           height: ConstScreen.setSizeHeight(25),
         ),
-        CusRaisedButton(
-          backgroundColor: kColorBlack,
-          title: 'SIGN IN',
-          onPress: () async {
-            var result = await signInController.onSubmitSignIn(
-                email: _email, password: _password, isAdmin: _isAdmin);
-            print('Screen' + result.toString());
-            if (result != '') {
-              Navigator.pushNamed(context, result);
-              SignInController().dispose();
-            }
-          },
-        )
+        StreamBuilder(
+            stream: signInController.btnLoadingStream,
+            builder: (context, snapshot) {
+              return CusRaisedButton(
+                backgroundColor: kColorBlack,
+                title: 'SIGN IN',
+                isDisablePress: snapshot.hasData ? snapshot.data : true,
+                onPress: () async {
+                  var result = await signInController.onSubmitSignIn(
+                      email: _email, password: _password, isAdmin: _isAdmin);
+                  print('Screen' + result.toString());
+
+                  if (result != '') {
+                    Navigator.pushNamed(context, result);
+                    SignInController().dispose();
+                  } else {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      backgroundColor: kColorWhite,
+                      content: Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.error,
+                            color: kColorRed,
+                            size: ConstScreen.setSizeWidth(50),
+                          ),
+                          SizedBox(
+                            width: ConstScreen.setSizeWidth(20),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Sign In failed.',
+                              style: kBoldTextStyle.copyWith(
+                                  fontSize: FontSize.s28),
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
+                  }
+                },
+              );
+            })
       ],
     );
   }
