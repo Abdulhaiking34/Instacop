@@ -25,9 +25,7 @@ class _ProductPageState extends State<ProductPage>
   ProgressDialog pr;
   bool _isLogging = false;
   List _sizeList = ['S', 'M', 'L', 'XL'];
-  List _colorList = [];
   bool _isLoveCheck = false;
-  bool _isTest = false;
   bool _isAddBtnPress = true;
   int _isColorFocus = 1;
   List<ColorInfo> _listColorPicker = [];

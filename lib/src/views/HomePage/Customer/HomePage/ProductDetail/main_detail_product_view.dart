@@ -47,10 +47,10 @@ class _MainDetailProductViewState extends State<MainDetailProductView> {
           },
           children: <Widget>[
             ProductPage(
-              product: product,
+              product: widget.product,
             ),
             DetailOfProductPage(
-              product: product,
+              product: widget.product,
             ),
             RatingProductPage(
               product: widget.product,

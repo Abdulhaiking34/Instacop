@@ -24,6 +24,14 @@ class _RatingProductPageState extends State<RatingProductPage>
   RatingController _controller = new RatingController();
   double _ratingPoint = 0;
   String _comment;
+  List commentList = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.product.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -276,19 +284,21 @@ class _RatingProductPageState extends State<RatingProductPage>
                       ratingPoint += rating['point'];
                     }
                     _controller.setAveragePoint(ratingPoint / totalReview);
+                    commentList = snapshot.data.documents
+                        .map((DocumentSnapshot document) {
+                      return RatingComment(
+                        username: document['name'],
+                        comment: document['comment'],
+                        ratingPoint: document['point'],
+                        createAt:
+                            Util.convertDateToString(document['create_at']),
+                      );
+                    }).toList();
+                    commentList.reversed.toList();
                     return ListView(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        children: snapshot.data.documents
-                            .map((DocumentSnapshot document) {
-                          return RatingComment(
-                            username: document['name'],
-                            comment: document['comment'],
-                            ratingPoint: document['point'],
-                            createAt:
-                                Util.convertDateToString(document['create_at']),
-                          );
-                        }).toList());
+                        children: commentList.reversed.toList());
                   } else {
                     return Container();
                   }

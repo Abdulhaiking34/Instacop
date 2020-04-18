@@ -146,7 +146,9 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                         Firestore.instance
                                             .collection('Products')
                                             .document(qtyOrder.productId)
-                                            .updateData({'quantity': result});
+                                            .updateData({
+                                          'quantity': result.toString()
+                                        });
                                       });
                                     }
                                   });

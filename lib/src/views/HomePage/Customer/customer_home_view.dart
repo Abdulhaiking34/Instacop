@@ -26,9 +26,11 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
   bool _isLogging;
   final pageController = PageController();
   final PageStorageBucket bucket = PageStorageBucket();
+
   @override
   initState() {
     // TODO: implement initState
+
     StorageUtil.getIsLogging().then((bool value) {
       if (value != null) {
         _isLogging = value;

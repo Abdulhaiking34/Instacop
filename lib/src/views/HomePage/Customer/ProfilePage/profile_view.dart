@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/views/HomePage/Customer/ProfilePage/Detail/detail_user_profile_views.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 
@@ -13,6 +14,16 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView>
     with AutomaticKeepAliveClientMixin {
+  String uid = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    StorageUtil.getUid().then((onValue) {
+      uid = onValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -27,7 +38,12 @@ class _ProfileViewState extends State<ProfileView>
             backgroundColor: kColorWhite,
             height: 100,
             onPress: () {
-              Navigator.pushNamed(context, 'customer_detail_screen');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DetailProfileView(
+                            uid: uid,
+                          )));
             },
           ),
           //TODO: Change password
