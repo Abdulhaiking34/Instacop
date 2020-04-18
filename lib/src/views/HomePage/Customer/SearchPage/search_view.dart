@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/product_list_view.dart';
 import 'package:instacop/src/widgets/category_item.dart';
 
 class SearchView extends StatefulWidget {
@@ -12,6 +13,15 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
+  void navigatorTo(String link) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProductListView(
+                  search: link,
+                )));
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -77,32 +87,58 @@ class _SearchViewState extends State<SearchView>
                         fontWeight: FontWeight.w400)),
                 children: <Widget>[
                   CategoryItem(
+                    title: 'Tees',
+                    onTap: () {
+                      navigatorTo('Tees');
+                    },
+                  ),
+                  CategoryItem(
                     title: 'Hoodies & Sweatshirts',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Hoodies & Sweatshirts');
+                    },
                   ),
                   CategoryItem(
                     title: 'Shirts',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Shirts');
+                    },
                   ),
                   CategoryItem(
                     title: 'Jacket',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Jacket');
+                    },
                   ),
                   CategoryItem(
                     title: 'Shorts',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Shorts');
+                    },
                   ),
                   CategoryItem(
                     title: 'Pants',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Pants');
+                    },
+                  ),
+                  CategoryItem(
+                    title: 'Sweatpants',
+                    onTap: () {
+                      navigatorTo('Sweatpants');
+                    },
                   ),
                   CategoryItem(
                     title: 'Jeans',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Jeans');
+                    },
                   ),
                   CategoryItem(
                     title: 'Joggers',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Joggers');
+                    },
                   ),
                 ],
               ),
@@ -118,15 +154,21 @@ class _SearchViewState extends State<SearchView>
                 children: <Widget>[
                   CategoryItem(
                     title: 'Athletic Shoes',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Athletic Shoes');
+                    },
                   ),
                   CategoryItem(
                     title: 'Causual Shoes',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Causual Shoes');
+                    },
                   ),
                   CategoryItem(
                     title: 'Sandals & Slides',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Sandals & Slides');
+                    },
                   )
                 ],
               ),
@@ -142,23 +184,33 @@ class _SearchViewState extends State<SearchView>
                 children: <Widget>[
                   CategoryItem(
                     title: 'Hats',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Hats');
+                    },
                   ),
                   CategoryItem(
                     title: 'Backpacks',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Backpacks');
+                    },
                   ),
                   CategoryItem(
                     title: 'Sunglasses',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Sunglasses');
+                    },
                   ),
                   CategoryItem(
                     title: 'Belts',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Belts');
+                    },
                   ),
                   CategoryItem(
                     title: 'Watches',
-                    onTap: () {},
+                    onTap: () {
+                      navigatorTo('Watches');
+                    },
                   )
                 ],
               ),

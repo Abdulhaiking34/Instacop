@@ -32,10 +32,10 @@ class TitleWidget extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 8,
+            flex: 7,
             child: AutoSizeText(
               content,
-              maxLines: 2,
+              maxLines: 3,
               overflow: TextOverflow.ellipsis,
               minFontSize: 10,
               style: kBoldTextStyle.copyWith(

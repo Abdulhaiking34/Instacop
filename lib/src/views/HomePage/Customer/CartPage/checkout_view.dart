@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,7 +13,6 @@ import 'package:instacop/src/views/HomePage/Customer/CartPage/checkout_controlle
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_product_order.dart';
 import 'package:instacop/src/widgets/input_text.dart';
-import 'package:instacop/src/widgets/item_order.dart';
 
 class ProcessingOrderView extends StatefulWidget {
   ProcessingOrderView({this.productList, this.total});
@@ -296,7 +294,9 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                           children: widget.productList.map((product) {
                             return ProductOrderDetail(
                               name: product.productName,
-                              price: product.price,
+                              price: (product.salePrice == '0')
+                                  ? product.price
+                                  : product.salePrice,
                               quantity: product.quantity,
                               color: Color(product.color),
                               size: product.size,

@@ -4,14 +4,12 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 
 class BoxInfo extends StatelessWidget {
-  BoxInfo({
-    this.sizeProduct,
-    this.color = kColorWhite,
-  });
+  BoxInfo({this.sizeProduct, this.color = kColorWhite, this.size = 50});
 
   bool isTextBox;
   final Color color;
   final String sizeProduct;
+  final double size;
   @override
   Widget build(BuildContext context) {
     if (sizeProduct == null) {
@@ -19,8 +17,8 @@ class BoxInfo extends StatelessWidget {
     } else
       isTextBox = true;
     return Container(
-      height: ConstScreen.setSizeHeight(50),
-      width: ConstScreen.setSizeHeight(70),
+      height: ConstScreen.setSizeHeight(size),
+      width: ConstScreen.setSizeHeight(size + 20),
       decoration: BoxDecoration(
         border: Border.all(color: kColorBlack.withOpacity(0.5)),
       ),

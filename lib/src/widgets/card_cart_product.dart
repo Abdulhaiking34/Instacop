@@ -9,6 +9,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/widgets/box_info.dart';
 
 class CartProductCard extends StatelessWidget {
@@ -19,6 +20,7 @@ class CartProductCard extends StatelessWidget {
       this.productColor = kColorWhite,
       this.productPrice = 0,
       this.productImage = '',
+      this.productSalePrice = 0,
       this.quantity = '1',
       this.brand,
       this.madeIn,
@@ -28,6 +30,7 @@ class CartProductCard extends StatelessWidget {
   final Color productColor;
   final String productSize;
   final int productPrice;
+  final int productSalePrice;
   final String productImage;
   final String quantity;
   final String brand;
@@ -41,6 +44,7 @@ class CartProductCard extends StatelessWidget {
     var controller =
         new MaskedTextController(text: '', mask: '000,000,000,000');
     controller.updateText(productPrice.toString());
+    double discount = (productSalePrice / productPrice) * 100;
     String productPriceText = controller.text;
     return Card(
       child: Container(
@@ -201,16 +205,43 @@ class CartProductCard extends StatelessWidget {
                       flex: 1,
                       child: Align(
                         alignment: Alignment.bottomRight,
-                        child: AutoSizeText(
-                          '$productPriceText VND',
-                          maxLines: 1,
-                          minFontSize: 10,
-                          style: TextStyle(
-                              fontSize: FontSize.setTextSize(42),
-                              color: kColorBlack,
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.end,
-                        ),
+                        child: (productSalePrice == 0)
+                            ? AutoSizeText(
+                                '$productPriceText VND',
+                                maxLines: 1,
+                                minFontSize: 10,
+                                style: TextStyle(
+                                    fontSize: FontSize.setTextSize(42),
+                                    color: kColorBlack,
+                                    fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.end,
+                              )
+                            : Column(
+                                children: <Widget>[
+                                  //TODO: discount
+                                  AutoSizeText(
+                                    '${discount.toInt()}% OFF',
+                                    maxLines: 1,
+                                    minFontSize: 10,
+                                    style: TextStyle(
+                                        fontSize: FontSize.setTextSize(32),
+                                        color: kColorRed,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                  //TODO: price sale
+                                  AutoSizeText(
+                                    '${Util.intToMoneyType(productSalePrice)} VND',
+                                    maxLines: 1,
+                                    minFontSize: 10,
+                                    style: TextStyle(
+                                        fontSize: FontSize.setTextSize(42),
+                                        color: kColorRed,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
+                              ),
                       ),
                     )
                   ],

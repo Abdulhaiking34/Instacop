@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/product_list_view.dart';
 import 'package:instacop/src/widgets/icon_instacop.dart';
 
 class CustomerHomePageView extends StatefulWidget {
@@ -32,7 +33,12 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView>
               description: 'Spring Summer Colection',
               image: 'giphy_1.gif',
               onPress: () {
-                Navigator.pushNamed(context, 'customer_detail_banner_screen');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductListView(
+                              search: '',
+                            )));
               },
             ),
             Banner(

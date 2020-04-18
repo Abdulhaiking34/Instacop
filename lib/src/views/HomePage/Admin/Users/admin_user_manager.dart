@@ -27,6 +27,14 @@ class _UserManagerViewState extends State<UserManagerView> {
               fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.add_comment,
+                size: ConstScreen.setSizeWidth(45),
+              ),
+              onPressed: () {})
+        ],
       ),
       body: Container(
         child: StreamBuilder<QuerySnapshot>(

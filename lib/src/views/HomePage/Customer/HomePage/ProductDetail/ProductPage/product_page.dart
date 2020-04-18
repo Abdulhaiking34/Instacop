@@ -34,10 +34,24 @@ class _ProductPageState extends State<ProductPage>
   int colorValue;
   String sizeValue;
 
+//  getCountWish() {
+//    int count = 0;
+//    Firestore.instance.collection('Wishlists').getDocuments().then((document) {
+//      for (var doc in document.documents) {
+//        print(doc.documentID);
+//      }
+//      var isSur = document.documents.firstWhere((it) => it.documentID == widget.product.id, orElse: () => null);
+//      if(isSur != null){
+//        count++;
+//      }
+//    });
+//  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     getIsCheckWishlist();
     int i = 1;
     for (var value in widget.product.colorList) {
@@ -277,7 +291,7 @@ class _ProductPageState extends State<ProductPage>
                       //TODO: Sale Price
                       Text(
                         (widget.product.salePrice != '0')
-                            ? widget.product.salePrice + ' USD'
+                            ? widget.product.salePrice + ' VND'
                             : '',
                         style: TextStyle(
                             fontSize: FontSize.setTextSize(34),

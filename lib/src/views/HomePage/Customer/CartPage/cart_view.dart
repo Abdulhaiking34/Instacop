@@ -27,6 +27,12 @@ class _CartViewState extends State<CartView> {
   int totalPrice = 0;
   String totalPriceText = '';
   String uidUser = '';
+
+  void dispose() {
+    super.dispose();
+    _productController.close();
+  }
+
   //TODO: Delete product
   void onDelete(String productID) {
     // TODO: find Product widget
@@ -69,7 +75,10 @@ class _CartViewState extends State<CartView> {
   void getTotal() {
     totalPrice = 0;
     for (var product in productInfotList) {
-      totalPrice += (int.parse(product.price) * int.parse(product.quantity));
+      int price = (product.salePrice == '0')
+          ? int.parse(product.price)
+          : int.parse(product.salePrice);
+      totalPrice += (price * int.parse(product.quantity));
     }
     var controller =
         new MaskedTextController(text: '', mask: '000,000,000,000,000');
@@ -96,6 +105,7 @@ class _CartViewState extends State<CartView> {
         int index = 0;
         //TODO:Get list product
         for (var value in onValue.documents) {
+          print('Sale: ' + value.data['sale_price']);
           Product product = new Product(
             id: value.data['id'],
             productName: value.data['name'],
@@ -117,6 +127,7 @@ class _CartViewState extends State<CartView> {
             id: product.id,
             productName: product.productName,
             productPrice: int.parse(product.price),
+            productSalePrice: int.parse(product.salePrice),
             productColor: Color(product.color),
             productSize: product.size,
             productImage: product.image,

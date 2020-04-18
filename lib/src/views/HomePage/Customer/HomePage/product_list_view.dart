@@ -12,13 +12,24 @@ import 'package:instacop/src/widgets/card_product.dart';
 import 'ProductDetail/main_detail_product_view.dart';
 
 class ProductListView extends StatefulWidget {
-//  ProductListView({this.title});
-//  final String title;
+  ProductListView({this.search});
+  final String search;
   @override
   _DetailBannerScreenState createState() => _DetailBannerScreenState();
 }
 
 class _DetailBannerScreenState extends State<ProductListView> {
+  bool isSearch = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.search != '') {
+      isSearch = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
@@ -28,7 +39,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
           backgroundColor: kColorWhite,
           centerTitle: true,
           title: Text(
-            'NEW IN',
+            isSearch ? 'SEARCH' : 'NEW IN',
             style: kBoldTextStyle.copyWith(fontSize: FontSize.s36),
           ),
           actions: <Widget>[
@@ -66,8 +77,16 @@ class _DetailBannerScreenState extends State<ProductListView> {
                     bottom: ConstScreen.setSizeHeight(30),
                   ),
                   child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          Firestore.instance.collection('Products').snapshots(),
+                      stream: isSearch
+                          ? Firestore.instance
+                              .collection('Products')
+                              .orderBy('create_at')
+                              .where('categogy', isEqualTo: widget.search)
+                              .snapshots()
+                          : Firestore.instance
+                              .collection('Products')
+                              .orderBy('create_at')
+                              .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
