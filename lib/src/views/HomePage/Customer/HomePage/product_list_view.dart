@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +22,53 @@ class ProductListView extends StatefulWidget {
 
 class _DetailBannerScreenState extends State<ProductListView> {
   bool isSearch = false;
+  bool isSale = false;
+  String title = '';
+  getFirestoreSnapshot() {
+    if (widget.search == 'sale') {
+      setState(() {
+        title = 'SALE';
+      });
+      return Firestore.instance
+          .collection('Products')
+          .where('sale_price', isGreaterThan: '0')
+          .snapshots();
+    } else if (widget.search != '') {
+      setState(() {
+        title = 'SEARCHING';
+      });
+      return Firestore.instance
+          .collection('Products')
+          .orderBy('create_at')
+          .where('categogy', isEqualTo: widget.search)
+          .snapshots();
+    } else {
+      setState(() {
+        title = 'NEW IN';
+      });
+      return Firestore.instance
+          .collection('Products')
+          .orderBy('create_at')
+          .snapshots();
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.search != '') {
-      isSearch = true;
+    if (widget.search == 'sale') {
+      setState(() {
+        title = 'SALE';
+      });
+    } else if (widget.search != '') {
+      setState(() {
+        title = 'SEARCH';
+      });
+    } else {
+      setState(() {
+        title = 'NEW IN';
+      });
     }
   }
 
@@ -34,12 +76,13 @@ class _DetailBannerScreenState extends State<ProductListView> {
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return Scaffold(
+      backgroundColor: kColorWhite,
       appBar: AppBar(
           iconTheme: IconThemeData.fallback(),
           backgroundColor: kColorWhite,
           centerTitle: true,
           title: Text(
-            isSearch ? 'SEARCH' : 'NEW IN',
+            title,
             style: kBoldTextStyle.copyWith(fontSize: FontSize.s36),
           ),
           actions: <Widget>[
@@ -58,92 +101,79 @@ class _DetailBannerScreenState extends State<ProductListView> {
               },
             ),
           ]),
-      body: Container(
-        color: kColorWhite,
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  height: ConstScreen.setSizeHeight(40),
+      body: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(
+                height: ConstScreen.setSizeHeight(40),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: ConstScreen.setSizeHeight(30),
+                  right: ConstScreen.setSizeHeight(30),
+                  bottom: ConstScreen.setSizeHeight(30),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: ConstScreen.setSizeHeight(30),
-                    right: ConstScreen.setSizeHeight(30),
-                    bottom: ConstScreen.setSizeHeight(30),
-                  ),
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: isSearch
-                          ? Firestore.instance
-                              .collection('Products')
-                              .orderBy('create_at')
-                              .where('categogy', isEqualTo: widget.search)
-                              .snapshots()
-                          : Firestore.instance
-                              .collection('Products')
-                              .orderBy('create_at')
-                              .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) {
-                          return Text('Loading...');
-                        } else {
-                          return GridView.count(
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            crossAxisCount: 2,
-                            crossAxisSpacing: ConstScreen.setSizeHeight(30),
-                            mainAxisSpacing: ConstScreen.setSizeHeight(40),
-                            childAspectRatio: 66 / 110,
-                            children: snapshot.data.documents
-                                .map((DocumentSnapshot document) {
-                              return ProductCard(
-                                productName: document['name'],
-                                image: document['image'][0],
-                                price: int.parse(document['price']),
-                                salePrice: (document['sale_price'] != '0')
-                                    ? int.parse(document['sale_price'])
-                                    : 0,
-                                onTap: () {
-                                  Product product = new Product(
-                                    id: document['id'],
-                                    productName: document['name'],
-                                    imageList: document['image'],
-                                    category: document['categogy'],
-                                    sizeList: document['size'],
-                                    colorList: document['color'],
-                                    price: document['price'],
-                                    salePrice: document['sale_price'],
-                                    brand: document['brand'],
-                                    madeIn: document['made_in'],
-                                    quantity: document['quantity'],
-                                    description: document['description'],
-                                    rating: document['rating'],
-                                  );
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          MainDetailProductView(
-                                        product: product,
-                                      ),
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: getFirestoreSnapshot(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text('Loading...');
+                      } else {
+                        return GridView.count(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: ConstScreen.setSizeHeight(30),
+                          mainAxisSpacing: ConstScreen.setSizeHeight(40),
+                          childAspectRatio: 66 / 110,
+                          children: snapshot.data.documents
+                              .map((DocumentSnapshot document) {
+                            return ProductCard(
+                              productName: document['name'],
+                              image: document['image'][0],
+                              price: int.parse(document['price']),
+                              salePrice: (document['sale_price'] != '0')
+                                  ? int.parse(document['sale_price'])
+                                  : 0,
+                              onTap: () {
+                                Product product = new Product(
+                                  id: document['id'],
+                                  productName: document['name'],
+                                  imageList: document['image'],
+                                  category: document['categogy'],
+                                  sizeList: document['size'],
+                                  colorList: document['color'],
+                                  price: document['price'],
+                                  salePrice: document['sale_price'],
+                                  brand: document['brand'],
+                                  madeIn: document['made_in'],
+                                  quantity: document['quantity'],
+                                  description: document['description'],
+                                  rating: document['rating'],
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MainDetailProductView(
+                                      product: product,
                                     ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          );
-                        }
-                      }),
-                )
-              ],
-            ),
-          ],
-        ),
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        );
+                      }
+                    }),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -513,83 +513,74 @@ class _ProductAddingViewState extends State<ProductAddingView> {
         ),
       ),
       //TODO Add product
-      bottomNavigationBar: SizedBox(
-        height: ConstScreen.setSizeHeight(130),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: ConstScreen.setSizeWidth(20),
-              vertical: ConstScreen.setSizeHeight(20)),
-          child: CusRaisedButton(
-            title: 'Add Product',
-            backgroundColor: kColorBlack,
-            onPress: () async {
-              bool result = await _controller.onAddProduct(
-                  productName: _nameController.text,
-                  imageList: images,
-                  category: subCategory,
-                  sizeList: sizeList,
-                  colorList: colorList,
-                  price: _priceController.text,
-                  salePrice: _salePriceController.text,
-                  brand: _brandController.text,
-                  madeIn: _madeInController.text,
-                  quantity: _quantityController.text,
-                  description: _descriptionController.text,
-                  sizeType: sizeTypeValue);
-              if (result) {
-                widget._scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: kColorWhite,
-                  content: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.check,
-                        color: kColorGreen,
-                        size: ConstScreen.setSizeWidth(50),
-                      ),
-                      SizedBox(
-                        width: ConstScreen.setSizeWidth(20),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Product has been adding.',
-                          style:
-                              kBoldTextStyle.copyWith(fontSize: FontSize.s28),
-                        ),
-                      )
-                    ],
+      bottomNavigationBar: CusRaisedButton(
+        title: 'Add Product',
+        backgroundColor: kColorBlack,
+        height: 100,
+        onPress: () async {
+          bool result = await _controller.onAddProduct(
+              productName: _nameController.text,
+              imageList: images,
+              category: subCategory,
+              sizeList: sizeList,
+              colorList: colorList,
+              price: _priceController.text,
+              salePrice: _salePriceController.text,
+              brand: _brandController.text,
+              madeIn: _madeInController.text,
+              quantity: _quantityController.text,
+              description: _descriptionController.text,
+              sizeType: sizeTypeValue);
+          if (result) {
+            widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+              backgroundColor: kColorWhite,
+              content: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.check,
+                    color: kColorGreen,
+                    size: ConstScreen.setSizeWidth(50),
                   ),
-                ));
-                //TODO: renew Value
-                setState(() {
-                  renewValue();
-                });
-              } else {
-                widget._scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: kColorWhite,
-                  content: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.error,
-                        color: kColorRed,
-                        size: ConstScreen.setSizeWidth(50),
-                      ),
-                      SizedBox(
-                        width: ConstScreen.setSizeWidth(20),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Added error.',
-                          style:
-                              kBoldTextStyle.copyWith(fontSize: FontSize.s28),
-                        ),
-                      )
-                    ],
+                  SizedBox(
+                    width: ConstScreen.setSizeWidth(20),
                   ),
-                ));
-              }
-            },
-          ),
-        ),
+                  Expanded(
+                    child: Text(
+                      'Product has been adding.',
+                      style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
+                    ),
+                  )
+                ],
+              ),
+            ));
+            //TODO: renew Value
+            setState(() {
+              renewValue();
+            });
+          } else {
+            widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+              backgroundColor: kColorWhite,
+              content: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.error,
+                    color: kColorRed,
+                    size: ConstScreen.setSizeWidth(50),
+                  ),
+                  SizedBox(
+                    width: ConstScreen.setSizeWidth(20),
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Added error.',
+                      style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
+                    ),
+                  )
+                ],
+              ),
+            ));
+          }
+        },
       ),
     );
   }

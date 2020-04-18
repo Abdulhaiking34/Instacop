@@ -30,7 +30,8 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView>
           items: <Widget>[
             Banner(
               title: 'NEW IN',
-              description: 'Spring Summer Colection',
+              description:
+                  'Discover this season\'s new collection built around',
               image: 'giphy_1.gif',
               onPress: () {
                 Navigator.push(
@@ -42,12 +43,17 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView>
               },
             ),
             Banner(
-              title: 'COLLECTION',
+              title: 'SALE',
               description:
                   'Discover this season\'s new collection built around',
               image: 'banner_3.jpg',
               onPress: () {
-                Navigator.pushNamed(context, 'customer_detail_banner_screen');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductListView(
+                              search: 'sale',
+                            )));
               },
             ),
             Banner(
