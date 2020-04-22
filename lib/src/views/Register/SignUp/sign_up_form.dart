@@ -7,6 +7,8 @@ import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 
 class SignUpView extends StatefulWidget {
+  SignUpView({this.typeAccount});
+  final String typeAccount;
   @override
   _SignUpViewState createState() => _SignUpViewState();
 }
@@ -115,10 +117,36 @@ class _SignUpViewState extends State<SignUpView> {
                       phone: _phone,
                       email: _email,
                       password: _password,
-                      confirmPwd: _confirmPwd);
+                      confirmPwd: _confirmPwd,
+                      typeAccount: widget.typeAccount);
 
                   if (result) {
-                    Navigator.pushNamed(context, 'customer_home_screen');
+                    if (widget.typeAccount == 'customer') {
+                      Navigator.pushNamed(context, 'customer_home_screen');
+                    } else {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        backgroundColor: kColorWhite,
+                        content: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.check,
+                              color: kColorGreen,
+                              size: ConstScreen.setSizeWidth(50),
+                            ),
+                            SizedBox(
+                              width: ConstScreen.setSizeWidth(20),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Adding User Complete',
+                                style: kBoldTextStyle.copyWith(
+                                    fontSize: FontSize.s28),
+                              ),
+                            )
+                          ],
+                        ),
+                      ));
+                    }
                   } else {
                     Scaffold.of(context).showSnackBar(SnackBar(
                       backgroundColor: kColorWhite,

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
@@ -22,7 +23,7 @@ class CartView extends StatefulWidget {
 class _CartViewState extends State<CartView> {
   StreamController _streamController = new StreamController();
   StreamController _productController = new StreamController();
-  List<Product> productInfotList = [];
+  List<Product> productInfoList = [];
   List<CartProductCard> uiProductList = [];
   int totalPrice = 0;
   String totalPriceText = '';
@@ -52,21 +53,27 @@ class _CartViewState extends State<CartView> {
       print(('Close faild'));
     }
     // TODO: find Product Info
-    var findProInfo = productInfotList.firstWhere((it) => it.id == productID,
+    var findProInfo = productInfoList.firstWhere((it) => it.id == productID,
         orElse: () => null);
     if (findProInfo != null) {
-      productInfotList.removeAt(productInfotList.indexOf(findProInfo));
+      productInfoList.removeAt(productInfoList.indexOf(findProInfo));
       getTotal();
     }
   }
 
 //TODO: Update new quantity
   void onChangeQty(String qty, String productID) {
-    var find = productInfotList.firstWhere((it) => it.id == productID,
+    var find = productInfoList.firstWhere((it) => it.id == productID,
         orElse: () => null);
     if (find != null) {
-      int index = productInfotList.indexOf(find);
-      productInfotList.elementAt(index).quantity = qty;
+      int index = productInfoList.indexOf(find);
+      productInfoList.elementAt(index).quantity = qty;
+      Firestore.instance
+          .collection('Carts')
+          .document(uidUser)
+          .collection(uidUser)
+          .document(productInfoList.elementAt(index).id)
+          .updateData({'quantity': qty});
       getTotal();
     }
   }
@@ -74,7 +81,7 @@ class _CartViewState extends State<CartView> {
 //TODO: get total
   void getTotal() {
     totalPrice = 0;
-    for (var product in productInfotList) {
+    for (var product in productInfoList) {
       int price = (product.salePrice == '0')
           ? int.parse(product.price)
           : int.parse(product.salePrice);
@@ -86,6 +93,19 @@ class _CartViewState extends State<CartView> {
     setState(() {
       totalPriceText = controller.text;
     });
+  }
+
+//TODO: get product quantity Server
+  void getQuantity() {
+    for (var product in productInfoList) {
+      Firestore.instance
+          .collection('Products')
+          .document(product.id)
+          .get()
+          .then((document) {
+        product.quantityMain = document['quantity'];
+      });
+    }
   }
 
   @override
@@ -119,10 +139,11 @@ class _CartViewState extends State<CartView> {
             madeIn: value.data['made_in'],
             quantity: value.data['quantity'],
           );
-          productInfotList.add(product);
+          productInfoList.add(product);
+          getQuantity();
         }
         // TODO: add list product widget
-        uiProductList = productInfotList.map((product) {
+        uiProductList = productInfoList.map((product) {
           return CartProductCard(
             id: product.id,
             productName: product.productName,
@@ -134,6 +155,7 @@ class _CartViewState extends State<CartView> {
             brand: product.brand,
             madeIn: product.madeIn,
             quantity: product.quantity,
+            //TODO: onQtyChange
             onQtyChange: (qty) {
               print(qty);
               setState(() {
@@ -254,15 +276,18 @@ class _CartViewState extends State<CartView> {
                 backgroundColor: kColorBlack,
                 height: ConstScreen.setSizeHeight(150),
                 onPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProcessingOrderView(
-                        productList: productInfotList,
-                        total: totalPrice,
+                  if (totalPrice != 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProcessingOrderView(
+                          productList: productInfoList,
+                          total: totalPrice,
+                          uid: uidUser,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 },
               ),
             )

@@ -10,6 +10,7 @@ class Product {
   String brand;
   String madeIn;
   String quantity;
+  String quantityMain;
   String description;
   double rating;
   String image;
@@ -30,6 +31,7 @@ class Product {
       this.brand,
       this.madeIn,
       this.quantity,
+      this.quantityMain,
       this.description,
       this.rating});
 }

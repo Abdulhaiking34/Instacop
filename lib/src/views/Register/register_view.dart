@@ -56,7 +56,11 @@ class _RegisterViewState extends State<RegisterView> {
                           SizedBox(
                             height: 20,
                           ),
-                          _isSignIn ? SignInView() : SignUpView(),
+                          _isSignIn
+                              ? SignInView()
+                              : SignUpView(
+                                  typeAccount: 'customer',
+                                ),
                           SizedBox(
                             height: 10,
                           ),

@@ -30,6 +30,7 @@ class SignUpController {
     @required String email,
     @required String password,
     @required String confirmPwd,
+    @required String typeAccount,
   }) async {
     int countError = 0;
     _isFullNameController.sink.add('');
@@ -83,6 +84,7 @@ class SignUpController {
         //TODO: encode password
         String pwdSha512 = Util.encodePassword(password);
         Firestore.instance.collection('Users').document(user.uid).setData({
+          'id': user.uid,
           'username': email,
           'password': pwdSha512,
           'fullname': fullName,
@@ -92,7 +94,7 @@ class SignUpController {
           'address': '',
           'create_at': createAt,
           'id_scripe': '',
-          'type': 'customer',
+          'type': typeAccount,
         });
         User userInfo = new User(fullName, email, password, '', '', '', '',
             createAt, '', 'customer');
@@ -106,6 +108,7 @@ class SignUpController {
         return true;
       } catch (e) {
         _isEmailController.sink.addError('The email address is already in use');
+        _isBtnLoadingController.sink.add(true);
       }
     }
   }

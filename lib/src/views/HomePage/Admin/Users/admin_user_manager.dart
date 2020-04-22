@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/views/HomePage/Admin/Users/admin_adding_account.dart';
 import 'package:instacop/src/widgets/widget_title.dart';
-import 'package:intl/intl.dart';
 
 class UserManagerView extends StatefulWidget {
   @override
@@ -33,7 +34,12 @@ class _UserManagerViewState extends State<UserManagerView> {
                 Icons.add_comment,
                 size: ConstScreen.setSizeWidth(45),
               ),
-              onPressed: () {})
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AdminAddingAccount()));
+              })
         ],
       ),
       body: Container(
@@ -47,13 +53,31 @@ class _UserManagerViewState extends State<UserManagerView> {
                 children:
                     snapshot.data.documents.map((DocumentSnapshot document) {
                   index++;
-                  return UserInfoCard(
-                      id: index.toString(),
-                      username: document['username'],
-                      fullname: document['fullname'],
-                      phone: document['phone'],
-                      createAt:
-                          Util.convertDateToString(document['create_at']));
+                  return Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          Firestore.instance
+                              .collection('Users')
+                              .document(document.documentID)
+                              .delete();
+                        },
+                      ),
+                    ],
+                    child: UserInfoCard(
+                        id: index.toString(),
+                        username: document['username'],
+                        fullname: document['fullname'],
+                        phone: document['phone'],
+                        type: document['type'],
+                        createAt:
+                            Util.convertDateToString(document['create_at'])),
+                  );
                 }).toList(),
               );
             } else {
@@ -69,19 +93,21 @@ class _UserManagerViewState extends State<UserManagerView> {
 }
 
 class UserInfoCard extends StatelessWidget {
-  const UserInfoCard({
-    Key key,
-    this.id,
-    this.username = '',
-    this.fullname = '',
-    this.phone = '',
-    this.createAt = '',
-  }) : super(key: key);
+  const UserInfoCard(
+      {Key key,
+      this.id,
+      this.username = '',
+      this.fullname = '',
+      this.phone = '',
+      this.createAt = '',
+      this.type})
+      : super(key: key);
   final String id;
   final String fullname;
   final String username;
   final String phone;
   final String createAt;
+  final String type;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -111,6 +137,12 @@ class UserInfoCard extends StatelessWidget {
               TitleWidget(
                 title: 'Full name',
                 content: fullname,
+                isSpaceBetween: false,
+              ),
+              //TODO: id
+              TitleWidget(
+                title: 'Type',
+                content: type,
                 isSpaceBetween: false,
               ),
               //TODO: phone number

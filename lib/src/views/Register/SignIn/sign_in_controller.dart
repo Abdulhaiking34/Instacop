@@ -93,7 +93,9 @@ class SignInController {
             }
           }
         });
-      } catch (e) {}
+      } catch (e) {
+        _isBtnLoading.sink.add(true);
+      }
       _isBtnLoading.sink.add(true);
       return result;
     }

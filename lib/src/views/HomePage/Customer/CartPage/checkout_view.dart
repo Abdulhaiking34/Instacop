@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,15 +12,21 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/model/product.dart';
+import 'package:instacop/src/services/stripe_payment.dart';
 import 'package:instacop/src/views/HomePage/Customer/CartPage/checkout_controller.dart';
+import 'package:instacop/src/views/HomePage/Customer/CartPage/payment_complete_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_product_order.dart';
 import 'package:instacop/src/widgets/input_text.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 class ProcessingOrderView extends StatefulWidget {
-  ProcessingOrderView({this.productList, this.total});
+  final _globalKey = new GlobalKey<ScaffoldState>();
+  ProcessingOrderView({this.productList, this.total, this.uid});
   final int total;
   final List<Product> productList;
+  final String uid;
 
   @override
   _ProcessingOrderViewState createState() => _ProcessingOrderViewState();
@@ -28,14 +37,23 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
   String _receiverName = '';
   String _phoneNumber = '';
   String _address = '';
-  String cardNumber = '424242424242';
-  String expiryDate = '12/8';
-  String cardHolderName = 'John';
-  String cvvCode = '1606';
+  String cardNumber = '';
+  int expiryMonth;
+  int expiryYear;
+  String cardHolderName = '';
+  String cvvCode = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    StripeService.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return Scaffold(
+      key: widget._globalKey,
       appBar: AppBar(
         iconTheme: IconThemeData.fallback(),
         backgroundColor: kColorWhite,
@@ -198,60 +216,6 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                     ),
                   ),
                 ),
-                //TODO: CARD
-                Card(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: ConstScreen.setSizeHeight(30),
-                        bottom: ConstScreen.setSizeHeight(20),
-                        left: ConstScreen.setSizeHeight(40),
-                        right: ConstScreen.setSizeHeight(40)),
-                    child: Column(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.credit_card,
-                                size: ConstScreen.setSizeHeight(40),
-                              ),
-                              SizedBox(
-                                width: ConstScreen.setSizeWidth(5),
-                              ),
-                              AutoSizeText(
-                                'BANK CARD:',
-                                textAlign: TextAlign.start,
-                                maxLines: 2,
-                                minFontSize: 15,
-                                style: TextStyle(
-                                    fontSize: FontSize.setTextSize(34),
-                                    color: kColorBlack,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: ConstScreen.setSizeWidth(20),
-                        ),
-                        CreditCardWidget(
-                          height: ConstScreen.setSizeHeight(380),
-                          width: ConstScreen.setSizeWidth(600),
-                          textStyle: TextStyle(
-                              fontSize: FontSize.setTextSize(34),
-                              color: kColorWhite,
-                              fontWeight: FontWeight.bold),
-                          cardNumber: cardNumber,
-                          expiryDate: expiryDate,
-                          cardHolderName: cardHolderName,
-                          cvvCode: cvvCode,
-                          showBackView: false,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
                 //TODO: Your Order
                 Card(
                   child: Padding(
@@ -336,6 +300,32 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                               ),
                             ),
                           ],
+                        ),
+                        //TODO: Error quantity check
+                        StreamBuilder(
+                          stream: _checkoutController.quantityStream,
+                          builder: (context, snapshot) {
+                            return Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: ConstScreen.setSizeHeight(10),
+                                  left: ConstScreen.setSizeHeight(22),
+                                ),
+                                child: AutoSizeText(
+                                    snapshot.hasError ? snapshot.error : '',
+                                    textAlign: TextAlign.start,
+                                    maxLines: 20,
+                                    minFontSize: 12,
+                                    style: TextStyle(
+                                        fontSize: FontSize.setTextSize(20),
+                                        color: snapshot.hasError
+                                            ? kColorRed
+                                            : kColorBlack,
+                                        fontWeight: FontWeight.normal)),
+                              ),
+                            );
+                          },
                         )
                       ],
                     ),
@@ -347,90 +337,313 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
         ),
       ),
       bottomNavigationBar: Container(
-        child: CusRaisedButton(
-          title: 'PAYMENT',
-          height: ConstScreen.setSizeHeight(150),
-          backgroundColor: Colors.orangeAccent.shade700,
-          onPress: () async {
-            bool isDone = await _checkoutController.onPayment(
-                name: _receiverName,
-                phoneNumber: _phoneNumber,
-                address: _address,
-                productList: widget.productList,
-                total: widget.total.toString());
-            print(isDone);
-//              if (isDone) {
-//                showModalBottomSheet(
-//                    context: context,
-//                    builder: (context) {
-//                      return Card(
-//                        child: Padding(
-//                          padding: EdgeInsets.only(
-//                              top: ConstScreen.setSizeHeight(30),
-//                              bottom: ConstScreen.setSizeHeight(20),
-//                              left: ConstScreen.setSizeHeight(40),
-//                              right: ConstScreen.setSizeHeight(40)),
-//                          child: Column(
-//                            children: <Widget>[
-//                              Align(
-//                                alignment: Alignment.topLeft,
-//                                child: Row(
-//                                  children: <Widget>[
-//                                    Icon(
-//                                      Icons.payment,
-//                                      size: ConstScreen.setSizeHeight(40),
-//                                    ),
-//                                    SizedBox(
-//                                      width: ConstScreen.setSizeWidth(5),
-//                                    ),
-//                                    AutoSizeText(
-//                                      'PAYMENT:',
-//                                      textAlign: TextAlign.start,
-//                                      maxLines: 2,
-//                                      minFontSize: 15,
-//                                      style: TextStyle(
-//                                          fontSize: FontSize.setTextSize(34),
-//                                          color: kColorBlack,
-//                                          fontWeight: FontWeight.w500),
-//                                    ),
-//                                  ],
-//                                ),
-//                              ),
-//                              SizedBox(
-//                                height: ConstScreen.setSizeWidth(20),
-//                              ),
-//                              //TODO: Pay via new card
-//                              CusRaisedButton(
-//                                title: 'Pay via new card',
-//                                backgroundColor: Colors.orangeAccent.shade400,
-//                                onPress: () {},
-//                              ),
-//                              SizedBox(
-//                                height: ConstScreen.setSizeWidth(15),
-//                              ),
-//                              CusRaisedButton(
-//                                title: 'Pay via existing card',
-//                                backgroundColor: Colors.orangeAccent.shade400,
-//                                onPress: () {},
-//                              ),
-//                              SizedBox(
-//                                height: ConstScreen.setSizeWidth(15),
-//                              ),
-//                              CusRaisedButton(
-//                                title: 'Cancel',
-//                                backgroundColor: kColorBlack,
-//                                onPress: () {
-//                                  Navigator.pop(context);
-//                                },
-//                              ),
-//                            ],
-//                          ),
-//                        ),
-//                      );
-//                    });
-//              }
-          },
-        ),
+        child: StreamBuilder(
+            stream: _checkoutController.btnLoadingStream,
+            builder: (context, snapshot) {
+              return CusRaisedButton(
+                title: 'PAYMENT',
+                isDisablePress: snapshot.hasData ? snapshot.data : true,
+                height: ConstScreen.setSizeHeight(150),
+                backgroundColor: Colors.orangeAccent.shade700,
+                onPress: () async {
+                  //TODO get Currency rate VND -> USD
+                  double rate = await StripeService.getCurrencyRate();
+                  double totalPrice = rate * widget.total.toDouble();
+
+                  bool isValidate = await _checkoutController.onValidate(
+                      name: _receiverName,
+                      phoneNumber: _phoneNumber,
+                      address: _address,
+                      productList: widget.productList,
+                      total: widget.total.toString());
+
+                  if (isValidate) {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Card(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: ConstScreen.setSizeHeight(30),
+                                  bottom: ConstScreen.setSizeHeight(20),
+                                  left: ConstScreen.setSizeHeight(40),
+                                  right: ConstScreen.setSizeHeight(40)),
+                              child: Column(
+                                children: <Widget>[
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.payment,
+                                          size: ConstScreen.setSizeHeight(40),
+                                        ),
+                                        SizedBox(
+                                          width: ConstScreen.setSizeWidth(5),
+                                        ),
+                                        AutoSizeText(
+                                          'PAYMENT:',
+                                          textAlign: TextAlign.start,
+                                          maxLines: 2,
+                                          minFontSize: 15,
+                                          style: TextStyle(
+                                              fontSize:
+                                                  FontSize.setTextSize(34),
+                                              color: kColorBlack,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: ConstScreen.setSizeWidth(20),
+                                  ),
+                                  //TODO: Pay via new card
+                                  CusRaisedButton(
+                                    title: 'Pay via new card',
+                                    backgroundColor: Colors.deepOrangeAccent,
+                                    onPress: () async {
+                                      var response = await StripeService
+                                          .paymentWithNewCard(
+                                              amount: totalPrice.toString(),
+                                              currency: 'USD');
+                                      // TODO: Create Order
+                                      if (response.success) {
+                                        _checkoutController.onPayment(
+                                            name: _receiverName,
+                                            phoneNumber: _phoneNumber,
+                                            address: _address,
+                                            productList: widget.productList,
+                                            total: widget.total.toString());
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PaymentCompleteView(
+                                                      totalPrice: widget.total,
+                                                    )));
+                                      } else {
+                                        Navigator.pop(context);
+                                        widget._globalKey.currentState
+                                            .showSnackBar(SnackBar(
+                                          content: Text(response.message),
+                                          duration: Duration(seconds: 10),
+                                        ));
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: ConstScreen.setSizeWidth(15),
+                                  ),
+                                  //TODO: Payment via existing card
+                                  CusRaisedButton(
+                                    title: 'Pay via existing card',
+                                    backgroundColor: Colors.deepOrangeAccent,
+                                    onPress: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => Dialog(
+                                                child: StreamBuilder<
+                                                    QuerySnapshot>(
+                                                  stream: Firestore.instance
+                                                      .collection('Cards')
+                                                      .where('uid',
+                                                          isEqualTo: widget.uid)
+                                                      .snapshots(),
+                                                  builder:
+                                                      (BuildContext context,
+                                                          AsyncSnapshot<
+                                                                  QuerySnapshot>
+                                                              snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      return Column(
+                                                        children: <Widget>[
+                                                          SizedBox(
+                                                            height: ConstScreen
+                                                                .setSizeHeight(
+                                                                    15),
+                                                          ),
+                                                          AutoSizeText(
+                                                            'Bank Cards',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            maxLines: 2,
+                                                            minFontSize: 15,
+                                                            style: TextStyle(
+                                                                fontSize: FontSize
+                                                                    .setTextSize(
+                                                                        34),
+                                                                color:
+                                                                    kColorBlack,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                          ),
+                                                          SizedBox(
+                                                            height: ConstScreen
+                                                                .setSizeHeight(
+                                                                    15),
+                                                          ),
+                                                          ListView(
+                                                            shrinkWrap: true,
+                                                            scrollDirection:
+                                                                Axis.vertical,
+                                                            children: snapshot
+                                                                .data.documents
+                                                                .map((DocumentSnapshot
+                                                                    document) {
+                                                              return Center(
+                                                                child:
+                                                                    GestureDetector(
+                                                                  //TODO: Payment with exist card
+                                                                  onTap:
+                                                                      () async {
+                                                                    ProgressDialog
+                                                                        dialog =
+                                                                        new ProgressDialog(
+                                                                            context);
+                                                                    dialog.style(
+                                                                        message:
+                                                                            'Please wait...');
+                                                                    dialog
+                                                                        .show();
+                                                                    //TODO: Show dialog loading
+                                                                    cardNumber =
+                                                                        document[
+                                                                            'cardNumber'];
+                                                                    expiryMonth =
+                                                                        document[
+                                                                            'expiryMonth'];
+                                                                    expiryYear =
+                                                                        document[
+                                                                            'expiryYear'];
+                                                                    cardHolderName =
+                                                                        document[
+                                                                            'cardHolderName'];
+                                                                    cvvCode =
+                                                                        document[
+                                                                            'cvvCode'];
+                                                                    CreditCard
+                                                                        stripeCard =
+                                                                        CreditCard(
+                                                                      number:
+                                                                          cardNumber,
+                                                                      expMonth:
+                                                                          expiryMonth,
+                                                                      expYear:
+                                                                          expiryYear,
+                                                                    );
+                                                                    var response = await StripeService.paymentWithExistCard(
+                                                                        amount: totalPrice
+                                                                            .toString(),
+                                                                        currency:
+                                                                            'USD',
+                                                                        card:
+                                                                            stripeCard);
+                                                                    dialog
+                                                                        .hide();
+                                                                    // TODO: Create Order
+                                                                    if (response
+                                                                        .success) {
+                                                                      _checkoutController.onPayment(
+                                                                          name:
+                                                                              _receiverName,
+                                                                          phoneNumber:
+                                                                              _phoneNumber,
+                                                                          address:
+                                                                              _address,
+                                                                          productList: widget
+                                                                              .productList,
+                                                                          total: widget
+                                                                              .total
+                                                                              .toString());
+                                                                      //TODO: Payment success
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => PaymentCompleteView(
+                                                                                    totalPrice: widget.total,
+                                                                                  )));
+                                                                    } else {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      widget
+                                                                          ._globalKey
+                                                                          .currentState
+                                                                          .showSnackBar(
+                                                                              SnackBar(
+                                                                        content:
+                                                                            Text(response.message),
+                                                                        duration:
+                                                                            Duration(seconds: 10),
+                                                                      ));
+                                                                    }
+                                                                  },
+                                                                  child:
+                                                                      CreditCardWidget(
+                                                                    height: ConstScreen
+                                                                        .setSizeHeight(
+                                                                            300),
+                                                                    width: ConstScreen
+                                                                        .setSizeWidth(
+                                                                            520),
+                                                                    textStyle: TextStyle(
+                                                                        fontSize:
+                                                                            FontSize.setTextSize(
+                                                                                34),
+                                                                        color:
+                                                                            kColorWhite,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                    cardNumber:
+                                                                        document[
+                                                                            'cardNumber'],
+                                                                    expiryDate:
+                                                                        '${document['expiryMonth'].toString()} / ${document['expiryYear'].toString()}',
+                                                                    cardHolderName:
+                                                                        document[
+                                                                            'cardHolderName'],
+                                                                    cvvCode:
+                                                                        document[
+                                                                            'cvvCode'],
+                                                                    showBackView:
+                                                                        false,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  },
+                                                ),
+                                              ));
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: ConstScreen.setSizeWidth(15),
+                                  ),
+                                  CusRaisedButton(
+                                    title: 'Cancel',
+                                    backgroundColor: kColorBlack,
+                                    onPress: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  }
+                },
+              );
+            }),
       ),
     );
   }
