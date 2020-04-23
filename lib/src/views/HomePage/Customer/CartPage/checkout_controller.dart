@@ -25,29 +25,33 @@ class CheckoutController {
     @required String address,
     @required List<Product> productList,
     @required String total,
+    @required String orderId,
+    @required String clientSecret,
+    @required String paymentMethodId,
   }) async {
 //   TODO: Payment
     try {
       String cusName = await StorageUtil.geFullName();
       String uid = await StorageUtil.getUid();
-      String randomId = DateTime.now().millisecondsSinceEpoch.toString();
       //TODO: receiver info
-      await Firestore.instance.collection('Orders').document(randomId).setData({
+      await Firestore.instance.collection('Orders').document(orderId).setData({
         'id': uid,
-        'sub_Id': randomId,
+        'sub_Id': orderId,
         'customer_name': cusName,
         'receiver_name': name,
         'address': address,
         'total': total,
         'phone': phoneNumber,
         'status': 'Pending',
+        'client_secret': clientSecret,
+        'payment_method_id': paymentMethodId,
         'create_at': DateTime.now().toString()
       }).then((value) {
         //TODO: add list product
         for (var product in productList) {
           Firestore.instance
             ..collection('Orders')
-                .document(randomId)
+                .document(orderId)
                 .collection(uid)
                 .document(product.id)
                 .setData({

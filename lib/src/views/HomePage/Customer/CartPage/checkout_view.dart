@@ -346,10 +346,6 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                 height: ConstScreen.setSizeHeight(150),
                 backgroundColor: Colors.orangeAccent.shade700,
                 onPress: () async {
-                  //TODO get Currency rate VND -> USD
-                  double rate = await StripeService.getCurrencyRate();
-                  double totalPrice = rate * widget.total.toDouble();
-
                   bool isValidate = await _checkoutController.onValidate(
                       name: _receiverName,
                       phoneNumber: _phoneNumber,
@@ -403,10 +399,14 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                     title: 'Pay via new card',
                                     backgroundColor: Colors.deepOrangeAccent,
                                     onPress: () async {
+                                      String orderId = DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString();
                                       var response = await StripeService
                                           .paymentWithNewCard(
-                                              amount: totalPrice.toString(),
-                                              currency: 'USD');
+                                              amount: widget.total.toString(),
+                                              currency: 'VND',
+                                              orderId: orderId);
                                       // TODO: Create Order
                                       if (response.success) {
                                         _checkoutController.onPayment(
@@ -414,7 +414,11 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                             phoneNumber: _phoneNumber,
                                             address: _address,
                                             productList: widget.productList,
-                                            total: widget.total.toString());
+                                            total: widget.total.toString(),
+                                            clientSecret: response.clientSecret,
+                                            orderId: orderId,
+                                            paymentMethodId:
+                                                response.paymentMethodId);
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -426,7 +430,7 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                         Navigator.pop(context);
                                         widget._globalKey.currentState
                                             .showSnackBar(SnackBar(
-                                          content: Text(response.message),
+                                          content: Text(response.clientSecret),
                                           duration: Duration(seconds: 10),
                                         ));
                                       }
@@ -533,13 +537,21 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                                       expYear:
                                                                           expiryYear,
                                                                     );
+                                                                    String
+                                                                        orderId =
+                                                                        DateTime.now()
+                                                                            .millisecondsSinceEpoch
+                                                                            .toString();
                                                                     var response = await StripeService.paymentWithExistCard(
-                                                                        amount: totalPrice
+                                                                        amount: widget
+                                                                            .total
                                                                             .toString(),
                                                                         currency:
-                                                                            'USD',
+                                                                            'VND',
                                                                         card:
-                                                                            stripeCard);
+                                                                            stripeCard,
+                                                                        orderId:
+                                                                            orderId);
                                                                     dialog
                                                                         .hide();
                                                                     // TODO: Create Order
@@ -556,7 +568,13 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                                               .productList,
                                                                           total: widget
                                                                               .total
-                                                                              .toString());
+                                                                              .toString(),
+                                                                          orderId:
+                                                                              orderId,
+                                                                          clientSecret: response
+                                                                              .clientSecret,
+                                                                          paymentMethodId:
+                                                                              response.paymentMethodId);
                                                                       //TODO: Payment success
                                                                       Navigator.push(
                                                                           context,
@@ -575,7 +593,7 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                                           .showSnackBar(
                                                                               SnackBar(
                                                                         content:
-                                                                            Text(response.message),
+                                                                            Text(response.clientSecret),
                                                                         duration:
                                                                             Duration(seconds: 10),
                                                                       ));

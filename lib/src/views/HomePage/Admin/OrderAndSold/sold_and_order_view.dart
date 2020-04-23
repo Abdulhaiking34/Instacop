@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
@@ -9,6 +7,7 @@ import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/model/orderInfo.dart';
+import 'package:instacop/src/services/stripe_payment.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_info_view.dart';
 import 'package:instacop/src/widgets/OrderAdminCard.dart';
 import 'package:instacop/src/widgets/card_order.dart';
@@ -38,6 +37,7 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
       _controller.sink.add(true);
       _controller.close();
     });
+    StripeService.init();
   }
 
   @override
@@ -117,6 +117,10 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                       .collection('Orders')
                                       .document(document['sub_Id'])
                                       .updateData({'status': 'Completed'});
+                                  StripeService.confirmPaymentIntent(
+                                      clientSecret: document['client_secret'],
+                                      paymentMethodId:
+                                          document['payment_method_id']);
                                   //TODO: decrease quantity
                                   Firestore.instance
                                       .collection('Orders')
@@ -186,7 +190,11 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                   Firestore.instance
                                       .collection('Orders')
                                       .document(document['sub_Id'])
-                                      .updateData({'status': 'Canceled'});
+                                      .updateData({
+                                    'status': 'Canceled',
+                                    'client_secret': "null",
+                                    'payment_method_id': "null"
+                                  });
                                 },
                               );
                             }

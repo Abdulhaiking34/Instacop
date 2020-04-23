@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/services/stripe_payment.dart';
 import 'package:instacop/src/widgets/button_tap.dart';
 import 'package:instacop/src/widgets/icon_instacop.dart';
 
