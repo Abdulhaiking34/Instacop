@@ -64,17 +64,6 @@ class ProductController {
         .document(product.id)
         .setData({
       'id': product.id,
-      'name': product.productName,
-      'image': product.imageList,
-      'categogy': product.category,
-      'size': product.sizeList,
-      'color': product.colorList,
-      'price': product.price,
-      'sale_price': product.salePrice,
-      'brand': product.brand,
-      'made_in': product.madeIn,
-      'description': product.description,
-      'quantity': product.quantity,
       'create_at': DateTime.now().toString()
     }).catchError((onError) {
       return false;

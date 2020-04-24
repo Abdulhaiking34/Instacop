@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +134,7 @@ class _DetailBannerScreenState extends State<ProductListView> {
                             return ProductCard(
                               productName: document['name'],
                               image: document['image'][0],
+                              isSoldOut: (document['quantity'] == '0'),
                               price: int.parse(document['price']),
                               salePrice: (document['sale_price'] != '0')
                                   ? int.parse(document['sale_price'])
@@ -152,7 +151,8 @@ class _DetailBannerScreenState extends State<ProductListView> {
                                   salePrice: document['sale_price'],
                                   brand: document['brand'],
                                   madeIn: document['made_in'],
-                                  quantity: document['quantity'],
+                                  quantityMain: document['quantity'],
+                                  quantity: '',
                                   description: document['description'],
                                   rating: document['rating'],
                                 );

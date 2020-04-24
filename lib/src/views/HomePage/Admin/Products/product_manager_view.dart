@@ -4,7 +4,10 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_admin_product.dart';
+import 'package:instacop/src/widgets/input_text.dart';
+import 'package:instacop/src/widgets/input_text_product.dart';
 
 class ProductManager extends StatefulWidget {
   @override
@@ -61,7 +64,144 @@ class _ProductManagerState extends State<ProductManager> {
                           .document(document.documentID)
                           .delete();
                     },
-                    onEdit: () {},
+                    onEdit: () {
+                      String productName = document['name'];
+                      String quantity = document['quantity'];
+                      String price = document['price'];
+                      String salePrice = document['sale_price'];
+                      showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                                child: Container(
+                                  height: ConstScreen.setSizeHeight(750),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            ConstScreen.setSizeWidth(30),
+                                        vertical:
+                                            ConstScreen.setSizeHeight(20)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        Center(
+                                          child: Text(
+                                            'Edit Product',
+                                            style: kBoldTextStyle.copyWith(
+                                                fontSize: FontSize.s36,
+                                                color: kColorBlack),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(40),
+                                        ),
+                                        //TODO: product name
+                                        InputTextProduct(
+                                          title: 'Product Name',
+                                          initValue: document['name'],
+                                          inputType: TextInputType.text,
+                                          onValueChange: (name) {
+                                            productName = name;
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(15),
+                                        ),
+                                        //TODO:quantity
+                                        InputTextProduct(
+                                          title: 'Quantity',
+                                          initValue: document['quantity'],
+                                          inputType: TextInputType.number,
+                                          onValueChange: (qty) {
+                                            quantity = qty;
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(15),
+                                        ),
+                                        //TODO: Price
+                                        InputTextProduct(
+                                          title: 'Price',
+                                          initValue: document['price'],
+                                          inputType: TextInputType.number,
+                                          onValueChange: (value) {
+                                            price = value;
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(15),
+                                        ),
+                                        //TODO: Sale price
+                                        InputTextProduct(
+                                          title: 'Sale Price',
+                                          initValue: document['sale_price'],
+                                          inputType: TextInputType.number,
+                                          onValueChange: (value) {
+                                            salePrice = value;
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(20),
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              flex: 1,
+                                              child: CusRaisedButton(
+                                                title: 'SAVE',
+                                                backgroundColor: kColorBlack,
+                                                onPress: () {
+                                                  Firestore.instance
+                                                      .collection('Products')
+                                                      .document(document['id'])
+                                                      .updateData({
+                                                    'name': (productName !=
+                                                                null &&
+                                                            productName != '')
+                                                        ? productName
+                                                        : document['name'],
+                                                    'quantity': (quantity !=
+                                                                null &&
+                                                            quantity != '')
+                                                        ? quantity
+                                                        : document['quantity'],
+                                                    'price': (price != null &&
+                                                            price != '')
+                                                        ? price
+                                                        : document['price'],
+                                                    'sale_price': (salePrice !=
+                                                                null &&
+                                                            salePrice != '')
+                                                        ? salePrice
+                                                        : document['salePrice'],
+                                                  });
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  ConstScreen.setSizeHeight(20),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: CusRaisedButton(
+                                                title: 'CANCEL',
+                                                backgroundColor:
+                                                    kColorLightGrey,
+                                                onPress: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ));
+                    },
                   );
                 }).toList(),
               );

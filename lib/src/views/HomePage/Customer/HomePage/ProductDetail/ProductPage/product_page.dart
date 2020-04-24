@@ -7,6 +7,7 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/ProductPage/product_controller.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/image_product_view.dart';
@@ -30,28 +31,18 @@ class _ProductPageState extends State<ProductPage>
   int _isColorFocus = 1;
   List<ColorInfo> _listColorPicker = [];
   ProductController _controller = new ProductController();
+  bool _isSoldOut = false;
   //TODO: value
   int colorValue;
   String sizeValue;
-
-//  getCountWish() {
-//    int count = 0;
-//    Firestore.instance.collection('Wishlists').getDocuments().then((document) {
-//      for (var doc in document.documents) {
-//        print(doc.documentID);
-//      }
-//      var isSur = document.documents.firstWhere((it) => it.documentID == widget.product.id, orElse: () => null);
-//      if(isSur != null){
-//        count++;
-//      }
-//    });
-//  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    if (int.parse(widget.product.quantityMain) == 0) {
+      _isSoldOut = true;
+    }
     getIsCheckWishlist();
     int i = 1;
     for (var value in widget.product.colorList) {
@@ -217,7 +208,7 @@ class _ProductPageState extends State<ProductPage>
             ],
           ),
 
-//             Bottom
+// TODO:            Bottom
           Container(
             color: kColorWhite,
             width: ConstScreen.setSizeWidth(750),
@@ -230,7 +221,6 @@ class _ProductPageState extends State<ProductPage>
                   Row(
                     children: <Widget>[
                       Expanded(
-                        flex: 14,
                         child: Text(
                           widget.product.productName,
                           style: TextStyle(
@@ -240,33 +230,6 @@ class _ProductPageState extends State<ProductPage>
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: Center(
-                          child: Container(
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.all(ConstScreen.setSizeWidth(7)),
-                              child: Column(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                    size: ConstScreen.setSizeWidth(40),
-                                  ),
-                                  Text(
-                                    '1190',
-                                    style: TextStyle(
-                                        fontSize: FontSize.s30,
-                                        fontWeight: FontWeight.bold,
-                                        color: kColorBlack),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
                     ],
                   ),
                   SizedBox(
@@ -277,7 +240,8 @@ class _ProductPageState extends State<ProductPage>
                     children: <Widget>[
                       //TODO: Price
                       Text(
-                        widget.product.price + ' USD',
+                        Util.intToMoneyType(int.parse(widget.product.price)) +
+                            ' VND',
                         style: TextStyle(
                             fontSize: FontSize.setTextSize(34),
                             color: kColorBlack,
@@ -347,15 +311,12 @@ class _ProductPageState extends State<ProductPage>
                     ],
                   ),
                   SizedBox(
-                    height: ConstScreen.setSizeHeight(20),
+                    height: ConstScreen.setSizeHeight(50),
                   ),
-                  //Button Add
-                  Row(
-                    children: <Widget>[
-                      //TODO: Button add product to Cart
-                      Expanded(
-                        flex: 5,
-                        child: CusRaisedButton(
+                  // TODO: Button Add
+                  _isSoldOut
+                      ? soldOutWidget()
+                      : CusRaisedButton(
                           title: 'ADD',
                           backgroundColor: kColorBlack,
                           isDisablePress: _isAddBtnPress,
@@ -430,15 +391,20 @@ class _ProductPageState extends State<ProductPage>
                             }
                           },
                         ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget soldOutWidget() {
+    return CusRaisedButton(
+      title: 'SOLD OUT',
+      backgroundColor: kColorRed,
+      onPress: () {},
     );
   }
 

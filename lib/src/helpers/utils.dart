@@ -5,9 +5,14 @@ import 'package:intl/intl.dart';
 
 class Util {
   static String intToMoneyType(int value) {
-    var controller =
-        new MaskedTextController(text: '', mask: '000,000,000,000,000');
-    controller.updateText('$value');
+    var controller = MoneyMaskedTextController(
+        initialValue: value.toDouble(),
+        precision: 0,
+        decimalSeparator: '',
+        thousandSeparator: ',');
+//    var controller = new MaskedTextController(
+//        text: value.toString(), mask: '000,000,000,000');
+
     return controller.text;
   }
 
