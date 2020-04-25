@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:instacop/link.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
@@ -488,155 +490,172 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                                 .setSizeHeight(
                                                                     15),
                                                           ),
-                                                          ListView(
-                                                            shrinkWrap: true,
-                                                            scrollDirection:
-                                                                Axis.vertical,
-                                                            children: snapshot
-                                                                .data.documents
-                                                                .map((DocumentSnapshot
-                                                                    document) {
-                                                              return Center(
-                                                                child:
-                                                                    GestureDetector(
-                                                                  //TODO: Payment with exist card
-                                                                  onTap:
-                                                                      () async {
-                                                                    ProgressDialog
-                                                                        dialog =
-                                                                        new ProgressDialog(
-                                                                            context);
-                                                                    dialog.style(
-                                                                        message:
-                                                                            'Please wait...');
-                                                                    dialog
-                                                                        .show();
-                                                                    //TODO: Show dialog loading
-                                                                    cardNumber =
-                                                                        document[
-                                                                            'cardNumber'];
-                                                                    expiryMonth =
-                                                                        document[
-                                                                            'expiryMonth'];
-                                                                    expiryYear =
-                                                                        document[
-                                                                            'expiryYear'];
-                                                                    cardHolderName =
-                                                                        document[
-                                                                            'cardHolderName'];
-                                                                    cvvCode =
-                                                                        document[
-                                                                            'cvvCode'];
-                                                                    CreditCard
-                                                                        stripeCard =
-                                                                        CreditCard(
-                                                                      number:
-                                                                          cardNumber,
-                                                                      expMonth:
-                                                                          expiryMonth,
-                                                                      expYear:
-                                                                          expiryYear,
+                                                          (snapshot
+                                                                      .data
+                                                                      .documents
+                                                                      .length !=
+                                                                  0)
+                                                              ? ListView(
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  scrollDirection:
+                                                                      Axis.vertical,
+                                                                  children: snapshot
+                                                                      .data
+                                                                      .documents
+                                                                      .map((DocumentSnapshot
+                                                                          document) {
+                                                                    return Center(
+                                                                      child:
+                                                                          GestureDetector(
+                                                                        //TODO: Payment with exist card
+                                                                        onTap:
+                                                                            () async {
+                                                                          ProgressDialog
+                                                                              dialog =
+                                                                              new ProgressDialog(context);
+                                                                          dialog.style(
+                                                                              message: 'Please wait...');
+                                                                          dialog
+                                                                              .show();
+                                                                          //TODO: Show dialog loading
+                                                                          cardNumber =
+                                                                              document['cardNumber'];
+                                                                          expiryMonth =
+                                                                              document['expiryMonth'];
+                                                                          expiryYear =
+                                                                              document['expiryYear'];
+                                                                          cardHolderName =
+                                                                              document['cardHolderName'];
+                                                                          cvvCode =
+                                                                              document['cvvCode'];
+                                                                          CreditCard
+                                                                              stripeCard =
+                                                                              CreditCard(
+                                                                            number:
+                                                                                cardNumber,
+                                                                            expMonth:
+                                                                                expiryMonth,
+                                                                            expYear:
+                                                                                expiryYear,
+                                                                          );
+                                                                          String
+                                                                              orderId =
+                                                                              DateTime.now().millisecondsSinceEpoch.toString();
+                                                                          var response = await StripeService.paymentWithExistCard(
+                                                                              amount: widget.total.toString(),
+                                                                              currency: 'VND',
+                                                                              card: stripeCard,
+                                                                              orderId: orderId);
+                                                                          dialog
+                                                                              .hide();
+                                                                          // TODO: Create Order
+                                                                          if (response
+                                                                              .success) {
+                                                                            _checkoutController.onPayment(
+                                                                                name: _receiverName,
+                                                                                phoneNumber: _phoneNumber,
+                                                                                address: _address,
+                                                                                productList: widget.productList,
+                                                                                total: widget.total.toString(),
+                                                                                orderId: orderId,
+                                                                                clientSecret: response.clientSecret,
+                                                                                paymentMethodId: response.paymentMethodId);
+                                                                            //TODO: Payment success
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (context) => PaymentCompleteView(
+                                                                                          totalPrice: widget.total,
+                                                                                        )));
+                                                                          } else {
+                                                                            Navigator.pop(context);
+                                                                            Navigator.pop(context);
+                                                                            widget._globalKey.currentState.showSnackBar(SnackBar(
+                                                                              content: Text(response.clientSecret),
+                                                                              duration: Duration(seconds: 10),
+                                                                            ));
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            CreditCardWidget(
+                                                                          height:
+                                                                              ConstScreen.setSizeHeight(340),
+                                                                          width:
+                                                                              ConstScreen.setSizeWidth(520),
+                                                                          textStyle: TextStyle(
+                                                                              fontSize: FontSize.setTextSize(34),
+                                                                              color: kColorWhite,
+                                                                              fontWeight: FontWeight.bold),
+                                                                          cardNumber:
+                                                                              document['cardNumber'],
+                                                                          expiryDate:
+                                                                              '${document['expiryMonth'].toString()} / ${document['expiryYear'].toString()}',
+                                                                          cardHolderName:
+                                                                              document['cardHolderName'],
+                                                                          cvvCode:
+                                                                              document['cvvCode'],
+                                                                          showBackView:
+                                                                              false,
+                                                                        ),
+                                                                      ),
                                                                     );
-                                                                    String
-                                                                        orderId =
-                                                                        DateTime.now()
-                                                                            .millisecondsSinceEpoch
-                                                                            .toString();
-                                                                    var response = await StripeService.paymentWithExistCard(
-                                                                        amount: widget
-                                                                            .total
-                                                                            .toString(),
-                                                                        currency:
-                                                                            'VND',
-                                                                        card:
-                                                                            stripeCard,
-                                                                        orderId:
-                                                                            orderId);
-                                                                    dialog
-                                                                        .hide();
-                                                                    // TODO: Create Order
-                                                                    if (response
-                                                                        .success) {
-                                                                      _checkoutController.onPayment(
-                                                                          name:
-                                                                              _receiverName,
-                                                                          phoneNumber:
-                                                                              _phoneNumber,
-                                                                          address:
-                                                                              _address,
-                                                                          productList: widget
-                                                                              .productList,
-                                                                          total: widget
-                                                                              .total
-                                                                              .toString(),
-                                                                          orderId:
-                                                                              orderId,
-                                                                          clientSecret: response
-                                                                              .clientSecret,
-                                                                          paymentMethodId:
-                                                                              response.paymentMethodId);
-                                                                      //TODO: Payment success
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: (context) => PaymentCompleteView(
-                                                                                    totalPrice: widget.total,
-                                                                                  )));
-                                                                    } else {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      widget
-                                                                          ._globalKey
-                                                                          .currentState
-                                                                          .showSnackBar(
-                                                                              SnackBar(
-                                                                        content:
-                                                                            Text(response.clientSecret),
-                                                                        duration:
-                                                                            Duration(seconds: 10),
-                                                                      ));
-                                                                    }
-                                                                  },
-                                                                  child:
-                                                                      CreditCardWidget(
-                                                                    height: ConstScreen
-                                                                        .setSizeHeight(
-                                                                            300),
-                                                                    width: ConstScreen
-                                                                        .setSizeWidth(
-                                                                            520),
-                                                                    textStyle: TextStyle(
-                                                                        fontSize:
-                                                                            FontSize.setTextSize(
-                                                                                34),
-                                                                        color:
-                                                                            kColorWhite,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                    cardNumber:
-                                                                        document[
-                                                                            'cardNumber'],
-                                                                    expiryDate:
-                                                                        '${document['expiryMonth'].toString()} / ${document['expiryYear'].toString()}',
-                                                                    cardHolderName:
-                                                                        document[
-                                                                            'cardHolderName'],
-                                                                    cvvCode:
-                                                                        document[
-                                                                            'cvvCode'],
-                                                                    showBackView:
-                                                                        false,
+                                                                  }).toList(),
+                                                                )
+                                                              : Container(
+                                                                  height: ConstScreen
+                                                                      .setSizeHeight(
+                                                                          800),
+                                                                  width: ConstScreen
+                                                                      .setSizeWidth(
+                                                                          520),
+                                                                  child: Stack(
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Positioned(
+                                                                        top: ConstScreen.setSizeWidth(
+                                                                            350),
+                                                                        left: ConstScreen.setSizeHeight(
+                                                                            120),
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              ConstScreen.setSizeWidth(324),
+                                                                          height:
+                                                                              ConstScreen.setSizeHeight(170),
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            image:
+                                                                                DecorationImage(
+                                                                              image: AssetImage(KImageAddress + 'noCreditCard.png'),
+                                                                              fit: BoxFit.fill,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Positioned(
+                                                                        top: ConstScreen.setSizeHeight(
+                                                                            650),
+                                                                        left: ConstScreen.setSizeWidth(
+                                                                            100),
+                                                                        child:
+                                                                            Text(
+                                                                          ' No Credit Card Found',
+                                                                          style: kBoldTextStyle.copyWith(
+                                                                              color: kColorBlack.withOpacity(0.8),
+                                                                              fontSize: FontSize.s36,
+                                                                              fontWeight: FontWeight.w600),
+                                                                        ),
+                                                                      )
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                              );
-                                                            }).toList(),
-                                                          ),
                                                         ],
                                                       );
                                                     } else {
-                                                      return Container();
+                                                      return Center(
+                                                          child:
+                                                              CircularProgressIndicator());
                                                     }
                                                   },
                                                 ),

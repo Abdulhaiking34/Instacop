@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+const kImageAddress = 'lib/src/assets/images/';
 const Color kColorBlack = Color(0xff000000);
 const Color kColorRed = Color(0xffED2228);
 const Color kColorBlue = Color(0xff0984e3);

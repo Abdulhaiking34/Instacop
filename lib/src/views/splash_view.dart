@@ -14,35 +14,28 @@ class _SplashViewState extends State<SplashView> {
     // TODO: implement initState
     super.initState();
 
-    delay().then((onValue) {
-      if (onValue == '') {
-        Navigator.pushNamed(context, 'welcome_screen');
-      }
+    delay().then((viewLink) {
+      Navigator.pushNamed(context, viewLink);
     });
   }
 
   Future<String> delay() async {
+    String viewLink = 'welcome_screen';
+    StorageUtil.getIsLogging().then((result) async {
+      if (result == null) {
+        viewLink = 'welcome_screen';
+      } else {
+        String type = await StorageUtil.getAccountType();
+        if (type == 'admin') {
+          viewLink = 'admin_home_screen';
+        } else {
+          viewLink = 'customer_home_screen';
+        }
+      }
+    });
     await Future.delayed(Duration(seconds: 3));
-//    try {
-//      StorageUtil.getIsLogging().then((islogging) {
-//        if (islogging) {
-//          print(islogging);
-//        StorageUtil.getAccountType().then((accountType) {
-//          if (accountType == 'admin') {
-//            print('admin');
-////            Navigator.pushNamed(context, 'admin_home_screen');
-//          } else if (accountType == 'customer') {
-//            print('customer');
-////            Navigator.pushNamed(context, 'customer_home_screen');
-//          }
-//        });
-//      } else {
-//        print('geust');
-////        Navigator.pushNamed(context, 'welcome_screen');
-//        }
-//      });
-//    } catch (e) {}
-    return '';
+
+    return viewLink;
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
@@ -60,75 +61,119 @@ class _BankAccountViewState extends State<BankAccountView> {
         iconTheme: IconThemeData.fallback(),
       ),
       body: Container(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: ConstScreen.setSizeWidth(30),
-              vertical: ConstScreen.setSizeHeight(30)),
-          child: StreamBuilder(
-            stream: _controller.uidStream,
-            builder: (context, mainSnapshot) {
-              if (mainSnapshot.hasData) {
-                return StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance
-                      .collection('Cards')
-                      .where('uid', isEqualTo: mainSnapshot.data)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasData && mainSnapshot.hasData) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: kColorBlack),
-                        child: ListView(
-                          children: snapshot.data.documents
-                              .map((DocumentSnapshot document) {
-                            return Center(
-                              child: Slidable(
-                                actionPane: SlidableDrawerActionPane(),
-                                actionExtentRatio: 0.25,
-                                secondaryActions: <Widget>[
-                                  IconSlideAction(
-                                    caption: 'Delete',
-                                    color: Colors.red,
-                                    icon: Icons.delete,
-                                    onTap: () {
-                                      Firestore.instance
-                                          .collection('Cards')
-                                          .document(document.documentID)
-                                          .delete();
-                                    },
+        child: StreamBuilder(
+          stream: _controller.uidStream,
+          builder: (context, mainSnapshot) {
+            if (mainSnapshot.hasData) {
+              return StreamBuilder<QuerySnapshot>(
+                stream: Firestore.instance
+                    .collection('Cards')
+                    .where('uid', isEqualTo: mainSnapshot.data)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData && mainSnapshot.hasData) {
+                    if (snapshot.data.documents.length != 0) {
+                      return Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: ConstScreen.setSizeWidth(80)),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
+                                  gradient: LinearGradient(
+                                    colors: [Colors.blue, kColorCyan],
+                                    stops: [0.0, 0.7],
+                                  )),
+                            ),
+                          ),
+                          //TODO: list card
+                          ListView(
+                            children: snapshot.data.documents
+                                .map((DocumentSnapshot document) {
+                              return Center(
+                                child: Slidable(
+                                  actionPane: SlidableDrawerActionPane(),
+                                  actionExtentRatio: 0.25,
+                                  secondaryActions: <Widget>[
+                                    IconSlideAction(
+                                      caption: 'Delete',
+                                      color: Colors.red,
+                                      icon: Icons.delete,
+                                      onTap: () {
+                                        Firestore.instance
+                                            .collection('Cards')
+                                            .document(document.documentID)
+                                            .delete();
+                                      },
+                                    ),
+                                  ],
+                                  child: CreditCardWidget(
+                                    height: ConstScreen.setSizeHeight(380),
+                                    width: ConstScreen.setSizeWidth(600),
+                                    textStyle: TextStyle(
+                                        fontSize: FontSize.setTextSize(34),
+                                        color: kColorWhite,
+                                        fontWeight: FontWeight.bold),
+                                    cardNumber: document['cardNumber'],
+                                    expiryDate:
+                                        '${document['expiryMonth'].toString()} / ${document['expiryYear'].toString()}',
+                                    cardHolderName: document['cardHolderName'],
+                                    cvvCode: document['cvvCode'],
+                                    showBackView: false,
                                   ),
-                                ],
-                                child: CreditCardWidget(
-                                  height: ConstScreen.setSizeHeight(380),
-                                  width: ConstScreen.setSizeWidth(600),
-                                  textStyle: TextStyle(
-                                      fontSize: FontSize.setTextSize(34),
-                                      color: kColorWhite,
-                                      fontWeight: FontWeight.bold),
-                                  cardNumber: document['cardNumber'],
-                                  expiryDate:
-                                      '${document['expiryMonth'].toString()} / ${document['expiryYear'].toString()}',
-                                  cardHolderName: document['cardHolderName'],
-                                  cvvCode: document['cvvCode'],
-                                  showBackView: false,
                                 ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       );
                     } else {
-                      return Container();
+                      return Container(
+                        width: ConstScreen.setSizeWidth(700),
+                        height: ConstScreen.setSizeHeight(1000),
+                        child: Stack(
+                          children: <Widget>[
+                            Positioned(
+                              top: ConstScreen.setSizeWidth(350),
+                              left: ConstScreen.setSizeHeight(200),
+                              child: Container(
+                                width: ConstScreen.setSizeWidth(374),
+                                height: ConstScreen.setSizeHeight(220),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        KImageAddress + 'noCreditCard.png'),
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: ConstScreen.setSizeHeight(650),
+                              left: ConstScreen.setSizeWidth(190),
+                              child: Text(
+                                ' No Credit Card Found',
+                                style: kBoldTextStyle.copyWith(
+                                    color: kColorBlack.withOpacity(0.8),
+                                    fontSize: FontSize.s36,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
                     }
-                  },
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+                  } else {
+                    return Container();
+                  }
+                },
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
         ),
       ),
     );

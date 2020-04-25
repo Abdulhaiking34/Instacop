@@ -41,20 +41,12 @@ class _BankAccountAddingViewState extends State<BankAccountAddingView> {
         key: widget._globalKey,
         appBar: AppBar(
           title: Text(
-            isAddPage ? 'Add Bank Card' : 'Bank Cards',
+            'Add Bank Card',
             style: kBoldTextStyle.copyWith(
               fontSize: FontSize.setTextSize(32),
             ),
           ),
           centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(FontAwesomeIcons.edit),
-              color: kColorBlack,
-              iconSize: ConstScreen.setSizeWidth(35),
-              onPressed: () {},
-            )
-          ],
           backgroundColor: kColorWhite,
           iconTheme: IconThemeData.fallback(),
         ),

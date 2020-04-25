@@ -4,6 +4,7 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/views/HomePage/Customer/chat_view.dart';
 import 'package:instacop/src/views/homePage/customer/homePage/cus_home_view.dart';
 import 'package:instacop/src/views/homePage/customer/profilePage/profile_view.dart';
 import 'package:instacop/src/views/homePage/customer/searchPage/search_view.dart';
@@ -19,9 +20,10 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
     CustomerHomePageView(),
     SearchView(),
     WishListView(),
+    ChatScreen(),
     ProfileView(),
   ];
-  final tabsTitle = [' ', 'Search', 'Wishlist', 'Profile'];
+  final tabsTitle = [' ', 'Search', 'Wishlist', 'Chat', 'Profile'];
   int indexScreen = 0;
   bool _isLogging;
   final pageController = PageController();
@@ -121,6 +123,12 @@ class _CustomerHomeViewState extends State<CustomerHomeView> {
                 size: ConstScreen.sizeXL,
               ),
               title: Text('Wishlist')),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.chat,
+                size: ConstScreen.sizeXL,
+              ),
+              title: Text('Chat')),
           BottomNavigationBarItem(
               icon: Icon(
                 FontAwesomeIcons.userAlt,

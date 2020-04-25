@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/helpers/validator.dart';
 import 'package:instacop/src/model/product.dart';
+import 'package:instacop/src/model/quantityOrder.dart';
 
 class CheckoutController {
   StreamController _nameStreamController = new StreamController();
@@ -64,6 +65,30 @@ class CheckoutController {
             });
         }
       });
+
+      //TODO: decrease quantity
+      List<QuantityOrder> quantityOrderList = [];
+      for (var product in productList) {
+        QuantityOrder quantityOrder = new QuantityOrder(
+            productId: product.id, quantity: int.parse(product.quantity));
+        quantityOrderList.add(quantityOrder);
+
+        for (var qtyOrder in quantityOrderList) {
+          Firestore.instance
+              .collection('Products')
+              .document(qtyOrder.productId)
+              .get()
+              .then((document) {
+            int quantity = int.parse(document.data['quantity']);
+            int result = quantity - qtyOrder.quantity;
+            Firestore.instance
+                .collection('Products')
+                .document(qtyOrder.productId)
+                .updateData({'quantity': result.toString()});
+          });
+        }
+      }
+
       Firestore.instance
           .collection('Carts')
           .document(uid)

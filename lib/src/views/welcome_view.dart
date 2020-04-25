@@ -54,8 +54,7 @@ class WelcomeScreen extends StatelessWidget {
                     text: 'Sign Up / Sign In',
                     isSelected: true,
                     function: () {
-//                      Navigator.pushNamed(context, 'register_screen');
-                      Navigator.pushNamed(context, 'admin_home_screen');
+                      Navigator.pushNamed(context, 'register_screen');
                     },
                   ),
                   SizedBox(

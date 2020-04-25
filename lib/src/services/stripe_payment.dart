@@ -112,6 +112,7 @@ class StripeService {
     } catch (err) {
       print('err charging user: ${err.toString()}');
     }
+    return false;
   }
 
   //TODO: catch error

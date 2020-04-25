@@ -104,7 +104,7 @@ class CartProductCard extends StatelessWidget {
                     children: <Widget>[
                       //// TODO: Name Product
                       Expanded(
-                        flex: 4,
+                        flex: 5,
                         child: Column(
                           children: <Widget>[
                             Align(
@@ -176,7 +176,7 @@ class CartProductCard extends StatelessWidget {
                                   child: //TODO: quantity
                                       Padding(
                                     padding: EdgeInsets.symmetric(
-                                        vertical: ConstScreen.setSizeWidth(25)),
+                                        vertical: ConstScreen.setSizeWidth(20)),
                                     child: TextFormField(
                                       initialValue: quantity,
                                       textAlign: TextAlign.center,
@@ -204,7 +204,7 @@ class CartProductCard extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: Align(
                           alignment: Alignment.bottomRight,
                           child: (productSalePrice == 0)
@@ -224,7 +224,7 @@ class CartProductCard extends StatelessWidget {
                                     AutoSizeText(
                                       '${discount.toInt()}% OFF',
                                       maxLines: 1,
-                                      minFontSize: 10,
+                                      minFontSize: 5,
                                       style: TextStyle(
                                           fontSize: FontSize.setTextSize(32),
                                           color: kColorRed,
@@ -235,7 +235,7 @@ class CartProductCard extends StatelessWidget {
                                     AutoSizeText(
                                       '${Util.intToMoneyType(productSalePrice)} VND',
                                       maxLines: 1,
-                                      minFontSize: 10,
+                                      minFontSize: 5,
                                       style: TextStyle(
                                           fontSize: FontSize.setTextSize(42),
                                           color: kColorRed,

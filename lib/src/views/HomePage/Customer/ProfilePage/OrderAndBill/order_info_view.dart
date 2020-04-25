@@ -11,9 +11,10 @@ import 'package:instacop/src/widgets/card_product_order.dart';
 import 'package:instacop/src/widgets/widget_title.dart';
 
 class OrderInfoView extends StatefulWidget {
-  OrderInfoView({this.id, this.orderInfo});
+  OrderInfoView({this.id, this.orderInfo, this.descriptionCancel = ' '});
   final OrderInfo orderInfo;
   final String id;
+  final String descriptionCancel;
   @override
   _OrderInfoViewState createState() => _OrderInfoViewState();
 }
@@ -74,6 +75,47 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                   ),
                 ],
               ),
+            ),
+            //TODO: Cancelled Order
+            (widget.descriptionCancel != ' ')
+                ? Container(
+                    color: kColorLightGrey,
+                    height: ConstScreen.setSizeHeight(70),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(left: ConstScreen.setSizeWidth(30)),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: AutoSizeText(
+                          'Order Was Cancelled!',
+                          maxLines: 1,
+                          minFontSize: 10,
+                          style: kBoldTextStyle.copyWith(
+                              fontSize: FontSize.setTextSize(32),
+                              color: kColorRed),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
+
+            (widget.descriptionCancel != ' ')
+                ? Padding(
+                    padding: EdgeInsets.only(
+                        top: ConstScreen.setSizeHeight(10),
+                        left: ConstScreen.setSizeHeight(27)),
+                    child: AutoSizeText(
+                      widget.descriptionCancel,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                      minFontSize: 10,
+                      style: kBoldTextStyle.copyWith(
+                          fontSize: FontSize.s28, color: kColorBlack),
+                    ),
+                  )
+                : Container(),
+            SizedBox(
+              height: ConstScreen.setSizeHeight(15),
             ),
             Container(
               color: kColorLightGrey,

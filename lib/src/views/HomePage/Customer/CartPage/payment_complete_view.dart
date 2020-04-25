@@ -26,19 +26,17 @@ class _PaymentCompleteViewState extends State<PaymentCompleteView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-              Expanded(
-                flex: 3,
-                child: Icon(
-                  Icons.check_circle,
-                  color: kColorGreen,
-                  size: ConstScreen.setSizeHeight(250),
+                flex: 4,
+                child: Center(
+                  child: Icon(
+                    Icons.check_circle,
+                    color: kColorGreen,
+                    size: ConstScreen.setSizeHeight(250),
+                  ),
                 ),
               ),
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Column(
                   children: <Widget>[
                     Text(
@@ -57,7 +55,7 @@ class _PaymentCompleteViewState extends State<PaymentCompleteView> {
                 ),
               ),
               Expanded(
-                flex: 4,
+                flex: 3,
                 child: Column(
                   children: <Widget>[
                     Expanded(
@@ -65,10 +63,11 @@ class _PaymentCompleteViewState extends State<PaymentCompleteView> {
                       child: Container(),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: ConstScreen.setSizeWidth(30)),
+                          horizontal: ConstScreen.setSizeWidth(30),
+                        ),
                         child: CusRaisedButton(
                           title: 'CONTINUTE SHOPPING',
                           backgroundColor: kColorGreen,
@@ -84,6 +83,9 @@ class _PaymentCompleteViewState extends State<PaymentCompleteView> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: ConstScreen.setSizeHeight(80),
+              )
             ],
           ),
         ),

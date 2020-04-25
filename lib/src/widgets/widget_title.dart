@@ -28,7 +28,7 @@ class TitleWidget extends StatelessWidget {
               maxLines: 1,
               minFontSize: 10,
               style: kBoldTextStyle.copyWith(
-                  fontSize: FontSize.s30, color: kColorBlack.withOpacity(0.5)),
+                  fontSize: FontSize.s30, color: kColorBlack.withOpacity(0.6)),
             ),
           ),
           Expanded(
@@ -39,7 +39,7 @@ class TitleWidget extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               minFontSize: 10,
               style: kBoldTextStyle.copyWith(
-                  fontSize: FontSize.s30, color: kColorBlack),
+                  fontSize: FontSize.setTextSize(31), color: kColorBlack),
             ),
           ),
         ],

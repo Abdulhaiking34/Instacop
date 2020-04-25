@@ -11,11 +11,13 @@ class OrderCard extends StatelessWidget {
       this.date = '',
       this.status = '',
       this.total = '',
+      this.admin = '',
       this.onViewDetail,
       this.onCancel,
       this.isEnableCancel = true});
   final String id;
   final String customerName;
+  final String admin;
   final String date;
   final String status;
   final String total;
@@ -82,6 +84,28 @@ class OrderCard extends StatelessWidget {
               SizedBox(
                 height: ConstScreen.setSizeHeight(10),
               ),
+              //TODO: Admin
+              AutoSizeText.rich(
+                TextSpan(
+                  style: kBoldTextStyle.copyWith(
+                    fontSize: FontSize.s30,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Admin: ',
+                    ),
+                    TextSpan(
+                      text: admin,
+                      style: kNormalTextStyle.copyWith(
+                        fontSize: FontSize.s30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: ConstScreen.setSizeHeight(10),
+              ),
               //TODO:Customer's Name
               AutoSizeText.rich(
                 TextSpan(
@@ -117,6 +141,9 @@ class OrderCard extends StatelessWidget {
                     TextSpan(
                       text: status,
                       style: kNormalTextStyle.copyWith(
+                        color: (status != 'Pending')
+                            ? (status == 'Canceled' ? kColorRed : kColorGreen)
+                            : kColorBlack,
                         fontSize: FontSize.s30,
                       ),
                     ),

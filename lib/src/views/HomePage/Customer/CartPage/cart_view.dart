@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/views/HomePage/Customer/CartPage/checkout_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
@@ -87,11 +88,8 @@ class _CartViewState extends State<CartView> {
           : int.parse(product.salePrice);
       totalPrice += (price * int.parse(product.quantity));
     }
-    var controller =
-        new MaskedTextController(text: '', mask: '000,000,000,000,000');
-    controller.updateText('$totalPrice');
     setState(() {
-      totalPriceText = controller.text;
+      totalPriceText = Util.intToMoneyType(totalPrice);
     });
   }
 
@@ -204,9 +202,46 @@ class _CartViewState extends State<CartView> {
               stream: _productController.stream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.builder(
-                      itemCount: uiProductList.length,
-                      itemBuilder: (_, index) => uiProductList[index]);
+                  if (uiProductList.length != 0) {
+                    return ListView.builder(
+                        itemCount: uiProductList.length,
+                        itemBuilder: (_, index) => uiProductList[index]);
+                  } else {
+                    return Container(
+                      width: ConstScreen.setSizeWidth(700),
+                      height: ConstScreen.setSizeHeight(1000),
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            top: ConstScreen.setSizeHeight(350),
+                            left: ConstScreen.setSizeWidth(140),
+                            child: Container(
+                              width: ConstScreen.setSizeWidth(480),
+                              height: ConstScreen.setSizeHeight(250),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      KImageAddress + 'noItemsCart.png'),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: ConstScreen.setSizeHeight(650),
+                            left: ConstScreen.setSizeWidth(250),
+                            child: Text(
+                              'No Product Order',
+                              style: kBoldTextStyle.copyWith(
+                                  color: kColorBlack.withOpacity(0.8),
+                                  fontSize: FontSize.s36,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }

@@ -18,6 +18,7 @@ class ProductManagerController {
   StreamController _madeInController = new StreamController.broadcast();
   StreamController _quantityController = new StreamController.broadcast();
   StreamController _descriptionController = new StreamController.broadcast();
+  StreamController _btnLoadingController = new StreamController.broadcast();
 
   Stream get productNameStream => _productNameController.stream;
   Stream get productImageStream => _productImageController.stream;
@@ -30,6 +31,7 @@ class ProductManagerController {
   Stream get madeInStream => _madeInController.stream;
   Stream get quantityStream => _quantityController.stream;
   Stream get descriptionStream => _descriptionController.stream;
+  Stream get btnLoadingStream => _btnLoadingController.stream;
 
   onAddProduct(
       {@required String productName,
@@ -56,6 +58,7 @@ class ProductManagerController {
     _quantityController.sink.add('');
     _descriptionController.sink.add('');
     int countError = 0;
+    _btnLoadingController.sink.add(false);
     //TODO: Product name
     if (productName == null || productName == '') {
       _productNameController.addError('Product name is empty');
@@ -115,17 +118,6 @@ class ProductManagerController {
 
     //TODO: Add product
     if (countError == 0) {
-      print(productName);
-      print(category);
-      print(sizeType);
-      print(colorList);
-      print(sizeList);
-      print(price);
-      print(salePrice);
-      print(brand);
-      print(madeIn);
-      print(quantity);
-      print(description);
       List<int> colorListFinal = convertListColor(colorList);
       List<String> linkImage = await saveImage(imageList);
       String id = DateTime.now().millisecondsSinceEpoch.toString();
@@ -148,8 +140,10 @@ class ProductManagerController {
       }).catchError((onError) {
         print(onError.toString());
       });
+      _btnLoadingController.sink.add(true);
       return true;
     }
+    _btnLoadingController.sink.add(true);
     return false;
   }
 
@@ -195,5 +189,6 @@ class ProductManagerController {
     _madeInController.close();
     _quantityController.close();
     _descriptionController.close();
+    _btnLoadingController.close();
   }
 }

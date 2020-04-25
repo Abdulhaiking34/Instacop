@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/views/HomePage/Admin/Users/admin_adding_account.dart';
+import 'package:instacop/src/views/HomePage/Customer/chat_view.dart';
 import 'package:instacop/src/widgets/widget_title.dart';
 
 class UserManagerView extends StatefulWidget {
@@ -58,14 +61,18 @@ class _UserManagerViewState extends State<UserManagerView> {
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
                       IconSlideAction(
-                        caption: 'Delete',
-                        color: Colors.red,
-                        icon: Icons.delete,
+                        caption: 'Chat',
+                        color: kColorBlue,
+                        icon: Icons.chat,
                         onTap: () {
-                          Firestore.instance
-                              .collection('Users')
-                              .document(document.documentID)
-                              .delete();
+                          //TODO: CHAT
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatScreen(
+                                        isAdmin: true,
+                                        uidCustomer: document.documentID,
+                                      )));
                         },
                       ),
                     ],
@@ -74,7 +81,7 @@ class _UserManagerViewState extends State<UserManagerView> {
                         username: document['username'],
                         fullname: document['fullname'],
                         phone: document['phone'],
-                        type: document['type'],
+                        isAdmin: document['type'] == 'admin',
                         createAt:
                             Util.convertDateToString(document['create_at'])),
                   );
@@ -93,21 +100,21 @@ class _UserManagerViewState extends State<UserManagerView> {
 }
 
 class UserInfoCard extends StatelessWidget {
-  const UserInfoCard(
-      {Key key,
-      this.id,
-      this.username = '',
-      this.fullname = '',
-      this.phone = '',
-      this.createAt = '',
-      this.type})
-      : super(key: key);
+  const UserInfoCard({
+    Key key,
+    this.id,
+    this.isAdmin = false,
+    this.username = '',
+    this.fullname = '',
+    this.phone = '',
+    this.createAt = '',
+  }) : super(key: key);
   final String id;
   final String fullname;
   final String username;
   final String phone;
   final String createAt;
-  final String type;
+  final bool isAdmin;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -121,6 +128,23 @@ class UserInfoCard extends StatelessWidget {
               horizontal: ConstScreen.setSizeWidth(10)),
           child: Column(
             children: <Widget>[
+              Container(
+                width: double.infinity,
+                color: isAdmin ? Colors.red[200] : Colors.lightBlueAccent,
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: ConstScreen.setSizeHeight(10)),
+                    child: Text(
+                      isAdmin ? 'ADMIN' : 'CUSTOMER',
+                      style: kBoldTextStyle.copyWith(
+                        fontSize: FontSize.setTextSize(32),
+                        color: kColorWhite,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               //TODO: id
               TitleWidget(
                 title: 'ID',
@@ -137,12 +161,6 @@ class UserInfoCard extends StatelessWidget {
               TitleWidget(
                 title: 'Full name',
                 content: fullname,
-                isSpaceBetween: false,
-              ),
-              //TODO: id
-              TitleWidget(
-                title: 'Type',
-                content: type,
                 isSpaceBetween: false,
               ),
               //TODO: phone number

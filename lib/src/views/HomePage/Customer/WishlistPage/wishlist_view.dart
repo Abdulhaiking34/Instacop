@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instacop/link.dart';
+import 'package:instacop/src/helpers/TextStyle.dart';
+import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/model/product.dart';
@@ -123,18 +126,54 @@ class _WishListViewState extends State<WishListView>
                   stream: _dataStreamController.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 68 / 110,
-                          crossAxisSpacing: ConstScreen.setSizeHeight(30),
-                          mainAxisSpacing: ConstScreen.setSizeHeight(40),
-                        ),
-                        itemCount: listProduct.length,
-                        itemBuilder: (_, index) => listProduct[index],
-                      );
+                      if (listProduct.length != 0) {
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 68 / 110,
+                            crossAxisSpacing: ConstScreen.setSizeHeight(30),
+                            mainAxisSpacing: ConstScreen.setSizeHeight(40),
+                          ),
+                          itemCount: listProduct.length,
+                          itemBuilder: (_, index) => listProduct[index],
+                        );
+                      } else {
+                        return Container(
+                          width: ConstScreen.setSizeWidth(700),
+                          height: ConstScreen.setSizeHeight(1000),
+                          child: Stack(
+                            children: <Widget>[
+                              Center(
+                                child: Container(
+                                  width: ConstScreen.setSizeWidth(374),
+                                  height: ConstScreen.setSizeHeight(220),
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          KImageAddress + 'emptyInbox.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: ConstScreen.setSizeHeight(680),
+                                left: ConstScreen.setSizeWidth(160),
+                                child: Text(
+                                  'Sorry, No Product Found',
+                                  style: kBoldTextStyle.copyWith(
+                                      color: kColorBlack.withOpacity(0.8),
+                                      fontSize: FontSize.s36,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }
                     } else {
                       return Center(
                         child: CircularProgressIndicator(),
@@ -150,5 +189,5 @@ class _WishListViewState extends State<WishListView>
 
   @override
   // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }
