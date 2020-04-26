@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImageProductView extends StatefulWidget {
-  ImageProductView({this.image});
-  final String image;
+  ImageProductView({
+    this.onlineImage = '',
+  });
+  final String onlineImage;
   @override
   _ImageProductViewState createState() => _ImageProductViewState();
 }
@@ -20,7 +23,7 @@ class _ImageProductViewState extends State<ImageProductView> {
           children: <Widget>[
             Container(
               child: PhotoView(
-                imageProvider: NetworkImage(widget.image),
+                imageProvider: NetworkImage(widget.onlineImage),
               ),
             ),
             Positioned(

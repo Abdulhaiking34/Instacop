@@ -123,7 +123,7 @@ class _ProductPageState extends State<ProductPage>
                           context,
                           MaterialPageRoute(
                               builder: (context) => ImageProductView(
-                                    image: image,
+                                    onlineImage: image,
                                   )));
                     },
                     child: CachedNetworkImage(
