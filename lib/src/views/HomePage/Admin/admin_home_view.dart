@@ -8,6 +8,7 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/views/HomePage/Admin/ChartRevenue/chart_admin_view.dart';
 import 'package:instacop/src/views/HomePage/Admin/OrderAndSold/sold_and_order_view.dart';
 import 'package:instacop/src/widgets/box_dashboard.dart';
 import 'package:instacop/src/widgets/card_dashboard.dart';
@@ -122,7 +123,12 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                 color: Colors.orange.shade500,
                 icon: FontAwesomeIcons.dollarSign,
                 value: '$total VND',
-                onPress: () {},
+                onPress: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AdminChartView()));
+                },
               ),
             ),
             SizedBox(
