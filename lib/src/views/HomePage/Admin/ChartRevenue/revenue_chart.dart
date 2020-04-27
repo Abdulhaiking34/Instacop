@@ -16,18 +16,18 @@ class _RevenueChartState extends State<RevenueChart> {
 
   static List<charts.Series<OrdinalSales, String>> _chartData() {
     final data = [
-      new OrdinalSales('1', 5),
-      new OrdinalSales('2', 25),
-      new OrdinalSales('3', 0),
-      new OrdinalSales('4', 75),
-      new OrdinalSales('5', 75),
-      new OrdinalSales('6', 75),
-      new OrdinalSales('7', 75),
-      new OrdinalSales('8', 75),
-      new OrdinalSales('9', 75),
-      new OrdinalSales('10', 200),
-      new OrdinalSales('11', 75),
-      new OrdinalSales('12', 75),
+      new OrdinalSales('Jan', 50000),
+      new OrdinalSales('Feb', 250000),
+      new OrdinalSales('Mar', 0),
+      new OrdinalSales('Apr', 75000),
+      new OrdinalSales('May', 75000),
+      new OrdinalSales('Jun', 75000),
+      new OrdinalSales('Jul', 75000),
+      new OrdinalSales('Aug', 0),
+      new OrdinalSales('Sep', 75000),
+      new OrdinalSales('Oct', 100000),
+      new OrdinalSales('Nov', 0),
+      new OrdinalSales('Dec', 750000),
     ];
 
     return [
@@ -36,6 +36,7 @@ class _RevenueChartState extends State<RevenueChart> {
         colorFn: (_, __) => charts.MaterialPalette.cyan.shadeDefault,
         domainFn: (OrdinalSales sales, _) => sales.month,
         measureFn: (OrdinalSales sales, _) => sales.sales,
+        labelAccessorFn: (OrdinalSales sales, _) => '${sales.sales}',
         data: data,
       )
     ];
@@ -89,6 +90,20 @@ class _RevenueChartState extends State<RevenueChart> {
               child: charts.BarChart(
                 _chartData(),
                 animate: true,
+                vertical: false,
+                behaviors: [
+                  new charts.SlidingViewport(),
+                  new charts.PanAndZoomBehavior(),
+                ],
+                barRendererDecorator: new charts.BarLabelDecorator(
+                  insideLabelStyleSpec: charts.TextStyleSpec(
+                      fontSize: FontSize.s28.floor(),
+                      color: charts.MaterialPalette.white),
+                  outsideLabelStyleSpec: charts.TextStyleSpec(
+                      fontSize: FontSize.s28.floor(),
+                      color: charts.MaterialPalette.black),
+                ),
+                // Hide domain axis.
               ),
             ),
           ),
