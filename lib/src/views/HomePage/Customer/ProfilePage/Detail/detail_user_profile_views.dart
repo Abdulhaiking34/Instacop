@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
-import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/Detail/detail_controller.dart';
+import 'package:instacop/src/views/HomePage/Customer/ProfilePage/Detail/edit_detail_views.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -60,9 +60,8 @@ class _DetailProfileViewState extends State<DetailProfileView> {
             color: kColorBlack,
             iconSize: ConstScreen.setSizeWidth(35),
             onPressed: () {
-              setState(() {
-                _isEditPage = !_isEditPage;
-              });
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditDetailView()));
             },
           )
         ],

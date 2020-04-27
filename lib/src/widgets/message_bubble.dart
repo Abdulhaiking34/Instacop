@@ -6,13 +6,13 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/image_product_view.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 class MessageBubble extends StatelessWidget {
   MessageBubble(
       {this.sender,
       this.text = '',
       this.isMe,
+      this.isAdmin,
       this.onlineImagesList,
       this.documentID,
       this.createAt,
@@ -27,6 +27,8 @@ class MessageBubble extends StatelessWidget {
   final String uid;
   final int createAt;
   final BuildContext context;
+  final bool isAdmin;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -85,7 +87,10 @@ class MessageBubble extends StatelessWidget {
             Text(
               sender,
               style: TextStyle(
-                  fontSize: FontSize.s26, fontWeight: FontWeight.bold),
+                  fontSize: FontSize.s26,
+                  fontWeight: FontWeight.bold,
+                  color:
+                      isAdmin ? Colors.redAccent.shade400 : Colors.lightBlue),
             ),
             (text != '')
                 ? Material(
@@ -128,7 +133,7 @@ class MessageBubble extends StatelessWidget {
     int timeNow = DateTime.now().millisecondsSinceEpoch;
     int result = timeNow - createAt;
     print(result);
-    return (result < 62832);
+    return (result < 60000);
   }
 
   isMeListImage() {

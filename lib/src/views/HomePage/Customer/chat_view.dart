@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +15,10 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 FirebaseUser loggedInUser;
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen({this.isAdmin = false, this.uidCustomer = ''});
+  ChatScreen({this.isAdmin = false, this.uidCustomer = '', this.type});
   final bool isAdmin;
   final String uidCustomer;
+  final String type;
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -202,6 +202,7 @@ class _ChatScreenState extends State<ChatScreen>
                           documentID: message.documentID,
                           sender: messageSender,
                           text: (messageText != null) ? messageText : '',
+                          isAdmin: message.data['is_admin'],
                           isMe: currentUser == messageSender,
                           onlineImagesList:
                               (images != null || images.length != 0)
@@ -269,6 +270,7 @@ class _ChatScreenState extends State<ChatScreen>
                             .add({
                           'roomId': uid,
                           'text': messageText,
+                          'is_admin': widget.isAdmin ? true : false,
                           'sender': loggedInUser.email,
                           'image': listImages,
                           'timestamp':
@@ -282,6 +284,7 @@ class _ChatScreenState extends State<ChatScreen>
                             .add({
                           'roomId': uid,
                           'text': messageText,
+                          'is_admin': widget.isAdmin ? true : false,
                           'sender': loggedInUser.email,
                           'image': [],
                           'timestamp':

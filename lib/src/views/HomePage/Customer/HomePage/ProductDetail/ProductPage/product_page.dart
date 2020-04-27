@@ -113,6 +113,7 @@ class _ProductPageState extends State<ProductPage>
           Stack(
             children: <Widget>[
               CarouselSlider(
+                enableInfiniteScroll: false,
                 height: ConstScreen.setSizeHeight(800),
                 scrollDirection: Axis.horizontal,
                 viewportFraction: 1.0,

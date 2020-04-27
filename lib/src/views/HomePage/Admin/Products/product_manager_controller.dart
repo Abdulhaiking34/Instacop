@@ -125,6 +125,7 @@ class ProductManagerController {
       Firestore.instance.collection('Products').document(id).setData({
         'id': id,
         'name': productName,
+        'search_key': productName.substring(0, 1).toUpperCase(),
         'image': linkImage,
         'categogy': category,
         'size': sizeList,

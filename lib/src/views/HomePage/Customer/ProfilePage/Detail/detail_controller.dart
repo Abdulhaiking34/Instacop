@@ -4,12 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 
 class DetailUserInfoController {
-  StreamController _fullNameController = new StreamController();
-  StreamController _addressController = new StreamController();
-  StreamController _phoneController = new StreamController();
-  StreamController _genderController = new StreamController();
-  StreamController _birthdayController = new StreamController();
-  StreamController _btnLoadingController = new StreamController();
+  StreamController _fullNameController = new StreamController.broadcast();
+  StreamController _addressController = new StreamController.broadcast();
+  StreamController _phoneController = new StreamController.broadcast();
+  StreamController _genderController = new StreamController.broadcast();
+  StreamController _birthdayController = new StreamController.broadcast();
+  StreamController _btnLoadingController = new StreamController.broadcast();
   StreamController _uidController = new StreamController.broadcast();
 
   Sink get uidSink => _uidController.sink;
