@@ -33,24 +33,27 @@ class _OrderChartState extends State<OrderChart>
     // TODO: implement initState
     super.initState();
     yearPick = DateTime.now();
-    getOrderState().then((result) {
+    getOrderState(yearPick.year).then((result) {
       _controller.sink.add(result);
     });
   }
 
   //TODO: get Total order
-  Future<OrderState> getOrderState() async {
+  Future<OrderState> getOrderState(int year) async {
     var pending = await Firestore.instance
         .collection('Orders')
         .where('status', isEqualTo: 'Pending')
+        .where('year', isEqualTo: year)
         .getDocuments();
     var cancelled = await Firestore.instance
         .collection('Orders')
         .where('status', isEqualTo: 'Canceled')
+        .where('year', isEqualTo: year)
         .getDocuments();
     var completed = await Firestore.instance
         .collection('Orders')
         .where('status', isEqualTo: 'Completed')
+        .where('year', isEqualTo: year)
         .getDocuments();
     setState(() {
       totalOrder = pending.documents.length +
@@ -183,6 +186,9 @@ class _OrderChartState extends State<OrderChart>
                   onChanged: (date) {
                     setState(() {
                       yearPick = date;
+                      getOrderState(yearPick.year).then((result) {
+                        _controller.sink.add(result);
+                      });
                     });
                   },
                 ),
@@ -220,7 +226,7 @@ class _OrderChartState extends State<OrderChart>
           return PieChartSectionData(
             color: const Color(0xff0293ee),
             value: completed,
-            title: '$completed%',
+            title: '${completed.toStringAsFixed(2)}%',
             radius: radius,
             titleStyle: TextStyle(
                 fontSize: fontSize,
@@ -232,7 +238,7 @@ class _OrderChartState extends State<OrderChart>
           return PieChartSectionData(
             color: Colors.redAccent.shade400,
             value: cancelled,
-            title: '$cancelled%',
+            title: '${cancelled.toStringAsFixed(2)}%',
             radius: radius,
             titleStyle: TextStyle(
                 fontSize: fontSize,
@@ -244,7 +250,7 @@ class _OrderChartState extends State<OrderChart>
           return PieChartSectionData(
             color: Color(0xff13d38e),
             value: pending,
-            title: '$pending%',
+            title: '${pending.toStringAsFixed(2)}%',
             radius: radius,
             titleStyle: TextStyle(
                 fontSize: fontSize,

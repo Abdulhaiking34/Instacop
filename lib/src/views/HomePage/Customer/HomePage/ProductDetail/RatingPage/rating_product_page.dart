@@ -7,14 +7,15 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/helpers/utils.dart';
-import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/RatingPage/rating_controller.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/rating_comment_card.dart';
 
 class RatingProductPage extends StatefulWidget {
-  RatingProductPage({this.product, Key key}) : super(key: key);
-  final Product product;
+  RatingProductPage({this.productId, this.isAdmin = false, Key key})
+      : super(key: key);
+  final String productId;
+  final bool isAdmin;
   @override
   _RatingProductPageState createState() => _RatingProductPageState();
 }
@@ -22,15 +23,7 @@ class RatingProductPage extends StatefulWidget {
 class _RatingProductPageState extends State<RatingProductPage>
     with AutomaticKeepAliveClientMixin {
   RatingController _controller = new RatingController();
-  double _ratingPoint = 0;
-  String _comment;
   List commentList = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print(widget.product.id);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +105,8 @@ class _RatingProductPageState extends State<RatingProductPage>
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
+                                double _ratingPoint = 0;
+                                String _comment = '';
                                 return Dialog(
                                   elevation: 0.0,
                                   backgroundColor: kColorWhite,
@@ -225,10 +220,8 @@ class _RatingProductPageState extends State<RatingProductPage>
                                                             user.fullName;
                                                         bool result = await _controller
                                                             .onComment(
-                                                                productId:
-                                                                    widget
-                                                                        .product
-                                                                        .id,
+                                                                productId: widget
+                                                                    .productId,
                                                                 comment:
                                                                     _comment,
                                                                 ratingPoint:
@@ -285,7 +278,7 @@ class _RatingProductPageState extends State<RatingProductPage>
                 stream: Firestore.instance
                     .collection('Comments')
                     .orderBy('create_at')
-                    .where('product_id', isEqualTo: widget.product.id)
+                    .where('product_id', isEqualTo: widget.productId)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -303,13 +296,21 @@ class _RatingProductPageState extends State<RatingProductPage>
                         .map((DocumentSnapshot document) {
                       return RatingComment(
                         username: document['name'],
+                        isAdmin: (document['type'] == 'admin'),
                         comment: document['comment'],
                         ratingPoint: document['point'],
                         createAt:
                             Util.convertDateToString(document['create_at']),
+                        isCanDelete: widget.isAdmin,
+                        onDelete: () {
+                          Firestore.instance
+                              .collection('Comments')
+                              .document(document.documentID)
+                              .delete();
+                          setState(() {});
+                        },
                       );
                     }).toList();
-                    commentList.reversed.toList();
                     return ListView(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,

@@ -4,6 +4,8 @@ import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/views/HomePage/Admin/Products/product_comment_view.dart';
+import 'package:instacop/src/views/HomePage/Customer/HomePage/ProductDetail/RatingPage/rating_product_page.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_admin_product.dart';
 import 'package:instacop/src/widgets/input_text.dart';
@@ -58,6 +60,14 @@ class _ProductManagerState extends State<ProductManager> {
                     productSizeList: document['size'],
                     productColorList: document['color'],
                     productImage: document['image'][0],
+                    onComment: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AdminProductCommentView(
+                                    productId: document['id'],
+                                  )));
+                    },
                     onClose: () {
                       Firestore.instance
                           .collection('Products')

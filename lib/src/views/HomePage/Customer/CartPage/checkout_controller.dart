@@ -46,6 +46,8 @@ class CheckoutController {
         'status': 'Pending',
         'client_secret': clientSecret,
         'payment_method_id': paymentMethodId,
+        'month': DateTime.now().month,
+        'year': DateTime.now().year,
         'create_at': DateTime.now().toString()
       }).then((value) {
         //TODO: add list product

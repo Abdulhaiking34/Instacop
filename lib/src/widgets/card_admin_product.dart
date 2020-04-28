@@ -28,7 +28,8 @@ class AdminProductCard extends StatelessWidget {
       this.brand = '',
       this.madeIn = '',
       this.onClose,
-      this.onEdit});
+      this.onEdit,
+      this.onComment});
   final String productName;
   final List productColorList;
   final List productSizeList;
@@ -42,6 +43,7 @@ class AdminProductCard extends StatelessWidget {
   final String createAt;
   final Function onClose;
   final Function onEdit;
+  final Function onComment;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +162,16 @@ class AdminProductCard extends StatelessWidget {
             ),
           ),
         ),
+        actions: <Widget>[
+          IconSlideAction(
+            caption: 'Comment',
+            color: Colors.blueAccent,
+            icon: Icons.insert_comment,
+            onTap: () {
+              onComment();
+            },
+          ),
+        ],
         secondaryActions: <Widget>[
           IconSlideAction(
             caption: 'Edit',

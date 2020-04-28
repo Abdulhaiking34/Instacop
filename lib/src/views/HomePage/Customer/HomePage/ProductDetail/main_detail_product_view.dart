@@ -53,7 +53,8 @@ class _MainDetailProductViewState extends State<MainDetailProductView> {
               product: widget.product,
             ),
             RatingProductPage(
-              product: widget.product,
+              productId: widget.product.id,
+              isAdmin: false,
             )
           ],
         ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instacop/src/helpers/shared_preferrence.dart';
 
 class RatingController {
   StreamController _commentController = new StreamController.broadcast();
@@ -39,11 +40,13 @@ class RatingController {
       print(username);
       print(ratingPoint);
       print(comment);
+      String type = await StorageUtil.getAccountType();
       await Firestore.instance.collection('Comments').document().setData({
         'product_id': productId,
         'name': username,
         'point': ratingPoint,
         'comment': comment,
+        'type': type,
         'create_at': DateTime.now().toString()
       });
       return true;

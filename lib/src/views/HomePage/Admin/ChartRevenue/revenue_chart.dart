@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
+import 'package:instacop/src/helpers/utils.dart';
 
 class RevenueChart extends StatefulWidget {
   @override
@@ -13,23 +15,33 @@ class RevenueChart extends StatefulWidget {
 
 class _RevenueChartState extends State<RevenueChart> {
   DateTime yearPick;
+  int totalSale = 0;
 
-  static List<charts.Series<OrdinalSales, String>> _chartData() {
-    final data = [
-      new OrdinalSales('Jan', 50000),
-      new OrdinalSales('Feb', 250000),
-      new OrdinalSales('Mar', 0),
-      new OrdinalSales('Apr', 75000),
-      new OrdinalSales('May', 75000),
-      new OrdinalSales('Jun', 75000),
-      new OrdinalSales('Jul', 75000),
-      new OrdinalSales('Aug', 0),
-      new OrdinalSales('Sep', 75000),
-      new OrdinalSales('Oct', 100000),
-      new OrdinalSales('Nov', 0),
-      new OrdinalSales('Dec', 750000),
-    ];
+  List<OrdinalSales> chartData = [
+    new OrdinalSales('Jan', 0),
+    new OrdinalSales('Feb', 0),
+    new OrdinalSales('Mar', 0),
+    new OrdinalSales('Apr', 0),
+    new OrdinalSales('May', 0),
+    new OrdinalSales('Jun', 0),
+    new OrdinalSales('Jul', 0),
+    new OrdinalSales('Aug', 0),
+    new OrdinalSales('Sep', 0),
+    new OrdinalSales('Oct', 0),
+    new OrdinalSales('Nov', 0),
+    new OrdinalSales('Dec', 0),
+  ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    yearPick = DateTime.now();
+    getDataForChart(yearPick.year);
+  }
+
+  //TODO: Chart Data
+  List<charts.Series<OrdinalSales, String>> _chartData() {
     return [
       new charts.Series<OrdinalSales, String>(
         id: 'Sales',
@@ -37,16 +49,41 @@ class _RevenueChartState extends State<RevenueChart> {
         domainFn: (OrdinalSales sales, _) => sales.month,
         measureFn: (OrdinalSales sales, _) => sales.sales,
         labelAccessorFn: (OrdinalSales sales, _) => '${sales.sales}',
-        data: data,
+        data: chartData,
       )
     ];
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    yearPick = DateTime.now();
+  //TODO: Get total sale per month
+  Future<int> getTotalPerMonth(int month, int year) async {
+    int total = 0;
+    var snapshot = await Firestore.instance
+        .collection('Orders')
+        .where('month', isEqualTo: month)
+        .where('year', isEqualTo: year)
+        .where('status', isEqualTo: 'Completed')
+        .getDocuments();
+    if (snapshot.documents.length != 0) {
+      for (var document in snapshot.documents) {
+        total += int.parse(document.data['total']);
+      }
+      return total;
+    } else {
+      return 0;
+    }
+  }
+
+  //TODO: get all Data
+  getDataForChart(int year) {
+    totalSale = 0;
+    for (int index = 0; index < 12; index++) {
+      getTotalPerMonth(index + 1, year).then((total) {
+        setState(() {
+          totalSale += total;
+          chartData.elementAt(index).sales = total;
+        });
+      });
+    }
   }
 
   @override
@@ -72,7 +109,7 @@ class _RevenueChartState extends State<RevenueChart> {
                     textAlign: TextAlign.center,
                   ),
                   Text(
-                    '200,000,000 VND',
+                    '${Util.intToMoneyType(totalSale)} VND',
                     style: kBoldTextStyle.copyWith(
                         fontWeight: FontWeight.w900,
                         fontSize: FontSize.s36,
@@ -132,6 +169,7 @@ class _RevenueChartState extends State<RevenueChart> {
                       onChanged: (date) {
                         setState(() {
                           yearPick = date;
+                          getDataForChart(yearPick.year);
                         });
                       },
                     ),
@@ -152,8 +190,8 @@ class _RevenueChartState extends State<RevenueChart> {
 }
 
 class OrdinalSales {
-  final String month;
-  final int sales;
+  String month;
+  int sales;
 
   OrdinalSales(this.month, this.sales);
 }
