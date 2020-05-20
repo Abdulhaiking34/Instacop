@@ -3,15 +3,16 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 
 class CategoryItem extends StatelessWidget {
-  CategoryItem({this.title, this.onTap});
+  CategoryItem({this.title, this.onTap, this.height = 80});
 
   final String title;
   final Function onTap;
+  final double height;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        height: ConstScreen.setSizeHeight(80),
+        height: ConstScreen.setSizeHeight(height),
         width: ConstScreen.setSizeWidth(760),
         decoration: BoxDecoration(
           border: Border(

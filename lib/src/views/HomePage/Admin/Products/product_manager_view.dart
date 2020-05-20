@@ -56,7 +56,8 @@ class _ProductManagerState extends State<ProductManager> {
                     brand: document['brand'],
                     category: document['categogy'],
                     madeIn: document['made_in'],
-                    createAt: Util.convertDateToString(document['create_at']),
+                    createAt:
+                        Util.convertDateToFullString(document['create_at']),
                     productSizeList: document['size'],
                     productColorList: document['color'],
                     productImage: document['image'][0],

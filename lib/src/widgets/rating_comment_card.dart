@@ -32,7 +32,7 @@ class RatingComment extends StatelessWidget {
         actionExtentRatio: 0.25,
         secondaryActions: isCanDelete
             ? <Widget>[
-                IconSlideAction(
+                IconSlideAction( 
                   caption: 'Delete',
                   color: Colors.red,
                   icon: Icons.delete,
@@ -74,7 +74,7 @@ class RatingComment extends StatelessWidget {
                         SizedBox(
                           width: ConstScreen.setSizeWidth(20),
                         ),
-                        RatingBar(
+                        (!isAdmin) ? RatingBar(
                           allowHalfRating: true,
                           initialRating: ratingPoint,
                           itemCount: 5,
@@ -84,7 +84,7 @@ class RatingComment extends StatelessWidget {
                             Icons.star,
                             color: Colors.amberAccent,
                           ),
-                        ),
+                        ) : Container(),
                       ],
                     ),
                     Align(

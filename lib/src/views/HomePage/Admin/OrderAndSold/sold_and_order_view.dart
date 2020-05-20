@@ -94,13 +94,13 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                 status: document['status'],
                                 total: Util.intToMoneyType(
                                     int.parse(document['total'])),
-                                createAt: Util.convertDateToString(
+                                createAt: Util.convertDateToFullString(
                                     document['create_at']));
                             if (isOrderPage) {
                               //TODO: Order List View
                               return OrderAdminCard(
                                 id: document['sub_Id'],
-                                date: Util.convertDateToString(
+                                date: Util.convertDateToFullString(
                                     document['create_at']),
                                 customerName: document['customer_name'],
                                 status: document['status'],
@@ -373,7 +373,7 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                               //TODO: Sold order list view
                               return OrderCard(
                                 id: document['sub_Id'],
-                                date: Util.convertDateToString(
+                                date: Util.convertDateToFullString(
                                     document['create_at']),
                                 admin: document['admin'],
                                 customerName: document['customer_name'],

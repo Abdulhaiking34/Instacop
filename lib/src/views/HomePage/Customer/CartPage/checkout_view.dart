@@ -7,18 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:instacop/link.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/model/coupon.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/services/stripe_payment.dart';
 import 'package:instacop/src/views/HomePage/Customer/CartPage/checkout_controller.dart';
 import 'package:instacop/src/views/HomePage/Customer/CartPage/payment_complete_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_product_order.dart';
+import 'package:instacop/src/widgets/category_item.dart';
 import 'package:instacop/src/widgets/input_text.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -44,6 +47,8 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
   int expiryYear;
   String cardHolderName = '';
   String cvvCode = '';
+  Coupon coupon = new Coupon();
+  double discountPrice = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -218,6 +223,208 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                     ),
                   ),
                 ),
+                //TODO: Coupon
+                Card(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: ConstScreen.setSizeHeight(30),
+                        bottom: ConstScreen.setSizeHeight(20),
+                        left: ConstScreen.setSizeHeight(40),
+                        right: ConstScreen.setSizeHeight(40)),
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                FontAwesomeIcons.ticketAlt,
+                                size: ConstScreen.setSizeHeight(35),
+                              ),
+                              SizedBox(
+                                width: ConstScreen.setSizeWidth(12),
+                              ),
+                              AutoSizeText(
+                                'YOUR COUPON:',
+                                textAlign: TextAlign.start,
+                                maxLines: 2,
+                                minFontSize: 15,
+                                style: TextStyle(
+                                    fontSize: FontSize.setTextSize(34),
+                                    color: kColorBlack,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: ConstScreen.setSizeWidth(20),
+                        ),
+                        //TODO: Coupon key
+                        Column(
+                          children: <Widget>[
+                            (coupon.discount != null && coupon.discount != '')
+                                ? Container(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          ('Discount : ${coupon.discount}%'),
+                                          style: kNormalTextStyle.copyWith(
+                                              fontSize: FontSize.s30),
+                                        ),
+                                        Text(
+                                          ('Billing amount: ${Util.intToMoneyType(int.parse(coupon.maxBillingAmount))}'),
+                                          style: kNormalTextStyle.copyWith(
+                                              fontSize: FontSize.s30),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height: ConstScreen.setSizeHeight(15),
+                            ),
+                            //TODO: Coupon Dialog
+                            CusRaisedButton(
+                              title: 'Get Coupon',
+                              backgroundColor: kColorBlack,
+                              onPress: () {
+                                List<CategoryItem> yourCoupon = [];
+                                showDialog(
+                                    context: context,
+                                    child: Dialog(
+                                      backgroundColor: kColorWhite,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20))),
+                                      child: Container(
+                                        height: ConstScreen.setSizeHeight(600),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Center(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: ConstScreen
+                                                        .setSizeHeight(20)),
+                                                child: Text(
+                                                  'COUPON',
+                                                  style:
+                                                      kBoldTextStyle.copyWith(
+                                                          fontSize:
+                                                              FontSize.s36),
+                                                ),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: ListView(
+                                                shrinkWrap: true,
+                                                children: <Widget>[
+                                                  //TODO: your coupon
+                                                  StreamBuilder<QuerySnapshot>(
+                                                      stream: Firestore.instance
+                                                          .collection('Coupon')
+                                                          .where('uid',
+                                                              isEqualTo:
+                                                                  widget.uid)
+                                                          .orderBy(
+                                                              'expired_date')
+                                                          .snapshots(),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        for (var document
+                                                            in snapshot.data
+                                                                .documents) {
+                                                          if (Util.isDateGreaterThanNow(
+                                                              document[
+                                                                  'expired_date'])) {
+                                                            yourCoupon.add(
+                                                                CategoryItem(
+                                                              title:
+                                                                  'Discount: ${document['discount']}% \nBilling amount: ${Util.intToMoneyType(int.parse(document['max_billing_amount']))} VND \nExpired date: ${Util.convertDateToString(document['expired_date'].toString())}',
+                                                              onTap: () {
+                                                                Coupon coup = new Coupon(
+                                                                    id: document
+                                                                        .documentID,
+                                                                    discount:
+                                                                        document[
+                                                                            'discount'],
+                                                                    maxBillingAmount:
+                                                                        document[
+                                                                            'max_billing_amount']);
+
+                                                                setState(() {
+                                                                  coupon = coup;
+                                                                });
+
+                                                                discountPrice = widget
+                                                                        .total *
+                                                                    (double.parse(
+                                                                            coupon.discount) /
+                                                                        100);
+                                                                if (discountPrice >
+                                                                    double.parse(
+                                                                        coupon
+                                                                            .maxBillingAmount)) {
+                                                                  discountPrice =
+                                                                      double.parse(
+                                                                          coupon
+                                                                              .maxBillingAmount);
+                                                                }
+
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              height: 150,
+                                                            ));
+                                                          }
+                                                        }
+
+                                                        return ExpansionTile(
+                                                          title: Text(
+                                                            'Your Coupon',
+                                                            style: TextStyle(
+                                                                fontSize: FontSize
+                                                                    .setTextSize(
+                                                                        32),
+                                                                color:
+                                                                    kColorBlack,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                          children:
+                                                              snapshot.hasData
+                                                                  ? yourCoupon
+                                                                  : [],
+                                                        );
+                                                      }),
+                                                  //TODO: global coupon
+                                                  ExpansionTile(
+                                                    title: Text(
+                                                      'Global Coupon',
+                                                      style: TextStyle(
+                                                          fontSize: FontSize
+                                                              .setTextSize(32),
+                                                          color: kColorBlack,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ));
+                              },
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 //TODO: Your Order
                 Card(
                   child: Padding(
@@ -272,18 +479,18 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                         SizedBox(
                           height: ConstScreen.setSizeWidth(20),
                         ),
-                        //TODO: TOTAL
+                        //TODO: Sub total
                         Row(
                           children: <Widget>[
                             Expanded(
                               flex: 3,
                               child: AutoSizeText(
-                                'TOTAL AMOUNT',
+                                'Subtotal',
                                 textAlign: TextAlign.start,
                                 maxLines: 2,
                                 minFontSize: 15,
                                 style: TextStyle(
-                                    fontSize: FontSize.setTextSize(28),
+                                    fontSize: FontSize.setTextSize(26),
                                     color: kColorBlack,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -292,6 +499,108 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                               flex: 4,
                               child: AutoSizeText(
                                 Util.intToMoneyType(widget.total) + ' VND',
+                                textAlign: TextAlign.end,
+                                maxLines: 2,
+                                minFontSize: 15,
+                                style: TextStyle(
+                                    fontSize: FontSize.setTextSize(30),
+                                    color: kColorBlack,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        //TODO: Shipping
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 3,
+                              child: AutoSizeText(
+                                'Shipping',
+                                textAlign: TextAlign.start,
+                                maxLines: 2,
+                                minFontSize: 15,
+                                style: TextStyle(
+                                    fontSize: FontSize.setTextSize(26),
+                                    color: kColorBlack,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: AutoSizeText(
+                                (widget.total > 300000) ? 'Free' : '20,000 VND',
+                                textAlign: TextAlign.end,
+                                maxLines: 2,
+                                minFontSize: 15,
+                                style: TextStyle(
+                                    fontSize: FontSize.setTextSize(30),
+                                    color: kColorBlack,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        //TODO: coupon
+                        (coupon.discount != null && coupon.discount != '')
+                            ? Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 3,
+                                    child: AutoSizeText(
+                                      'Discount',
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                      minFontSize: 15,
+                                      style: TextStyle(
+                                          fontSize: FontSize.setTextSize(26),
+                                          color: kColorBlack,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: AutoSizeText(
+                                      coupon.discount +
+                                          '%\n-${Util.intToMoneyType(discountPrice.toInt())} VND',
+                                      textAlign: TextAlign.end,
+                                      maxLines: 2,
+                                      minFontSize: 15,
+                                      style: TextStyle(
+                                          fontSize: FontSize.setTextSize(30),
+                                          color: kColorBlack,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+
+                        //TODO: TOTAL
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 3,
+                              child: AutoSizeText(
+                                'TOTAL',
+                                textAlign: TextAlign.start,
+                                maxLines: 2,
+                                minFontSize: 15,
+                                style: TextStyle(
+                                    fontSize: FontSize.setTextSize(30),
+                                    color: kColorBlack,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: AutoSizeText(
+                                Util.intToMoneyType((widget.total > 300000)
+                                        ? widget.total - discountPrice.floor()
+                                        : widget.total +
+                                            20000 -
+                                            discountPrice.floor()) +
+                                    ' VND',
                                 textAlign: TextAlign.end,
                                 maxLines: 2,
                                 minFontSize: 15,

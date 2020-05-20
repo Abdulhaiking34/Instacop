@@ -1,12 +1,20 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/utils.dart';
+import 'package:instacop/src/model/coupon.dart';
 import 'package:instacop/src/views/HomePage/Admin/Users/admin_adding_account.dart';
+import 'package:instacop/src/views/HomePage/Admin/Users/admin_coupon_controller.dart';
 import 'package:instacop/src/views/HomePage/Customer/chat_view.dart';
+import 'package:instacop/src/widgets/button_raised.dart';
+import 'package:instacop/src/widgets/input_text.dart';
 import 'package:instacop/src/widgets/widget_title.dart';
 
 class UserManagerView extends StatefulWidget {
@@ -60,6 +68,216 @@ class _UserManagerViewState extends State<UserManagerView> {
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
                       IconSlideAction(
+                        caption: 'Coupon',
+                        color: kColorOrange,
+                        icon: FontAwesomeIcons.ticketAlt,
+                        onTap: () {
+                          Coupon coupon = new Coupon();
+                          DateTime expiredDate;
+                          CouponController couponController =
+                              new CouponController();
+                          TextEditingController discountTextController =
+                              new TextEditingController();
+                          TextEditingController billingAmountTextController =
+                              new TextEditingController();
+                          //TODO: sent Coupon
+                          showDialog(
+                              context: context,
+                              child: Dialog(
+                                child: Container(
+                                  height: ConstScreen.setSizeHeight(620),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(
+                                        ConstScreen.setSizeHeight(10)),
+                                    child: Column(
+                                      children: <Widget>[
+                                        //TODO: Tittle
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical:
+                                                  ConstScreen.setSizeHeight(
+                                                      25)),
+                                          child: Text(
+                                            'Coupon',
+                                            style: kBoldTextStyle.copyWith(
+                                                fontSize:
+                                                    FontSize.setTextSize(45)),
+                                          ),
+                                        ),
+                                        //TODO: Discount
+                                        StreamBuilder(
+                                            stream:
+                                                couponController.discountStream,
+                                            builder: (context, snapshot) {
+                                              return InputText(
+                                                title: 'Discount',
+                                                controller:
+                                                    discountTextController,
+                                                errorText: snapshot.hasError
+                                                    ? snapshot.error
+                                                    : null,
+                                                inputType: TextInputType.number,
+                                                hintText: '50%',
+                                              );
+                                            }),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(15),
+                                        ),
+                                        //TODO: Max discount price
+                                        StreamBuilder(
+                                            stream: couponController
+                                                .billingAmountStream,
+                                            builder: (context, snapshot) {
+                                              return InputText(
+                                                title: 'Billing Amount',
+                                                controller:
+                                                    billingAmountTextController,
+                                                errorText: snapshot.hasError
+                                                    ? snapshot.error
+                                                    : null,
+                                                inputType: TextInputType.number,
+                                                hintText: '100,000',
+                                              );
+                                            }),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(30),
+                                        ),
+                                        //TODO: Date time picker
+                                        FlatButton(
+                                          onPressed: () {
+                                            DatePicker.showDatePicker(context,
+                                                showTitleActions: true,
+                                                minTime: DateTime(
+                                                    DateTime.now().year,
+                                                    DateTime.now().month,
+                                                    DateTime.now().day),
+                                                maxTime: DateTime(
+                                                    DateTime.now().year + 50,
+                                                    12,
+                                                    31), onChanged: (date) {
+                                              expiredDate = date;
+                                            }, onConfirm: (date) {
+                                              expiredDate = date;
+                                              coupon.expiredDate =
+                                                  date.toString();
+                                              couponController.expiredDateSink
+                                                  .add(true);
+                                            },
+                                                currentTime: DateTime.now(),
+                                                locale: LocaleType.vi);
+                                          },
+                                          child: Container(
+                                            height:
+                                                ConstScreen.setSizeHeight(80),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: kColorBlack
+                                                        .withOpacity(0.7))),
+                                            child: Center(
+                                              child: StreamBuilder(
+                                                  stream: couponController
+                                                      .expiredDateStream,
+                                                  builder: (context, snapshot) {
+                                                    return snapshot.hasError
+                                                        ? Text(
+                                                            snapshot.error,
+                                                            style: TextStyle(
+                                                                color:
+                                                                    kColorRed,
+                                                                fontSize:
+                                                                    FontSize
+                                                                        .s30,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          )
+                                                        : Text(
+                                                            snapshot.hasData
+                                                                ? ('Expired Date: ' +
+                                                                    expiredDate
+                                                                        .day
+                                                                        .toString() +
+                                                                    '/' +
+                                                                    expiredDate
+                                                                        .month
+                                                                        .toString() +
+                                                                    '/' +
+                                                                    expiredDate
+                                                                        .year
+                                                                        .toString())
+                                                                : 'Expired Date Picker',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    kColorBlack,
+                                                                fontSize:
+                                                                    FontSize
+                                                                        .s30,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          );
+                                                  }),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: ConstScreen.setSizeHeight(30),
+                                        ),
+                                        //TODO: button
+                                        Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              flex: 1,
+                                              child: CusRaisedButton(
+                                                title: 'CREATE',
+                                                backgroundColor: kColorBlack,
+                                                onPress: () {
+                                                  coupon.discount =
+                                                      discountTextController
+                                                          .text;
+
+                                                  coupon.maxBillingAmount =
+                                                      billingAmountTextController
+                                                          .text;
+                                                  coupon.uid =
+                                                      document.documentID;
+                                                  coupon.couponKey =
+                                                      Coupon.randomCouponKey(
+                                                          10);
+                                                  coupon.createAt =
+                                                      DateTime.now().toString();
+                                                  var result = couponController
+                                                      .onCreateCoupon(coupon);
+                                                  if (result == 0)
+                                                    Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  ConstScreen.setSizeHeight(20),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: CusRaisedButton(
+                                                title: 'CANCEL',
+                                                backgroundColor:
+                                                    kColorLightGrey,
+                                                onPress: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ));
+                        },
+                      ),
+                      IconSlideAction(
                         caption: 'Chat',
                         color: kColorBlue,
                         icon: Icons.chat,
@@ -81,8 +299,8 @@ class _UserManagerViewState extends State<UserManagerView> {
                         fullname: document['fullname'],
                         phone: document['phone'],
                         isAdmin: document['type'] == 'admin',
-                        createAt:
-                            Util.convertDateToString(document['create_at'])),
+                        createAt: Util.convertDateToFullString(
+                            document['create_at'])),
                   );
                 }).toList(),
               );

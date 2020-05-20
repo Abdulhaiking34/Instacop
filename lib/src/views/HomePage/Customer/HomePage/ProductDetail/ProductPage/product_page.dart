@@ -256,7 +256,7 @@ class _ProductPageState extends State<ProductPage>
                       //TODO: Sale Price
                       Text(
                         (widget.product.salePrice != '0')
-                            ? widget.product.salePrice + ' VND'
+                            ? Util.intToMoneyType(int.parse(widget.product.salePrice ))+ ' VND'
                             : '',
                         style: TextStyle(
                             fontSize: FontSize.setTextSize(34),

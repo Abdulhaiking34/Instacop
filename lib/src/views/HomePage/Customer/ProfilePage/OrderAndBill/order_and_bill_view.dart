@@ -81,11 +81,11 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
                                 status: document['status'],
                                 total: Util.intToMoneyType(
                                     int.parse(document['total'])),
-                                createAt: Util.convertDateToString(
+                                createAt: Util.convertDateToFullString(
                                     document['create_at']));
                             return OrderCard(
                               id: document['sub_Id'],
-                              date: Util.convertDateToString(
+                              date: Util.convertDateToFullString(
                                   document['create_at']),
                               customerName: document['customer_name'],
                               admin: document['admin'],

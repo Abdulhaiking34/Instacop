@@ -284,13 +284,17 @@ class _RatingProductPageState extends State<RatingProductPage>
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
                     //TODO: set
-                    double totalReview =
-                        snapshot.data.documents.length.toDouble();
+                    double totalReview = 0;
+                    // snapshot.data.documents.length.toDouble();
                     double ratingPoint = 0;
-                    _controller.setTotalReview(totalReview.toInt());
+
                     for (var rating in snapshot.data.documents) {
-                      ratingPoint += rating['point'];
+                      if (rating['type'] == 'customer') {
+                        totalReview++;
+                        ratingPoint += rating['point'];
+                      }
                     }
+                    _controller.setTotalReview(totalReview.toInt());
                     _controller.setAveragePoint(ratingPoint / totalReview);
                     commentList = snapshot.data.documents
                         .map((DocumentSnapshot document) {
@@ -300,7 +304,7 @@ class _RatingProductPageState extends State<RatingProductPage>
                         comment: document['comment'],
                         ratingPoint: document['point'],
                         createAt:
-                            Util.convertDateToString(document['create_at']),
+                            Util.convertDateToFullString(document['create_at']),
                         isCanDelete: widget.isAdmin,
                         onDelete: () {
                           Firestore.instance
