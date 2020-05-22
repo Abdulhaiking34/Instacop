@@ -24,6 +24,8 @@ class _AdminHomeViewState extends State<AdminHomeView> {
   String _orderCount = '0';
   String _soldCount = '0';
   String total = '0';
+  String privateCouponCount = '0';
+  String globalCouponCount = '0';
   loadNumberDashboard() {
     //TODO: User
     Firestore.instance.collection('Users').getDocuments().then((onValue) {
@@ -71,6 +73,21 @@ class _AdminHomeViewState extends State<AdminHomeView> {
       setState(() {
         total = Util.intToMoneyType(revenue);
       });
+    });
+    //TODO: Coupon
+    Firestore.instance
+        .collection('Coupon')
+        .where('uid', isLessThan: 'global')
+        .getDocuments()
+        .then((value) {
+      privateCouponCount = value.documents.length.toString();
+    });
+    Firestore.instance
+        .collection('Coupon')
+        .where('uid', isEqualTo: 'global')
+        .getDocuments()
+        .then((value) {
+      globalCouponCount = value.documents.length.toString();
     });
   }
 
@@ -190,17 +207,13 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                   ),
                   Expanded(
                     child: DashboardBox(
-                      title: 'Sold',
+                      title: 'Bill',
                       color: kColorBlue,
                       icon: Icons.done_outline,
                       value: _soldCount,
                       onPress: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SoldAndOrderView(
-                                      title: 'Sold Order List',
-                                    )));
+                        Navigator.pushNamed(
+                            context, 'admin_bill_history_screen');
                       },
                     ),
                   ),
@@ -217,7 +230,8 @@ class _AdminHomeViewState extends State<AdminHomeView> {
                 title: 'Coupon',
                 color: kColorBlue,
                 icon: FontAwesomeIcons.ticketAlt,
-                value: '0',
+                value:
+                    'Private: $privateCouponCount  Global: $globalCouponCount',
                 onPress: () {
                   Navigator.pushNamed(context, 'admin_coupon_manager');
                 },

@@ -1,18 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
-import 'package:instacop/src/views/HomePage/Admin/Coupon/global_coupon_view.dart';
-import 'package:instacop/src/views/HomePage/Admin/Coupon/private_coupon_view.dart';
+import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
 
-class CouponAdminView extends StatefulWidget {
+class AdminBillHistoryView extends StatefulWidget {
   @override
-  _CouponAdminViewState createState() => _CouponAdminViewState();
+  _AdminBillHistoryViewState createState() => _AdminBillHistoryViewState();
 }
 
-class _CouponAdminViewState extends State<CouponAdminView>
+class _AdminBillHistoryViewState extends State<AdminBillHistoryView>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
   @override
@@ -30,7 +27,7 @@ class _CouponAdminViewState extends State<CouponAdminView>
         backgroundColor: kColorWhite,
         // TODO: Quantity Items
         title: Text(
-          'Coupon List',
+          'Bill History',
           style: TextStyle(
               color: kColorBlack,
               fontSize: FontSize.setTextSize(32),
@@ -46,21 +43,21 @@ class _CouponAdminViewState extends State<CouponAdminView>
           tabs: <Widget>[
             Tab(
               icon: Icon(
-                FontAwesomeIcons.ticketAlt,
+                Icons.check_circle,
                 size: ConstScreen.setSizeHeight(30),
               ),
               child: Text(
-                'Private',
+                'Completed',
                 style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
               ),
             ),
             Tab(
               icon: Icon(
-                FontAwesomeIcons.ticketAlt,
+                Icons.cancel,
                 size: ConstScreen.setSizeHeight(30),
               ),
               child: Text(
-                'Global',
+                'Canceled',
                 style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
               ),
             )
@@ -69,10 +66,14 @@ class _CouponAdminViewState extends State<CouponAdminView>
       ),
       body: TabBarView(
         children: [
-          //TODO: private coupon
-          PrivateCouponView(),
-          //TODO: global coupon
-          GlobalCouponView()
+          OrderAndBillView(
+            status: 'Completed',
+            isAdmin: true,
+          ),
+          OrderAndBillView(
+            status: 'Canceled',
+            isAdmin: true,
+          ),
         ],
         controller: _tabController,
       ),

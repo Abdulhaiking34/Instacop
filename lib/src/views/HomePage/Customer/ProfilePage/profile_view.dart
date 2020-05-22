@@ -4,7 +4,6 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/Detail/detail_user_profile_views.dart';
-import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
 import 'package:instacop/src/widgets/button_raised.dart';
 
 class ProfileView extends StatefulWidget {

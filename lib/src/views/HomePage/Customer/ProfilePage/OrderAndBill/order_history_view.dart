@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instacop/src/helpers/TextStyle.dart';
 import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:instacop/src/views/HomePage/Customer/ProfilePage/OrderAndBill/order_and_bill_view.dart';
 
 class OrderHistoryView extends StatefulWidget {
+  OrderHistoryView({this.isAdmin = false});
+  final bool isAdmin;
   @override
   _OrderHistoryViewState createState() => _OrderHistoryViewState();
 }
@@ -15,7 +16,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView>
   TabController _tabController;
   @override
   void initState() {
-    _tabController = new TabController(length: 2, vsync: this);
+    _tabController = new TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -28,7 +29,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView>
         backgroundColor: kColorWhite,
         // TODO: Quantity Items
         title: Text(
-          'Coupon List',
+          'Order And Bill',
           style: TextStyle(
               color: kColorBlack,
               fontSize: FontSize.setTextSize(32),
@@ -44,21 +45,31 @@ class _OrderHistoryViewState extends State<OrderHistoryView>
           tabs: <Widget>[
             Tab(
               icon: Icon(
-                FontAwesomeIcons.ticketAlt,
+                Icons.cached,
                 size: ConstScreen.setSizeHeight(30),
               ),
               child: Text(
-                'Private',
+                'Pending',
                 style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
               ),
             ),
             Tab(
               icon: Icon(
-                FontAwesomeIcons.ticketAlt,
+                Icons.check_circle,
                 size: ConstScreen.setSizeHeight(30),
               ),
               child: Text(
-                'Global',
+                'Completed',
+                style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
+              ),
+            ),
+            Tab(
+              icon: Icon(
+                Icons.cancel,
+                size: ConstScreen.setSizeHeight(30),
+              ),
+              child: Text(
+                'Canceled',
                 style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
               ),
             )
@@ -69,11 +80,14 @@ class _OrderHistoryViewState extends State<OrderHistoryView>
         children: [
           //TODO: Order
           OrderAndBillView(
-            title: 'Order',
+            status: 'Pending',
           ),
           //TODO: Bill
           OrderAndBillView(
-            title: 'Bill',
+            status: 'Completed',
+          ),
+          OrderAndBillView(
+            status: 'Canceled',
           ),
         ],
         controller: _tabController,

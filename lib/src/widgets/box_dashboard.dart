@@ -73,7 +73,7 @@ class DashboardBox extends StatelessWidget {
                     child: AutoSizeText(
                       value,
                       style: kBoldTextStyle.copyWith(
-                          fontSize: FontSize.setTextSize(60),
+                          fontSize: FontSize.setTextSize(55),
                           color: kColorBlack.withOpacity(0.75)),
                       maxLines: 1,
                       minFontSize: 10,

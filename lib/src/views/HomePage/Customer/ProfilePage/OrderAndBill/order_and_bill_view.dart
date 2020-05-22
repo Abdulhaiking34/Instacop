@@ -14,8 +14,9 @@ import 'package:instacop/src/widgets/button_raised.dart';
 import 'package:instacop/src/widgets/card_order.dart';
 
 class OrderAndBillView extends StatefulWidget {
-  OrderAndBillView({this.title});
-  final String title;
+  OrderAndBillView({this.status, this.isAdmin = false});
+  final String status;
+  final bool isAdmin;
   @override
   _OrderAndBillViewState createState() => _OrderAndBillViewState();
 }
@@ -42,17 +43,6 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          widget.title,
-          style: kBoldTextStyle.copyWith(
-            fontSize: FontSize.setTextSize(32),
-          ),
-        ),
-        backgroundColor: kColorWhite,
-        iconTheme: IconThemeData.fallback(),
-      ),
       body: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: ConstScreen.setSizeWidth(20),
@@ -62,11 +52,18 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
             builder: (context, mainSnapshot) {
               if (mainSnapshot.hasData) {
                 return StreamBuilder<QuerySnapshot>(
-                    stream: Firestore.instance
-                        .collection('Orders')
-                        .where('id', isEqualTo: uid)
-                        .orderBy('create_at')
-                        .snapshots(),
+                    stream: widget.isAdmin
+                        ? Firestore.instance
+                            .collection('Orders')
+                            .where('status', isEqualTo: widget.status)
+                            .orderBy('create_at')
+                            .snapshots()
+                        : Firestore.instance
+                            .collection('Orders')
+                            .where('id', isEqualTo: uid)
+                            .where('status', isEqualTo: widget.status)
+                            .orderBy('create_at')
+                            .snapshots(),
                     builder: (context, snapshot) {
                       if (mainSnapshot.hasData && snapshot.hasData) {
                         return ListView(
