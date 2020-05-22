@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -289,7 +288,8 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                               title: 'Get Coupon',
                               backgroundColor: kColorBlack,
                               onPress: () {
-                                List<CategoryItem> yourCoupon = [];
+                                List<CategoryItem> privateCoupon = [];
+                                List<CategoryItem> globalCoupon = [];
                                 showDialog(
                                     context: context,
                                     child: Dialog(
@@ -326,90 +326,161 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                           .where('uid',
                                                               isEqualTo:
                                                                   widget.uid)
-                                                          .orderBy(
-                                                              'expired_date')
+                                                          .orderBy('create_at')
                                                           .snapshots(),
                                                       builder:
                                                           (context, snapshot) {
-                                                        for (var document
-                                                            in snapshot.data
-                                                                .documents) {
-                                                          if (Util.isDateGreaterThanNow(
-                                                              document[
-                                                                  'expired_date'])) {
-                                                            yourCoupon.add(
-                                                                CategoryItem(
-                                                              title:
-                                                                  'Discount: ${document['discount']}% \nBilling amount: ${Util.intToMoneyType(int.parse(document['max_billing_amount']))} VND \nExpired date: ${Util.convertDateToString(document['expired_date'].toString())}',
-                                                              onTap: () {
-                                                                Coupon coup = new Coupon(
-                                                                    id: document
-                                                                        .documentID,
-                                                                    discount:
-                                                                        document[
-                                                                            'discount'],
-                                                                    maxBillingAmount:
-                                                                        document[
-                                                                            'max_billing_amount']);
+                                                        if (snapshot.hasData) {
+                                                          for (var document
+                                                              in snapshot.data
+                                                                  .documents) {
+                                                            if (Util.isDateGreaterThanNow(
+                                                                document[
+                                                                    'expired_date'])) {
+                                                              privateCoupon.add(
+                                                                  CategoryItem(
+                                                                title:
+                                                                    'Discount: ${document['discount']}% \nBilling amount: ${Util.intToMoneyType(int.parse(document['max_billing_amount']))} VND \nExpired date: ${Util.convertDateToString(document['expired_date'].toString())}',
+                                                                onTap: () {
+                                                                  Coupon coup = new Coupon(
+                                                                      id: document
+                                                                          .documentID,
+                                                                      discount:
+                                                                          document[
+                                                                              'discount'],
+                                                                      maxBillingAmount:
+                                                                          document[
+                                                                              'max_billing_amount']);
 
-                                                                setState(() {
-                                                                  coupon = coup;
-                                                                });
+                                                                  setState(() {
+                                                                    coupon =
+                                                                        coup;
+                                                                  });
 
-                                                                discountPrice = widget
-                                                                        .total *
-                                                                    (double.parse(
-                                                                            coupon.discount) /
-                                                                        100);
-                                                                if (discountPrice >
-                                                                    double.parse(
-                                                                        coupon
-                                                                            .maxBillingAmount)) {
-                                                                  discountPrice =
+                                                                  discountPrice = widget
+                                                                          .total *
+                                                                      (double.parse(
+                                                                              coupon.discount) /
+                                                                          100);
+                                                                  if (discountPrice >
                                                                       double.parse(
                                                                           coupon
-                                                                              .maxBillingAmount);
-                                                                }
+                                                                              .maxBillingAmount)) {
+                                                                    discountPrice =
+                                                                        double.parse(
+                                                                            coupon.maxBillingAmount);
+                                                                  }
 
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              height: 150,
-                                                            ));
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                height: 150,
+                                                              ));
+                                                            }
                                                           }
+                                                          return ExpansionTile(
+                                                            title: Text(
+                                                              'Your Coupon',
+                                                              style: TextStyle(
+                                                                  fontSize: FontSize
+                                                                      .setTextSize(
+                                                                          32),
+                                                                  color:
+                                                                      kColorBlack,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                            ),
+                                                            children: snapshot
+                                                                    .hasData
+                                                                ? privateCoupon
+                                                                : [],
+                                                          );
+                                                        } else {
+                                                          return Container();
                                                         }
-
-                                                        return ExpansionTile(
-                                                          title: Text(
-                                                            'Your Coupon',
-                                                            style: TextStyle(
-                                                                fontSize: FontSize
-                                                                    .setTextSize(
-                                                                        32),
-                                                                color:
-                                                                    kColorBlack,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                          ),
-                                                          children:
-                                                              snapshot.hasData
-                                                                  ? yourCoupon
-                                                                  : [],
-                                                        );
                                                       }),
                                                   //TODO: global coupon
-                                                  ExpansionTile(
-                                                    title: Text(
-                                                      'Global Coupon',
-                                                      style: TextStyle(
-                                                          fontSize: FontSize
-                                                              .setTextSize(32),
-                                                          color: kColorBlack,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ),
+                                                  StreamBuilder<QuerySnapshot>(
+                                                      stream: Firestore.instance
+                                                          .collection('Coupon')
+                                                          .where('uid',
+                                                              isEqualTo:
+                                                                  'global')
+                                                          .orderBy('create_at')
+                                                          .snapshots(),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          for (var document
+                                                              in snapshot.data
+                                                                  .documents) {
+                                                            if (Util.isDateGreaterThanNow(
+                                                                document[
+                                                                    'expired_date'])) {
+                                                              globalCoupon.add(
+                                                                  CategoryItem(
+                                                                title:
+                                                                    'Discount: ${document['discount']}% \nBilling amount: ${Util.intToMoneyType(int.parse(document['max_billing_amount']))} VND \nExpired date: ${Util.convertDateToString(document['expired_date'].toString())}',
+                                                                onTap: () {
+                                                                  Coupon coup = new Coupon(
+                                                                      id: document
+                                                                          .documentID,
+                                                                      discount:
+                                                                          document[
+                                                                              'discount'],
+                                                                      maxBillingAmount:
+                                                                          document[
+                                                                              'max_billing_amount']);
+
+                                                                  setState(() {
+                                                                    coupon =
+                                                                        coup;
+                                                                  });
+
+                                                                  discountPrice = widget
+                                                                          .total *
+                                                                      (double.parse(
+                                                                              coupon.discount) /
+                                                                          100);
+                                                                  if (discountPrice >
+                                                                      double.parse(
+                                                                          coupon
+                                                                              .maxBillingAmount)) {
+                                                                    discountPrice =
+                                                                        double.parse(
+                                                                            coupon.maxBillingAmount);
+                                                                  }
+
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                height: 150,
+                                                              ));
+                                                            }
+                                                          }
+                                                          return ExpansionTile(
+                                                            title: Text(
+                                                              'Global Coupon',
+                                                              style: TextStyle(
+                                                                  fontSize: FontSize
+                                                                      .setTextSize(
+                                                                          32),
+                                                                  color:
+                                                                      kColorBlack,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                            ),
+                                                            children: (snapshot
+                                                                    .hasData)
+                                                                ? globalCoupon
+                                                                : [],
+                                                          );
+                                                        } else {
+                                                          return Container();
+                                                        }
+                                                      }),
                                                 ],
                                               ),
                                             ),
@@ -529,7 +600,9 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                             Expanded(
                               flex: 4,
                               child: AutoSizeText(
-                                (widget.total > 300000) ? 'Free' : '20,000 VND',
+                                (widget.total > 300000)
+                                    ? '+0 VND'
+                                    : '+20,000 VND',
                                 textAlign: TextAlign.end,
                                 maxLines: 2,
                                 minFontSize: 15,
@@ -658,11 +731,12 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                 backgroundColor: Colors.orangeAccent.shade700,
                 onPress: () async {
                   bool isValidate = await _checkoutController.onValidate(
-                      name: _receiverName,
-                      phoneNumber: _phoneNumber,
-                      address: _address,
-                      productList: widget.productList,
-                      total: widget.total.toString());
+                    name: _receiverName,
+                    phoneNumber: _phoneNumber,
+                    address: _address,
+                    productList: widget.productList,
+                    total: widget.total.toString(),
+                  );
 
                   if (isValidate) {
                     showModalBottomSheet(
@@ -715,7 +789,12 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                           .toString();
                                       var response = await StripeService
                                           .paymentWithNewCard(
-                                              amount: widget.total.toString(),
+                                              amount: (((widget.total >= 300000)
+                                                          ? 0
+                                                          : 20000) +
+                                                      widget.total -
+                                                      discountPrice.floor())
+                                                  .toString(),
                                               currency: 'VND',
                                               orderId: orderId);
                                       // TODO: Create Order
@@ -729,7 +808,11 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                             clientSecret: response.clientSecret,
                                             orderId: orderId,
                                             paymentMethodId:
-                                                response.paymentMethodId);
+                                                response.paymentMethodId,
+                                            discountPrice: discountPrice
+                                                .floor()
+                                                .toString(),
+                                            coupon: coupon);
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -852,7 +935,7 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                                               orderId =
                                                                               DateTime.now().millisecondsSinceEpoch.toString();
                                                                           var response = await StripeService.paymentWithExistCard(
-                                                                              amount: widget.total.toString(),
+                                                                              amount: (((widget.total >= 300000) ? 0 : 20000) + widget.total - discountPrice.floor()).toString(),
                                                                               currency: 'VND',
                                                                               card: stripeCard,
                                                                               orderId: orderId);
@@ -869,7 +952,9 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                                                                                 total: widget.total.toString(),
                                                                                 orderId: orderId,
                                                                                 clientSecret: response.clientSecret,
-                                                                                paymentMethodId: response.paymentMethodId);
+                                                                                paymentMethodId: response.paymentMethodId,
+                                                                                discountPrice: discountPrice.floor().toString(),
+                                                                                coupon: coupon);
                                                                             //TODO: Payment success
                                                                             Navigator.push(
                                                                                 context,

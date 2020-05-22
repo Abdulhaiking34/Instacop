@@ -70,8 +70,30 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                     content: widget.orderInfo.status,
                   ),
                   TitleWidget(
-                    title: 'Total',
-                    content: '${widget.orderInfo.total} VND',
+                    title: 'SubTotal',
+                    content:
+                        '${Util.intToMoneyType(int.parse(widget.orderInfo.total))} VND',
+                  ),
+                  TitleWidget(
+                    title: 'Shipping',
+                    content:
+                        '+${Util.intToMoneyType(int.parse(widget.orderInfo.shipping))} VND',
+                  ),
+                  TitleWidget(
+                    title: 'Coupon',
+                    content:
+                        'Discount: ${widget.orderInfo.discount}% \n-${Util.intToMoneyType(int.parse(widget.orderInfo.discountPrice))} VND',
+                  ),
+
+                  // TODO: Err total 200,000
+                  Card(
+                    child: TitleWidget(
+                        title: 'Total',
+                        content: Util.intToMoneyType(
+                                (int.parse(widget.orderInfo.total) -
+                                    int.parse(widget.orderInfo.discountPrice) +
+                                    int.parse(widget.orderInfo.shipping))) +
+                            ' VND'),
                   ),
                 ],
               ),

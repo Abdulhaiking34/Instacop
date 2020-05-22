@@ -61,12 +61,13 @@ class _ProfileViewState extends State<ProfileView>
             backgroundColor: kColorWhite,
             height: 100,
             onPress: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => OrderAndBillView(
-                            title: 'Order History',
-                          )));
+              Navigator.pushNamed(context, 'customer_order_history_screen');
+//              Navigator.push(
+//                  context,
+//                  MaterialPageRoute(
+//                      builder: (context) => OrderAndBillView(
+//                            title: 'Order History',
+//                          )));
             },
           ),
           //TODO: Bank Account

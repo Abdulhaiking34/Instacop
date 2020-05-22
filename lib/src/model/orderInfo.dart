@@ -10,7 +10,11 @@ class OrderInfo {
       this.phone,
       this.total,
       this.status,
-      this.createAt});
+      this.createAt,
+      this.discountPrice,
+      this.discount,
+      this.maxBillingAmount,
+      this.shipping});
 
   String customerName;
   String receiverName;
@@ -20,4 +24,8 @@ class OrderInfo {
   String status;
   String createAt;
   String subId;
+  String discountPrice;
+  String maxBillingAmount;
+  String discount;
+  String shipping;
 }

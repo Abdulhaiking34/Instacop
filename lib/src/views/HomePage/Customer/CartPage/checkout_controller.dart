@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
 import 'package:instacop/src/helpers/validator.dart';
+import 'package:instacop/src/model/coupon.dart';
 import 'package:instacop/src/model/product.dart';
 import 'package:instacop/src/model/quantityOrder.dart';
 
@@ -29,6 +30,8 @@ class CheckoutController {
     @required String orderId,
     @required String clientSecret,
     @required String paymentMethodId,
+    String discountPrice,
+    Coupon coupon,
   }) async {
 //   TODO: Payment
     try {
@@ -41,6 +44,7 @@ class CheckoutController {
         'customer_name': cusName,
         'receiver_name': name,
         'address': address,
+        'discountPrice': discountPrice,
         'total': total,
         'phone': phoneNumber,
         'status': 'Pending',
@@ -48,7 +52,16 @@ class CheckoutController {
         'payment_method_id': paymentMethodId,
         'month': DateTime.now().month,
         'year': DateTime.now().year,
-        'create_at': DateTime.now().toString()
+        'create_at': DateTime.now().toString(),
+        'couponId': (coupon.id != null && coupon.id != '') ? coupon.id : '',
+        'discount': (coupon.discount != null && coupon.discount != '')
+            ? coupon.discount
+            : '0',
+        'billingAmount':
+            (coupon.maxBillingAmount != null && coupon.maxBillingAmount != '')
+                ? coupon.maxBillingAmount
+                : '0',
+        'shipping': (int.parse(total) >= 300000) ? '0' : '20000'
       }).then((value) {
         //TODO: add list product
         for (var product in productList) {
@@ -62,7 +75,9 @@ class CheckoutController {
               'name': product.productName,
               'size': product.size,
               'color': product.color,
-              'price': product.price,
+              'price': (int.parse(product.salePrice) == 0)
+                  ? product.price
+                  : product.salePrice,
               'quantity': product.quantity
             });
         }
@@ -121,7 +136,6 @@ class CheckoutController {
     _quantityStreamController.add('');
     int countError = 0;
     String message = 'Too much quantity selected: \n';
-
     if (name == null || name == '') {
       _nameStreamController.sink.addError('Receiver\'s name is empty.');
       countError++;

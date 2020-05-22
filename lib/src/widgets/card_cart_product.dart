@@ -43,11 +43,7 @@ class CartProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller =
-        new MaskedTextController(text: '', mask: '000,000,000,000');
-    controller.updateText(productPrice.toString());
     double discount = 100 - ((productSalePrice / productPrice) * 100);
-    String productPriceText = controller.text;
     return Card(
       child: Slidable(
         actionPane: SlidableDrawerActionPane(),
@@ -209,7 +205,7 @@ class CartProductCard extends StatelessWidget {
                           alignment: Alignment.bottomRight,
                           child: (productSalePrice == 0)
                               ? AutoSizeText(
-                                  '$productPriceText VND',
+                                  '${Util.intToMoneyType(productPrice)} VND',
                                   maxLines: 1,
                                   minFontSize: 10,
                                   style: TextStyle(

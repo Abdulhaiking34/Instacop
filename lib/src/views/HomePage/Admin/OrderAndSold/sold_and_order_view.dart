@@ -92,10 +92,13 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                 address: document['address'],
                                 phone: document['phone'],
                                 status: document['status'],
-                                total: Util.intToMoneyType(
-                                    int.parse(document['total'])),
+                                total: document['total'],
                                 createAt: Util.convertDateToFullString(
-                                    document['create_at']));
+                                    document['create_at']),
+                                shipping: document['shipping'],
+                                discount: document['discount'],
+                                discountPrice: document['discountPrice'],
+                                maxBillingAmount: document['billingAmount']);
                             if (isOrderPage) {
                               //TODO: Order List View
                               return OrderAdminCard(
@@ -136,6 +139,12 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                       'description': '',
                                       'admin': adminName
                                     });
+                                    //TODO: delete coupon
+                                    Firestore.instance
+                                        .collection('Orders')
+                                        .document(document['couponId'])
+                                        .delete();
+                                    setState(() {});
                                   } else {
                                     //TODO: invalid card
                                     widget._globalKey.currentState
@@ -335,6 +344,7 @@ class _SoldAndOrderViewState extends State<SoldAndOrderView> {
                                                                   });
                                                                 }
                                                               });
+                                                              setState(() {});
                                                               Navigator.pop(
                                                                   context);
                                                             },

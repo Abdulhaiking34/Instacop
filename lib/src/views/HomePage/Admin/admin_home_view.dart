@@ -213,7 +213,15 @@ class _AdminHomeViewState extends State<AdminHomeView> {
             //TODO: Edit Page
             Expanded(
               flex: 2,
-              child: Container(),
+              child: DashboardBox(
+                title: 'Coupon',
+                color: kColorBlue,
+                icon: FontAwesomeIcons.ticketAlt,
+                value: '0',
+                onPress: () {
+                  Navigator.pushNamed(context, 'admin_coupon_manager');
+                },
+              ),
             ),
             SizedBox(
               height: ConstScreen.setSizeHeight(50),
