@@ -1,6 +1,6 @@
-E-commerce apps
+E-commerce apps - Flutter & Firebase & Stripe
 <br>
- - CUSTOMER UI
+ * CUSTOMER UI
 <br>
 <img src =https://user-images.githubusercontent.com/53823983/83278682-2b649a80-a1fe-11ea-90fd-79d92f843043.png width = "288" height="592"> <img src =https://user-images.githubusercontent.com/53823983/83279158-e55c0680-a1fe-11ea-9443-299412a11d0c.png width = "288" height="592">
 <img src =https://user-images.githubusercontent.com/53823983/83279273-13414b00-a1ff-11ea-8a24-1e8f304c256a.png width = "288" height="592">
@@ -10,7 +10,7 @@ E-commerce apps
 <img src =https://user-images.githubusercontent.com/53823983/83279530-729f5b00-a1ff-11ea-9fdc-84cf11b28b84.png width = "288" height="592">
 <img src =https://user-images.githubusercontent.com/53823983/83279809-e0e41d80-a1ff-11ea-89d9-28f03ba190ac.png width = "288" height="592">
 <br>
- - ADMIN UI
+ * ADMIN UI
 <br>
 <img src =https://user-images.githubusercontent.com/53823983/83279946-17ba3380-a200-11ea-93d2-0c710b325a81.png width = "288" height="592">
 <img src =https://user-images.githubusercontent.com/53823983/83280003-2f91b780-a200-11ea-86a6-d0488f3f71d4.png width = "288" height="592">
