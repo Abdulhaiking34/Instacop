@@ -141,6 +141,15 @@ class ProductManagerController {
       }).catchError((onError) {
         print(onError.toString());
       });
+      //TODO: Price Volatility
+      Firestore.instance.collection('PriceVolatility').document().setData({
+        'product_id': id,
+        'price': price,
+        'sale_price': salePrice,
+        'create_at': DateTime.now().toString(),
+        'timeCreate': DateTime.now().millisecondsSinceEpoch
+      });
+
       _btnLoadingController.sink.add(true);
       return true;
     }

@@ -35,12 +35,9 @@ class _WishListViewState extends State<WishListView>
         listProduct.firstWhere((it) => it.id == idProduct, orElse: () => null);
     if (result != null) {
       int index = listProduct.indexOf(result);
-      print('TRUE : $index');
-      print('TRUE : ${listProduct.length}');
       setState(() {
         listProduct.removeAt(index);
       });
-      print('TRUE : ${listProduct.length}');
     }
   }
 
@@ -189,5 +186,5 @@ class _WishListViewState extends State<WishListView>
 
   @override
   // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

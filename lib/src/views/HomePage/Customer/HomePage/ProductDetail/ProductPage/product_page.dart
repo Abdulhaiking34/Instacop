@@ -31,7 +31,9 @@ class _ProductPageState extends State<ProductPage>
   int _isColorFocus = 1;
   List<ColorInfo> _listColorPicker = [];
   ProductController _controller = new ProductController();
+  CarouselController buttonCarouselController = CarouselController();
   bool _isSoldOut = false;
+  int _indexPage = 1;
   //TODO: value
   int colorValue;
   String sizeValue;
@@ -91,6 +93,10 @@ class _ProductPageState extends State<ProductPage>
             setState(() {
               _isColorFocus = value.id;
             });
+            //TODO: jump to color
+            if (_listColorPicker.length > 1) {
+              buttonCarouselController.jumpToPage(value.id - 1);
+            }
             //TODO: color value pick
             colorValue = value.color.value;
           },
@@ -113,10 +119,13 @@ class _ProductPageState extends State<ProductPage>
           Stack(
             children: <Widget>[
               CarouselSlider(
-                enableInfiniteScroll: false,
-                height: ConstScreen.setSizeHeight(800),
-                scrollDirection: Axis.horizontal,
-                viewportFraction: 1.0,
+                options: CarouselOptions(
+                  enableInfiniteScroll: false,
+                  height: ConstScreen.setSizeHeight(800),
+                  scrollDirection: Axis.horizontal,
+                  viewportFraction: 1.0,
+                ),
+                carouselController: buttonCarouselController,
                 items: widget.product.imageList.map((image) {
                   return GestureDetector(
                     onTap: () {
@@ -256,7 +265,9 @@ class _ProductPageState extends State<ProductPage>
                       //TODO: Sale Price
                       Text(
                         (widget.product.salePrice != '0')
-                            ? Util.intToMoneyType(int.parse(widget.product.salePrice ))+ ' VND'
+                            ? Util.intToMoneyType(
+                                    int.parse(widget.product.salePrice)) +
+                                ' VND'
                             : '',
                         style: TextStyle(
                             fontSize: FontSize.setTextSize(34),

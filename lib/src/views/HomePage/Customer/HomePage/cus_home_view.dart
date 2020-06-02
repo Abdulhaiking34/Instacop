@@ -22,10 +22,12 @@ class _CustomerHomePageViewState extends State<CustomerHomePageView>
       children: <Widget>[
         // Banner Slider
         CarouselSlider(
-          viewportFraction: 1.0,
-          enableInfiniteScroll: false,
-          scrollDirection: Axis.vertical,
-          initialPage: 0,
+          options: CarouselOptions(
+            viewportFraction: 1.0,
+            enableInfiniteScroll: false,
+            scrollDirection: Axis.vertical,
+            initialPage: 0,
+          ),
           items: <Widget>[
             CustomBanner(
               title: 'NEW IN',

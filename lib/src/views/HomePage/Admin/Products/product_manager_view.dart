@@ -78,8 +78,11 @@ class _ProductManagerState extends State<ProductManager> {
                     onEdit: () {
                       String productName = document['name'];
                       String quantity = document['quantity'];
+                      String constPrice = document['price'];
+                      String constSalePrice = document['sale_price'];
                       String price = document['price'];
                       String salePrice = document['sale_price'];
+                      String productId = document['id'];
                       showDialog(
                           context: context,
                           builder: (context) => Dialog(
@@ -186,6 +189,28 @@ class _ProductManagerState extends State<ProductManager> {
                                                         ? salePrice
                                                         : document['salePrice'],
                                                   });
+                                                  // TODO: save Price volatility
+                                                  if ((constPrice != price ||
+                                                          constSalePrice !=
+                                                              salePrice) &&
+                                                      (price != '' &&
+                                                          salePrice != '')) {
+                                                    Firestore.instance
+                                                        .collection(
+                                                            'PriceVolatility')
+                                                        .document()
+                                                        .setData({
+                                                      'product_id': productId,
+                                                      'price': price,
+                                                      'sale_price': salePrice,
+                                                      'create_at':
+                                                          DateTime.now()
+                                                              .toString(),
+                                                      'timeCreate': DateTime
+                                                              .now()
+                                                          .millisecondsSinceEpoch
+                                                    });
+                                                  }
                                                   Navigator.pop(context);
                                                 },
                                               ),

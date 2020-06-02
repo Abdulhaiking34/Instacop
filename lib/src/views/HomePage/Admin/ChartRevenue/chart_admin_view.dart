@@ -5,6 +5,7 @@ import 'package:instacop/src/helpers/colors_constant.dart';
 import 'package:instacop/src/helpers/screen.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:instacop/src/views/HomePage/Admin/ChartRevenue/OrderChart.dart';
+import 'package:instacop/src/views/HomePage/Admin/ChartRevenue/priceVolatilityChart.dart';
 import 'package:instacop/src/views/HomePage/Admin/ChartRevenue/revenue_chart.dart';
 
 class AdminChartView extends StatefulWidget {
@@ -16,7 +17,7 @@ class _AdminChartView extends State with SingleTickerProviderStateMixin {
   TabController _tabController;
   @override
   void initState() {
-    _tabController = new TabController(length: 2, vsync: this);
+    _tabController = new TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -60,6 +61,16 @@ class _AdminChartView extends State with SingleTickerProviderStateMixin {
                 'Order & Bill',
                 style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
               ),
+            ),
+            Tab(
+              icon: Icon(
+                Icons.monetization_on,
+                size: ConstScreen.setSizeHeight(30),
+              ),
+              child: Text(
+                'Price Volatility',
+                style: kBoldTextStyle.copyWith(fontSize: FontSize.s28),
+              ),
             )
           ],
         ),
@@ -70,7 +81,9 @@ class _AdminChartView extends State with SingleTickerProviderStateMixin {
           //TODO: Revenue
           RevenueChart(),
           //TODO: Order Analysis
-          OrderChart()
+          OrderChart(),
+          //TODO: Price Volatility
+          PriceVolatilityChart(),
         ],
         controller: _tabController,
       ),
