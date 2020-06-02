@@ -60,7 +60,7 @@ class _UserManagerViewState extends State<UserManagerView>
           tabs: <Widget>[
             Tab(
               icon: Icon(
-                FontAwesomeIcons.ticketAlt,
+                FontAwesomeIcons.userAlt,
                 size: ConstScreen.setSizeHeight(30),
               ),
               child: Text(
@@ -70,7 +70,7 @@ class _UserManagerViewState extends State<UserManagerView>
             ),
             Tab(
               icon: Icon(
-                FontAwesomeIcons.ticketAlt,
+                FontAwesomeIcons.userTie,
                 size: ConstScreen.setSizeHeight(30),
               ),
               child: Text(
