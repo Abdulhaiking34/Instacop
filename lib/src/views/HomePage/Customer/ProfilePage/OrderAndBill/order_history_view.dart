@@ -81,13 +81,16 @@ class _OrderHistoryViewState extends State<OrderHistoryView>
           //TODO: Order
           OrderAndBillView(
             status: 'Pending',
+            isAdmin: false,
           ),
           //TODO: Bill
           OrderAndBillView(
             status: 'Completed',
+            isAdmin: false,
           ),
           OrderAndBillView(
             status: 'Canceled',
+            isAdmin: false,
           ),
         ],
         controller: _tabController,

@@ -24,6 +24,20 @@ class _RatingProductPageState extends State<RatingProductPage>
     with AutomaticKeepAliveClientMixin {
   RatingController _controller = new RatingController();
   List commentList = [];
+  bool _isLogging = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    StorageUtil.getIsLogging().then((bool value) {
+      if (value != null) {
+        _isLogging = value;
+      } else {
+        _isLogging = false;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,168 +116,178 @@ class _RatingProductPageState extends State<RatingProductPage>
                         ),
                         onPressed: () {
                           //TODO: Add comment
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                double _ratingPoint = 0;
-                                String _comment = '';
-                                return Dialog(
-                                  elevation: 0.0,
-                                  backgroundColor: kColorWhite,
-                                  child: Container(
-                                    height: ConstScreen.setSizeHeight(600),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical:
-                                              ConstScreen.setSizeHeight(15),
-                                          horizontal:
-                                              ConstScreen.setSizeWidth(30)),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: <Widget>[
-                                          //Rating
-                                          Expanded(
-                                            flex: 2,
-                                            child: Row(
-                                              children: <Widget>[
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Text(
-                                                    'Rating:',
-                                                    style: TextStyle(
-                                                        fontSize: FontSize.s36,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 3,
-                                                  child: Center(
-                                                    child: RatingBar(
-                                                      itemCount: 5,
-                                                      onRatingUpdate: (value) {
-                                                        _ratingPoint = value;
-                                                      },
-                                                      minRating: 0,
-                                                      maxRating: 5,
-                                                      allowHalfRating: true,
-                                                      itemSize: ConstScreen
-                                                          .setSizeWidth(70),
-                                                      itemBuilder:
-                                                          (context, _) => Icon(
-                                                        Icons.star,
-                                                        color:
-                                                            Colors.amberAccent,
-                                                      ),
+                          if (_isLogging) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  double _ratingPoint = 0;
+                                  String _comment = '';
+                                  return Dialog(
+                                    elevation: 0.0,
+                                    backgroundColor: kColorWhite,
+                                    child: Container(
+                                      height: ConstScreen.setSizeHeight(600),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical:
+                                                ConstScreen.setSizeHeight(15),
+                                            horizontal:
+                                                ConstScreen.setSizeWidth(30)),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: <Widget>[
+                                            //Rating
+                                            Expanded(
+                                              flex: 2,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      'Rating:',
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              FontSize.s36,
+                                                          fontWeight:
+                                                              FontWeight.bold),
                                                     ),
                                                   ),
-                                                )
-                                              ],
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Center(
+                                                      child: RatingBar(
+                                                        itemCount: 5,
+                                                        onRatingUpdate:
+                                                            (value) {
+                                                          _ratingPoint = value;
+                                                        },
+                                                        minRating: 0,
+                                                        maxRating: 5,
+                                                        allowHalfRating: true,
+                                                        itemSize: ConstScreen
+                                                            .setSizeWidth(70),
+                                                        itemBuilder:
+                                                            (context, _) =>
+                                                                Icon(
+                                                          Icons.star,
+                                                          color: Colors
+                                                              .amberAccent,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height:
-                                                ConstScreen.setSizeHeight(20),
-                                          ),
-                                          // Comment
-                                          Text(
-                                            'Comment:',
-                                            style: TextStyle(
-                                                fontSize: FontSize.s36,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Expanded(
-                                              flex: 10,
-                                              child: StreamBuilder(
-                                                stream:
-                                                    _controller.commentStream,
-                                                builder: (context, snapshot) =>
-                                                    TextField(
-                                                  decoration: InputDecoration(
-                                                      errorText:
-                                                          snapshot.hasError
-                                                              ? snapshot.error
-                                                              : null,
-                                                      errorStyle: kBoldTextStyle
-                                                          .copyWith(
-                                                              fontSize:
-                                                                  FontSize.s25),
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                      labelStyle: kBoldTextStyle
-                                                          .copyWith(
-                                                              fontSize: FontSize
-                                                                  .s30)),
-                                                  keyboardType:
-                                                      TextInputType.multiline,
-                                                  maxLines: null,
-                                                  onChanged: (cmt) {
-                                                    _comment = cmt;
-                                                  },
-                                                ),
-                                              )),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Row(
-                                              children: <Widget>[
-                                                // Button Add
-                                                //TODO: Save Button
-                                                Expanded(
-                                                  child: CusRaisedButton(
-                                                    title: 'ADD',
-                                                    isDisablePress: true,
-                                                    onPress: () {
-                                                      StorageUtil.getUserInfo()
-                                                          .then((user) async {
-                                                        String username =
-                                                            user.fullName;
-                                                        bool result = await _controller
-                                                            .onComment(
-                                                                productId: widget
-                                                                    .productId,
-                                                                comment:
-                                                                    _comment,
-                                                                ratingPoint:
-                                                                    _ratingPoint,
-                                                                username:
-                                                                    username);
-                                                        if (result) {
-                                                          setState(() {});
-                                                          Navigator.pop(
-                                                              context);
-                                                        }
-                                                      });
-                                                    },
-                                                    backgroundColor:
-                                                        kColorBlack,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                      ConstScreen.setSizeWidth(
-                                                          20),
-                                                ),
-                                                // Button Add
-                                                Expanded(
-                                                  child: CusRaisedButton(
-                                                    title: 'CANCEL',
-                                                    onPress: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    backgroundColor:
-                                                        kColorLightGrey,
-                                                  ),
-                                                ),
-                                              ],
+                                            SizedBox(
+                                              height:
+                                                  ConstScreen.setSizeHeight(20),
                                             ),
-                                          )
-                                        ],
+                                            // Comment
+                                            Text(
+                                              'Comment:',
+                                              style: TextStyle(
+                                                  fontSize: FontSize.s36,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Expanded(
+                                                flex: 10,
+                                                child: StreamBuilder(
+                                                  stream:
+                                                      _controller.commentStream,
+                                                  builder:
+                                                      (context, snapshot) =>
+                                                          TextField(
+                                                    decoration: InputDecoration(
+                                                        errorText:
+                                                            snapshot.hasError
+                                                                ? snapshot.error
+                                                                : null,
+                                                        errorStyle: kBoldTextStyle
+                                                            .copyWith(
+                                                                fontSize:
+                                                                    FontSize
+                                                                        .s25),
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                        labelStyle: kBoldTextStyle
+                                                            .copyWith(
+                                                                fontSize:
+                                                                    FontSize
+                                                                        .s30)),
+                                                    keyboardType:
+                                                        TextInputType.multiline,
+                                                    maxLines: null,
+                                                    onChanged: (cmt) {
+                                                      _comment = cmt;
+                                                    },
+                                                  ),
+                                                )),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  // Button Add
+                                                  //TODO: Save Button
+                                                  Expanded(
+                                                    child: CusRaisedButton(
+                                                      title: 'ADD',
+                                                      isDisablePress: true,
+                                                      onPress: () {
+                                                        StorageUtil
+                                                                .getUserInfo()
+                                                            .then((user) async {
+                                                          String username =
+                                                              user.fullName;
+                                                          bool result = await _controller
+                                                              .onComment(
+                                                                  productId: widget
+                                                                      .productId,
+                                                                  comment:
+                                                                      _comment,
+                                                                  ratingPoint:
+                                                                      _ratingPoint,
+                                                                  username:
+                                                                      username);
+                                                          if (result) {
+                                                            setState(() {});
+                                                            Navigator.pop(
+                                                                context);
+                                                          }
+                                                        });
+                                                      },
+                                                      backgroundColor:
+                                                          kColorBlack,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: ConstScreen
+                                                        .setSizeWidth(20),
+                                                  ),
+                                                  // Button Add
+                                                  Expanded(
+                                                    child: CusRaisedButton(
+                                                      title: 'CANCEL',
+                                                      onPress: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      backgroundColor:
+                                                          kColorLightGrey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              });
+                                  );
+                                });
+                          } else {
+                            Navigator.pushNamed(context, 'register_screen');
+                          }
                         }),
                   )
                 ],

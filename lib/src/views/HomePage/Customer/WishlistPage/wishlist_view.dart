@@ -55,8 +55,6 @@ class _WishListViewState extends State<WishListView>
               .collection('Products')
               .document(document['id'])
               .get();
-          print(document['id']);
-          print(doc['name']);
           listProduct.add(ProductCard(
             id: doc['id'],
             productName: doc['name'],

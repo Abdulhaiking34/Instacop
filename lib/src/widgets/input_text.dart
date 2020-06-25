@@ -43,6 +43,7 @@ class _InputTextState extends State<InputText> {
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return TextField(
+      autofocus: false,
       controller: widget.controller,
       decoration: InputDecoration(
         hintText: widget.hintText,

@@ -61,12 +61,6 @@ class _ProfileViewState extends State<ProfileView>
             height: 100,
             onPress: () {
               Navigator.pushNamed(context, 'customer_order_history_screen');
-//              Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                      builder: (context) => OrderAndBillView(
-//                            title: 'Order History',
-//                          )));
             },
           ),
           //TODO: Bank Account

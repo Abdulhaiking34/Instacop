@@ -53,7 +53,7 @@ class _ProductPageState extends State<ProductPage>
     }
     _sizeList = widget.product.sizeList;
     colorValue = _listColorPicker.elementAt(0).color.value;
-    print(widget.product.productName);
+
     StorageUtil.getIsLogging().then((bool value) {
       if (value != null) {
         _isLogging = value;
@@ -95,7 +95,16 @@ class _ProductPageState extends State<ProductPage>
             });
             //TODO: jump to color
             if (_listColorPicker.length > 1) {
-              buttonCarouselController.jumpToPage(value.id - 1);
+              print(value.id);
+              if (value.id <= 2) {
+                if (value.id == 1) {
+                  buttonCarouselController.jumpToPage(0);
+                } else {
+                  buttonCarouselController.jumpToPage(2);
+                }
+              } else {
+                buttonCarouselController.jumpToPage(value.id - 2);
+              }
             }
             //TODO: color value pick
             colorValue = value.color.value;

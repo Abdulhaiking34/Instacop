@@ -269,63 +269,71 @@ class _SearchViewState extends State<SearchView>
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        // TODO: Search Bar
-        Expanded(
-          flex: 1,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: kColorBlack.withOpacity(0.6),
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // TODO: Search Bar
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: kColorBlack.withOpacity(0.6),
+                  ),
                 ),
               ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: ConstScreen.setSizeHeight(15),
-                  horizontal: ConstScreen.setSizeWidth(20)),
-              child: TextField(
-                controller: textController,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: kColorBlack.withOpacity(0.6),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: ConstScreen.setSizeHeight(15),
+                    horizontal: ConstScreen.setSizeWidth(20)),
+                child: TextField(
+                  controller: textController,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: kColorBlack.withOpacity(0.6),
+                      ),
+                    ),
+                    hintText: 'SEARCH',
+                    hintStyle: TextStyle(
+                        fontSize: FontSize.s30,
+                        color: kColorBlack,
+                        fontWeight: FontWeight.bold),
+                    // TODO: Search Button
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: kColorBlack.withOpacity(0.8),
+                      size: ConstScreen.setSizeWidth(45),
                     ),
                   ),
-                  hintText: 'SEARCH',
-                  hintStyle: TextStyle(
-                      fontSize: FontSize.s30,
-                      color: kColorBlack,
-                      fontWeight: FontWeight.bold),
-                  // TODO: Search Button
-                  suffixIcon: Icon(
-                    Icons.search,
-                    color: kColorBlack.withOpacity(0.8),
-                    size: ConstScreen.setSizeWidth(45),
-                  ),
+                  style: TextStyle(fontSize: FontSize.s30, color: kColorBlack),
+                  maxLines: 1,
+                  onChanged: (value) {
+                    searching(value);
+                    setState(() {
+                      isSearch = true;
+                    });
+                  },
                 ),
-                style: TextStyle(fontSize: FontSize.s30, color: kColorBlack),
-                maxLines: 1,
-                onChanged: (value) {
-                  searching(value);
-                  setState(() {
-                    isSearch = true;
-                  });
-                },
               ),
             ),
           ),
-        ),
-        //TODO: Category
-        Expanded(
-          flex: 9,
-          child: (isSearch) ? searchingResult() : category(),
-        )
-      ],
+          //TODO: Category
+          Expanded(
+            flex: 9,
+            child: (isSearch) ? searchingResult() : category(),
+          )
+        ],
+      ),
     );
   }
 

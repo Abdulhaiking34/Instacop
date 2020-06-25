@@ -288,6 +288,7 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
                                                                 });
                                                                 Navigator.pop(
                                                                     context);
+                                                                setState(() {});
                                                               },
                                                             ),
                                                           ),
@@ -307,6 +308,7 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
                                                               onPress: () {
                                                                 Navigator.pop(
                                                                     context);
+                                                                setState(() {});
                                                               },
                                                             ),
                                                           )

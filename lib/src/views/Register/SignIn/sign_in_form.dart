@@ -104,6 +104,10 @@ class _SignInViewState extends State<SignInView> {
                 title: 'SIGN IN',
                 isDisablePress: snapshot.hasData ? snapshot.data : true,
                 onPress: () async {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
                   var result = await signInController.onSubmitSignIn(
                       email: _email, password: _password, isAdmin: _isAdmin);
                   print('Screen' + result.toString());

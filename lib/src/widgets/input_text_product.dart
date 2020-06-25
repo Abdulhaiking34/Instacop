@@ -44,6 +44,7 @@ class _InputTextProductState extends State<InputTextProduct> {
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
     return TextFormField(
+      autofocus: false,
       controller: widget.controller,
       initialValue: widget.initValue,
       decoration: InputDecoration(

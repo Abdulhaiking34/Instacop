@@ -150,162 +150,170 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   Widget build(BuildContext context) {
     ConstScreen.setScreen(context);
-    return Scaffold(
-      appBar: widget.isAdmin
-          ? AppBar(
-              backgroundColor: kColorWhite,
-              iconTheme: IconThemeData.fallback(),
-              title: Text(
-                'Chat',
-                style: TextStyle(
-                    color: kColorBlack,
-                    fontSize: FontSize.setTextSize(32),
-                    fontWeight: FontWeight.w500),
-              ),
-              centerTitle: true,
-            )
-          : null,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            //TODO: Chat space
-            StreamBuilder(
-              stream: _controller.stream,
-              builder: (context, mainSnapshot) {
-                if (mainSnapshot.hasData) {
-                  return StreamBuilder<QuerySnapshot>(
-                    stream: Firestore.instance
-                        .collection('Chat')
-                        .document(mainSnapshot.data)
-                        .collection(mainSnapshot.data)
-                        .orderBy('timestamp')
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData || !mainSnapshot.hasData) {
-                        return Container();
-                      }
-                      final messages = snapshot.data.documents.reversed;
-                      messageBubbles = [];
-                      for (var message in messages) {
-                        final messageText = message.data['text'];
-                        final messageSender = message.data['sender'];
-                        final List<dynamic> images = message.data['image'];
-                        final currentUser = loggedInUser.email;
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: widget.isAdmin
+            ? AppBar(
+                backgroundColor: kColorWhite,
+                iconTheme: IconThemeData.fallback(),
+                title: Text(
+                  'Chat',
+                  style: TextStyle(
+                      color: kColorBlack,
+                      fontSize: FontSize.setTextSize(32),
+                      fontWeight: FontWeight.w500),
+                ),
+                centerTitle: true,
+              )
+            : null,
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              //TODO: Chat space
+              StreamBuilder(
+                stream: _controller.stream,
+                builder: (context, mainSnapshot) {
+                  if (mainSnapshot.hasData) {
+                    return StreamBuilder<QuerySnapshot>(
+                      stream: Firestore.instance
+                          .collection('Chat')
+                          .document(mainSnapshot.data)
+                          .collection(mainSnapshot.data)
+                          .orderBy('timestamp')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData || !mainSnapshot.hasData) {
+                          return Container();
+                        }
+                        final messages = snapshot.data.documents.reversed;
+                        messageBubbles = [];
+                        for (var message in messages) {
+                          final messageText = message.data['text'];
+                          final messageSender = message.data['sender'];
+                          final List<dynamic> images = message.data['image'];
+                          final currentUser = loggedInUser.email;
 
-                        final messageBubble = MessageBubble(
-                          context: context,
-                          uid: uid,
-                          createAt: message.data['timestamp'],
-                          documentID: message.documentID,
-                          sender: messageSender,
-                          text: (messageText != null) ? messageText : '',
-                          isAdmin: message.data['is_admin'],
-                          isMe: currentUser == messageSender,
-                          onlineImagesList:
-                              (images != null || images.length != 0)
-                                  ? images
-                                  : [],
+                          final messageBubble = MessageBubble(
+                            context: context,
+                            uid: uid,
+                            createAt: message.data['timestamp'],
+                            documentID: message.documentID,
+                            sender: messageSender,
+                            text: (messageText != null) ? messageText : '',
+                            isAdmin: message.data['is_admin'],
+                            isMe: currentUser == messageSender,
+                            onlineImagesList:
+                                (images != null || images.length != 0)
+                                    ? images
+                                    : [],
+                          );
+
+                          messageBubbles.add(messageBubble);
+                        }
+                        return Expanded(
+                          child: ListView(
+                            reverse: true,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 20.0),
+                            children: messageBubbles,
+                          ),
                         );
-
-                        messageBubbles.add(messageBubble);
-                      }
-                      return Expanded(
-                        child: ListView(
-                          reverse: true,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 20.0),
-                          children: messageBubbles,
+                      },
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+              //TODO: Image holder
+              (images.length != 0) ? imageGridView() : Container(),
+              //TODO: bottom chat sent
+              Container(
+                decoration: kMessageContainerDecoration,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        loadAssets();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: ConstScreen.setSizeWidth(15)),
+                        child: Icon(
+                          Icons.image,
+                          color: kColorBlue,
+                          size: ConstScreen.setSizeHeight(50),
                         ),
-                      );
-                    },
-                  );
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-            //TODO: Image holder
-            (images.length != 0) ? imageGridView() : Container(),
-            //TODO: bottom chat sent
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      loadAssets();
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: ConstScreen.setSizeWidth(15)),
-                      child: Icon(
-                        Icons.image,
-                        color: kColorBlue,
-                        size: ConstScreen.setSizeHeight(50),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        messageText = value;
+                    Expanded(
+                      child: TextField(
+                        controller: messageTextController,
+                        onChanged: (value) {
+                          messageText = value;
+                        },
+                        decoration: kMessageTextFieldDecoration,
+                      ),
+                    ),
+                    //TODO: sent message
+                    FlatButton(
+                      onPressed: () async {
+                        if (images.length != 0) {
+                          List<String> listImages = await saveImage(images);
+                          Firestore.instance
+                              .collection('Chat')
+                              .document(uid)
+                              .collection(uid)
+                              .add({
+                            'roomId': uid,
+                            'text': messageText,
+                            'is_admin': widget.isAdmin ? true : false,
+                            'sender': loggedInUser.email,
+                            'image': listImages,
+                            'timestamp':
+                                DateTime.now().toUtc().millisecondsSinceEpoch
+                          });
+                        } else {
+                          Firestore.instance
+                              .collection('Chat')
+                              .document(uid)
+                              .collection(uid)
+                              .add({
+                            'roomId': uid,
+                            'text': messageText,
+                            'is_admin': widget.isAdmin ? true : false,
+                            'sender': loggedInUser.email,
+                            'image': [],
+                            'timestamp':
+                                DateTime.now().toUtc().millisecondsSinceEpoch
+                          });
+                        }
+                        messageTextController.clear();
+                        setState(() {
+                          images.clear();
+                        });
                       },
-                      decoration: kMessageTextFieldDecoration,
+                      child: Text(
+                        'Send',
+                        style: kSendButtonTextStyle.copyWith(
+                            fontSize: FontSize.s36),
+                      ),
                     ),
-                  ),
-                  //TODO: sent message
-                  FlatButton(
-                    onPressed: () async {
-                      if (images.length != 0) {
-                        List<String> listImages = await saveImage(images);
-                        Firestore.instance
-                            .collection('Chat')
-                            .document(uid)
-                            .collection(uid)
-                            .add({
-                          'roomId': uid,
-                          'text': messageText,
-                          'is_admin': widget.isAdmin ? true : false,
-                          'sender': loggedInUser.email,
-                          'image': listImages,
-                          'timestamp':
-                              DateTime.now().toUtc().millisecondsSinceEpoch
-                        });
-                      } else {
-                        Firestore.instance
-                            .collection('Chat')
-                            .document(uid)
-                            .collection(uid)
-                            .add({
-                          'roomId': uid,
-                          'text': messageText,
-                          'is_admin': widget.isAdmin ? true : false,
-                          'sender': loggedInUser.email,
-                          'image': [],
-                          'timestamp':
-                              DateTime.now().toUtc().millisecondsSinceEpoch
-                        });
-                      }
-                      messageTextController.clear();
-                      setState(() {
-                        images.clear();
-                      });
-                    },
-                    child: Text(
-                      'Send',
-                      style:
-                          kSendButtonTextStyle.copyWith(fontSize: FontSize.s36),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

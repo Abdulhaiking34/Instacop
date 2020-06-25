@@ -157,15 +157,17 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                             Prediction p = await PlacesAutocomplete.show(
                                 context: context,
                                 apiKey:
-                                    'AIzaSyArzTDN0yYyFBV07Win-Toj4k_4lqqwYv0', // Mode.fullscreen
+                                    'AIzaSyDTi8Nm0VOssX-koEY8iNU_MBRfRFA15j8', // Mode.fullscreen
                                 mode: Mode.fullscreen,
                                 language: "vn",
                                 components: [
                                   new Component(Component.country, "vn")
                                 ]);
-                            setState(() {
-                              _address = p.description;
-                            });
+                            if (p.description != null) {
+                              setState(() {
+                                _address = p.description;
+                              });
+                            }
                           },
                           child: Container(
                             width: double.infinity,
