@@ -72,7 +72,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                   TitleWidget(
                     title: 'SubTotal',
                     content:
-                        '${Util.intToMoneyType(int.parse(widget.orderInfo.total))} VND',
+                        '${Util.intToMoneyType(int.parse(widget.orderInfo.total) + int.parse(widget.orderInfo.shipping) + int.parse(widget.orderInfo.maxBillingAmount))} VND',
                   ),
                   TitleWidget(
                     title: 'Shipping',
@@ -89,11 +89,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                   Card(
                     child: TitleWidget(
                         title: 'Total',
-                        content: Util.intToMoneyType(
-                                (int.parse(widget.orderInfo.total) -
-                                    int.parse(widget.orderInfo.discountPrice) +
-                                    int.parse(widget.orderInfo.shipping))) +
-                            ' VND'),
+                        content: '${widget.orderInfo.total} VND'),
                   ),
                 ],
               ),

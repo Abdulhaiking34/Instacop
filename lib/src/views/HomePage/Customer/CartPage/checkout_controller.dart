@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instacop/src/helpers/shared_preferrence.dart';
+import 'package:instacop/src/helpers/utils.dart';
 import 'package:instacop/src/helpers/validator.dart';
 import 'package:instacop/src/model/coupon.dart';
 import 'package:instacop/src/model/product.dart';
@@ -45,7 +46,13 @@ class CheckoutController {
         'receiver_name': name,
         'address': address,
         'discountPrice': discountPrice,
-        'total': total,
+        'total': ((int.parse(total) -
+                int.parse((coupon.maxBillingAmount != null &&
+                        coupon.maxBillingAmount != '')
+                    ? coupon.maxBillingAmount
+                    : '0') +
+                int.parse((int.parse(total) >= 300000) ? '0' : '20000')))
+            .toString(),
         'phone': phoneNumber,
         'status': 'Pending',
         'client_secret': clientSecret,
@@ -153,7 +160,7 @@ class CheckoutController {
     }
 
     if (address == null || address == '') {
-      _addressStreamController.sink.addError(' is invalid.');
+      _addressStreamController.sink.addError('Address is invalid.');
       countError++;
     }
 

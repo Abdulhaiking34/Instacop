@@ -152,71 +152,57 @@ class _ProcessingOrderViewState extends State<ProcessingOrderView> {
                           height: ConstScreen.setSizeHeight(20),
                         ),
                         // TODO: get Address
-                        GestureDetector(
-                          onTap: () async {
-                            Prediction p = await PlacesAutocomplete.show(
-                                context: context,
-                                apiKey:
-                                    'AIzaSyDTi8Nm0VOssX-koEY8iNU_MBRfRFA15j8', // Mode.fullscreen
-                                mode: Mode.fullscreen,
-                                language: "vn",
-                                components: [
-                                  new Component(Component.country, "vn")
-                                ]);
-                            if (p.description != null) {
-                              setState(() {
-                                _address = p.description;
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: kColorBlack.withOpacity(0.3)),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  top: ConstScreen.setSizeHeight(20),
-                                  bottom: ConstScreen.setSizeHeight(20),
-                                  left: ConstScreen.setSizeHeight(20),
-                                  right: ConstScreen.setSizeHeight(20)),
-                              child: AutoSizeText('Address: ' + _address,
-                                  textAlign: TextAlign.start,
-                                  maxLines: 2,
-                                  minFontSize: 15,
-                                  style: TextStyle(
-                                      fontSize: FontSize.setTextSize(30),
-                                      color: kColorBlack,
-                                      fontWeight: FontWeight.normal)),
-                            ),
-                          ),
-                        ),
+//                        GestureDetector(
+//                          onTap: () async {
+//                            Prediction p = await PlacesAutocomplete.show(
+//                                context: context,
+//                                apiKey:
+//                                    'AIzaSyAAsiJbTpLEeB2dEPVTVWDF5HjyU2lbwAo', // Mode.fullscreen
+//                                mode: Mode.fullscreen,
+//                                language: "vn",
+//                                components: [
+//                                  new Component(Component.country, "vn")
+//                                ]);
+//                            if (p.description != null) {
+//                              setState(() {
+//                                _address = p.description;
+//                              });
+//                            }
+//                          },
+//                          child: Container(
+//                            width: double.infinity,
+//                            decoration: BoxDecoration(
+//                              border: Border.all(
+//                                  color: kColorBlack.withOpacity(0.3)),
+//                            ),
+//                            child: Padding(
+//                              padding: EdgeInsets.only(
+//                                  top: ConstScreen.setSizeHeight(20),
+//                                  bottom: ConstScreen.setSizeHeight(20),
+//                                  left: ConstScreen.setSizeHeight(20),
+//                                  right: ConstScreen.setSizeHeight(20)),
+//                              child: AutoSizeText('Address: ' + _address,
+//                                  textAlign: TextAlign.start,
+//                                  maxLines: 2,
+//                                  minFontSize: 15,
+//                                  style: TextStyle(
+//                                      fontSize: FontSize.setTextSize(30),
+//                                      color: kColorBlack,
+//                                      fontWeight: FontWeight.normal)),
+//                            ),
+//                          ),
+//                        ),
                         //TODO: Error address check
                         StreamBuilder(
                           stream: _checkoutController.addressStream,
                           builder: (context, snapshot) {
-                            return Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: ConstScreen.setSizeHeight(10),
-                                  left: ConstScreen.setSizeHeight(22),
-                                ),
-                                child: AutoSizeText(
-                                    snapshot.hasError
-                                        ? 'Address ' + snapshot.error
-                                        : '',
-                                    textAlign: TextAlign.start,
-                                    maxLines: 2,
-                                    minFontSize: 12,
-                                    style: TextStyle(
-                                        fontSize: FontSize.setTextSize(20),
-                                        color: snapshot.hasError
-                                            ? kColorRed
-                                            : kColorBlack,
-                                        fontWeight: FontWeight.normal)),
-                              ),
+                            return InputText(
+                              title: 'Address',
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : '',
+                              onValueChange: (address) {
+                                _address = address;
+                              },
                             );
                           },
                         ),

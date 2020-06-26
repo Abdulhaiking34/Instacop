@@ -112,10 +112,6 @@ class _OrderAndBillViewState extends State<OrderAndBillView> {
                                                 )));
                                   },
                                   onCancel: () {
-                                    Firestore.instance
-                                        .collection('Orders')
-                                        .document(document['sub_Id'])
-                                        .updateData({'status': 'Canceled'});
                                     showDialog(
                                         context: context,
                                         builder: (context) {
