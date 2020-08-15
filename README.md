@@ -1,5 +1,7 @@
 E-commerce apps - Flutter & Firebase & Stripe
 <br>
+Demo: https://www.youtube.com/watch?v=H8aGcukJyn4
+<br>
  * CUSTOMER UI
 <br>
 <img src =https://user-images.githubusercontent.com/53823983/83278682-2b649a80-a1fe-11ea-90fd-79d92f843043.png width = "288" height="592"> <img src =https://user-images.githubusercontent.com/53823983/83279158-e55c0680-a1fe-11ea-9443-299412a11d0c.png width = "288" height="592">
